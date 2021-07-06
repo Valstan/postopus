@@ -8,7 +8,7 @@ def tesseract(patch):
     img = cv2.imread(patch)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     custom_config = r'--oem 3 --psm 6'
-    return pytesseract.image_to_string(img, lang='rus', config=custom_config)
-
-# cv2.imshow('Result', img)
-# cv2.waitKey(0)
+    try:
+        return pytesseract.image_to_string(img, lang='rus', config=custom_config)
+    except:
+        return 'пусто'
