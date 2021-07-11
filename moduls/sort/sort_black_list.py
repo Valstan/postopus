@@ -6,6 +6,7 @@ from config import delete_msg_blacklist
 def sort_black_list(msg):
     msg = msg.replace('"', '')
     msg.lower()
+    delete_msg_blacklist.lower()
     for sample in delete_msg_blacklist:
         if re.search(sample, msg):
             return True
