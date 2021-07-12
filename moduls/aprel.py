@@ -17,10 +17,7 @@ def aprel(prefix_base):
         shut = clear_copy_history(shut)
         shut = ''.join(map(str, ('wall', shut['owner_id'], '_', shut['id'])))
         if shut not in base['shut_aprel']:
-
             break
-
-
 
     id_group = base['id']['post_group']['key'] * -1
     try:
