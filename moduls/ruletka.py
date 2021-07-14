@@ -33,7 +33,8 @@ def ruletka(prefix_base):
     elif prefix_base == 'main':
         post_me()
     elif prefix_base == 'a':
-        aprel()
+        aprel('m')
+        aprel('d')
     else:
         print('Базы с таким именем нет')
 
