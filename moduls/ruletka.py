@@ -1,6 +1,7 @@
 import random
 
 from config import bases, fbase
+from moduls.aprel import aprel
 from moduls.repost_me import post_me
 from moduls.read_write.get_json import getjson
 from moduls.main_program import main_program
@@ -31,6 +32,8 @@ def ruletka(prefix_base):
                 break
     elif prefix_base == 'main':
         post_me()
+    elif prefix_base == 'a':
+        aprel()
     else:
         print('Базы с таким именем нет')
 
