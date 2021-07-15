@@ -32,7 +32,7 @@ def reklama(prefix_base):
     try:
         vkapp.wall.repost(object=shut, group_id=id_group)
         base['shut_reklama'].append(shut)
-        while len(base['shut_reklama']) > 10:
+        while len(base['shut_reklama']) > 20:
             del base['shut_reklama'][0]
         writejson(bases + base['prefix'] + fbase, base)
         return True
