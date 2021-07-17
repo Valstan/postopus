@@ -7,11 +7,7 @@ from moduls.utils.clear_copy_history import clear_copy_history
 
 
 def aprel(prefix_base):
-
     base = getjson(bases + prefix_base + fbase)
-
-    if 'aprel_links' not in base:
-        base['aprel_links'] = []
 
     vkapp = get_session_vk_api(base['id']['l'], base['id']['p'])
     aprel_id = -144647350
@@ -40,4 +36,4 @@ def aprel(prefix_base):
 
 
 if __name__ == '__main__':
-    aprel('t')
+    pass

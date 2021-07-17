@@ -1,3 +1,4 @@
+from config import size_base_old_posts
 from moduls.read_write.post_msg import post_msg
 
 
@@ -14,6 +15,8 @@ def postbezfoto(vkapp, base):
                  '')
 
         base['all_bezfoto'].extend(base['bezfoto'])
+        while len(base['all_bezfoto']) > size_base_old_posts:
+            del base['all_bezfoto'][0]
         base['bezfoto'].clear()
     return base
 
