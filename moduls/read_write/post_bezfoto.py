@@ -3,7 +3,7 @@ from moduls.read_write.post_msg import post_msg
 
 
 def postbezfoto(vkapp, base):
-    if base['bezfoto']:
+    if len(base['bezfoto']) > 10:
         message = ''
         for sample in base['bezfoto']:
             message += ''.join(map(str, ('\n', sample)))
@@ -18,7 +18,8 @@ def postbezfoto(vkapp, base):
         while len(base['all_bezfoto']) > size_base_old_posts:
             del base['all_bezfoto'][0]
         base['bezfoto'].clear()
-    return base
+        return base
+    return False
 
 
 if __name__ == '__main__':

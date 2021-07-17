@@ -13,8 +13,10 @@ def main_program(name_novost, prefix_base):
     vkapp = get_session_vk_api(base['id']['l'], base['id']['p'])
     if name_novost == 'bezfoto':
         base = postbezfoto(vkapp, base)
-        writejson(bases + base['prefix'] + fbase, base)
-        return True
+        if base:
+            writejson(bases + base['prefix'] + fbase, base)
+            return True
+        return False
     else:
         base, msg_list = parser(vkapp, base, name_novost)
     if msg_list:
