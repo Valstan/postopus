@@ -4,7 +4,7 @@ from moduls.read_write.get_json import getjson
 # Не забудь указать префикс базы данных вручную
 from moduls.read_write.write_json import writejson
 
-base = getjson(bases + 'm' + fbase)
+base = getjson(bases + 'd' + fbase)
 
 # if 'aprel_links' not in base:
 #    base['aprel_links'] = []
@@ -16,4 +16,4 @@ if 'Первый Малмыжский https://vk.com/malmiz' not in base['id']['
 if 'Кинотеатр Апрель https://vk.com/kinozal_aprel' in base['id']['novost']:
     del base['id']['novost']['Кинотеатр Апрель https://vk.com/kinozal_aprel']
 
-writejson(bases + 'm' + fbase, base)
+writejson(bases + 'd' + fbase, base)
