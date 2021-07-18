@@ -6,8 +6,9 @@ def postbezfoto(vkapp, base):
     if len(base['bezfoto']) > 10:
         message = ''
         for sample in base['bezfoto']:
-            message += ''.join(map(str, ('\n', sample)))
+            message += ''.join(map(str, (sample, '\n')))
         postmsg = ''.join(map(str, (base['heshteg']['bezfoto'], message)))
+        postmsg = postmsg[:-1]
 
         post_msg(vkapp,
                  base['id']['post_group']['key'],
