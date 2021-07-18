@@ -24,10 +24,10 @@ def ruletka(prefix_base):
                     break
             old_ruletka = shut
     elif prefix_base == 'r':
-        while True:
+        for i in range(20):
             if reklama('m'):
                 break
-        while True:
+        for i in range(20):
             if reklama('d'):
                 break
     elif prefix_base == 'main':

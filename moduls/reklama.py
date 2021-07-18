@@ -19,9 +19,9 @@ def reklama(prefix_base):
                dvorniki]
     random.shuffle(ruletka)
     shut = random.choice(ruletka)
-    ruletka = get_msg(vkapp, shut, 0, 100)
+    ruletka = get_msg(vkapp, shut, 0, 50)
     random.shuffle(ruletka)
-    while True:
+    for i in range(20):
         shut = random.choice(ruletka)
         shut = clear_copy_history(shut)
         shut = ''.join(map(str, ('wall', shut['owner_id'], '_', shut['id'])))
