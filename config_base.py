@@ -12,8 +12,7 @@ base["heshteg"] = {
     "novost": "\n#НовостиМалмыжа",
     "krugozor": "\n#Кругозор",
     "music": "\n#Музыка",
-    "reklama": "\n#ОбъявленияМалмыж",
-    "bezfoto": "\n#ОбъявленияМалмыж"
+    "reklama": "\n#ОбъявленияМалмыж"
   },
 
 base['zagolovok'] = {

@@ -6,7 +6,7 @@ def postbezfoto(vkapp, base):
     message = ''
     for sample in base['bezfoto']:
         message += ''.join(map(str, (sample, '\n')))
-    postmsg = ''.join(map(str, (base['zagolovok']['bezfoto'], message)))
+    postmsg = ''.join(map(str, (base['zagolovok']['bezfoto'], message, base['heshteg']['reklama'])))
     postmsg = postmsg[:-1]
 
     post_msg(vkapp,
