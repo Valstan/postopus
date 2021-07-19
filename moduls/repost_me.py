@@ -1,3 +1,4 @@
+from bases.logpass import login, password
 from config import bases, fbase
 from moduls.read_write.get_msg import get_msg
 from moduls.read_write.get_session_vk_api import get_session_vk_api
@@ -7,7 +8,7 @@ from moduls.read_write.write_json import writejson
 
 def post_me():
     base = getjson(bases + 'post_me_' + fbase)
-    vkapp = get_session_vk_api(base['l'], base['p'])
+    vkapp = get_session_vk_api(login['valstan'], password['valstan'])
     new_posts = get_msg(vkapp, base['read_group'], 10, 10)
     sample_template_repost = ''
     for sample in new_posts:

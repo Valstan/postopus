@@ -1,5 +1,6 @@
 import random
 
+from bases.logpass import login, password
 from config import bases, fbase
 from moduls.read_write.get_json import getjson
 from moduls.read_write.get_msg import get_msg
@@ -10,7 +11,7 @@ from moduls.utils.clear_copy_history import clear_copy_history
 
 def reklama(prefix_base):
     base = getjson(bases + prefix_base + fbase)
-    vkapp = get_session_vk_api(base['id']['l'], base['id']['p'])
+    vkapp = get_session_vk_api(login[prefix_base], password[prefix_base])
     glav = -163580976
     zam = -172650802
     dvorniki = -171276826
