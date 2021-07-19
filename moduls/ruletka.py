@@ -2,15 +2,21 @@ import random
 
 from config import bases, fbase
 from moduls.aprel import aprel
+from moduls.read_write.post_bezfoto import postbezfoto
+from moduls.read_write.write_json import writejson
 from moduls.repost_me import post_me
 from moduls.read_write.get_json import getjson
 from moduls.main_program import main_program
 from moduls.reklama import reklama
+from test import vkapp
 
 
 def ruletka(prefix_base):
     if prefix_base == 'm' or prefix_base == 'd' or prefix_base == 't':
         base = getjson(bases + prefix_base + fbase)
+        if len(base['bezfoto']) > 10:
+            base = postbezfoto(vkapp, base)
+            writejson(bases + base['prefix'] + fbase, base)
         old_ruletka = ''
         cartridge = []
         for name in base['ruletka']:
