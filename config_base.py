@@ -4,18 +4,13 @@ from moduls.read_write.get_json import getjson
 # Не забудь указать префикс базы данных вручную
 from moduls.read_write.write_json import writejson
 
-base = getjson(bases + 'd' + fbase)
+base = getjson(bases + 'm' + fbase)
 
-base['zagolovok'] = {
-    "art": "",
-    "prikol": "",
-    "novost": "",
-    "krugozor": "",
-    "music": "",
-    "reklama": "",
-    "bezfoto": ""
-  }
-writejson(bases + 'd' + fbase, base)
+if 'aprel_links' not in base:
+    base['aprel_links'] = []
+
+
+writejson(bases + 'm' + fbase, base)
 
 # if 'aprel_links' not in base:
 #    base['aprel_links'] = []
@@ -30,3 +25,12 @@ writejson(bases + 'd' + fbase, base)
 
 # base['ruletka']['bezfoto'] = 5
 
+# base['zagolovok'] = {
+#    "art": "",
+#    "prikol": "",
+#    "novost": "",
+#    "krugozor": "",
+#    "music": "",
+#    "reklama": "",
+#    "bezfoto": ""
+#  }
