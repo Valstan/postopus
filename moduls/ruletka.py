@@ -12,7 +12,7 @@ from moduls.main_program import main_program
 from moduls.reklama import reklama
 
 
-def ruletka(prefix_base):
+def ruletka(prefix_base, prefix_time_of_day):
     vkapp = get_session_vk_api(login[prefix_base], password[prefix_base])
     if prefix_base == 'm' or prefix_base == 'd' or prefix_base == 't':
         base = getjson(bases + prefix_base + fbase)
@@ -21,8 +21,8 @@ def ruletka(prefix_base):
             writejson(bases + base['prefix'] + fbase, base)
         old_ruletka = ''
         cartridge = []
-        for name in base['ruletka']:
-            for patron in range(base['ruletka'][name]):
+        for name in base['ruletka'][prefix_time_of_day]:
+            for patron in range(base['ruletka'][prefix_time_of_day][name]):
                 cartridge.append(name)
         for sample in range(5):
             random.shuffle(cartridge)

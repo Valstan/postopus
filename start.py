@@ -2,7 +2,9 @@ from sys import argv
 
 from moduls.ruletka import ruletka
 
-if len(argv) > 1:
-    ruletka(argv[1])
+if len(argv) > 2 and (argv[2] == '1' or argv[2] == '2'):
+    ruletka(argv[1], argv[2])
+elif len(argv) == 2:
+    ruletka(argv[1], None)
 else:
-    ruletka(input('Введите имя базы парсера (m, d, t) - '))
+    ruletka('d', '1')
