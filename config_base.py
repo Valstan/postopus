@@ -6,10 +6,9 @@ from moduls.read_write.write_json import writejson
 
 base = getjson(bases + 'm' + fbase)
 
-if 'Культура,молодежная политика и спорт г. Малмыж https://vk.com/public165382241' not in base['id']['novost']:
-    base['id']['novost']['Культура,молодежная политика и спорт г. Малмыж https://vk.com/public165382241'] = -165382241
-if 'Рисуем всё! https://vk.com/club180402410' in base['id']['novost']:
-    del base['id']['novost']['Рисуем всё! https://vk.com/club180402410']
+if 'aprel_links' not in base:
+    base['aprel_links'] = []
+
 
 writejson(bases + 'm' + fbase, base)
 
