@@ -13,7 +13,7 @@ def postbezfoto(vkapp, base):
     post_msg(vkapp,
              base['id']['post_group']['key'],
              postmsg,
-             '')
+             'photo-158787639_457242313')
 
     base['all_bezfoto'].extend(base['bezfoto'][:9])
     while len(base['all_bezfoto']) > size_base_old_posts:
