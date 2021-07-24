@@ -36,7 +36,7 @@ def parser(vkapp, base, name_novost):
         if not sample: continue
         sample['text'] = ''.join(map(str, (base['zagolovok'][name_novost], avtortut(sample),
                                            base['heshteg'][name_novost],
-                                           '\nНажмите лайк &#128077; и поделитесь новостью с друзьями &#128071;')))
+                                           '\nНажми лайк &#10084;&#65039; и поделись новостью с друзьями &#128071;')))
         sample = sort_double(sample, news_msg_list, maingroup_msg_list, base)
         if not sample: continue
         news_msg_list.append(sample)
