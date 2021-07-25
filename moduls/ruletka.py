@@ -16,7 +16,7 @@ def ruletka(prefix_base, prefix_time_of_day):
     vkapp = get_session_vk_api(login[prefix_base], password[prefix_base])
     if prefix_base == 'm' or prefix_base == 'd' or prefix_base == 't':
         base = getjson(bases + prefix_base + fbase)
-        if len(base['bezfoto']) > 10:
+        if len(base['bezfoto']) > 9:
             base = postbezfoto(vkapp, base)
             writejson(bases + base['prefix'] + fbase, base)
         old_ruletka = ''

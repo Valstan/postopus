@@ -6,9 +6,16 @@ from moduls.read_write.write_json import writejson
 
 base = getjson(bases + 'm' + fbase)
 
-if 'aprel_links' not in base:
-    base['aprel_links'] = []
-
+base['links']['krugozor'] = []
+base['links']['aprel'] = base['aprel_links']
+del base['aprel_links']
+base['links']['reklama'] = base['shut_reklama']
+del base['shut_reklama']
+base['podpisi']['zagolovok'] = base['zagolovok']
+del base['zagolovok']
+base['podpisi']['heshteg'] = base['heshteg']
+del base['heshteg']
+base['podpisi']['final'] = '\nНажми лайк &#10084;&#65039; и поделись новостью с друзьями &#128071;'
 
 writejson(bases + 'm' + fbase, base)
 

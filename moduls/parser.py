@@ -34,9 +34,8 @@ def parser(vkapp, base, name_novost):
             continue
         sample, histo = sort_po_foto(sample, base)
         if not sample: continue
-        sample['text'] = ''.join(map(str, (base['zagolovok'][name_novost], avtortut(sample),
-                                           base['heshteg'][name_novost],
-                                           '\nНажми лайк &#10084;&#65039; и поделись новостью с друзьями &#128071;')))
+        sample['text'] = ''.join(map(str, (base['podpisi']['zagolovok'][name_novost], avtortut(sample),
+                                           base['podpisi']['heshteg'][name_novost], base['podpisi']['final'])))
         sample = sort_double(sample, news_msg_list, maingroup_msg_list, base)
         if not sample: continue
         news_msg_list.append(sample)

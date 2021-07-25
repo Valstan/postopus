@@ -18,16 +18,16 @@ def aprel(prefix_base):
     for msg in msgs:
         msg = clear_copy_history(msg)
         msg_link = ''.join(map(str, ('wall', msg['owner_id'], '_', msg['id'])))
-        if msg_link not in base['aprel_links']:
+        if msg_link not in base['links']['aprel']:
             break
 
     if msg_link:
         id_group = base['id']['post_group']['key'] * -1
         try:
             vkapp.wall.repost(object=msg_link, group_id=id_group)
-            base['aprel_links'].append(msg_link)
-            while len(base['aprel_links']) > 5:
-                del base['aprel_links'][0]
+            base['links']['aprel'].append(msg_link)
+            while len(base['links']['aprel']) > 5:
+                del base['links']['aprel'][0]
             writejson(bases + base['prefix'] + fbase, base)
             return True
         except:

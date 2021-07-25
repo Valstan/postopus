@@ -5,20 +5,20 @@ from moduls.read_write.post_msg import post_msg
 def postbezfoto(vkapp, base):
     message = ''
 
-    for sample in base['bezfoto'][:9]:
+    for sample in base['bezfoto'][:10]:
         message += ''.join(map(str, (sample, '\n')))
-    postmsg = ''.join(map(str, (base['zagolovok']['bezfoto'], message, base['heshteg']['reklama'],
-                                '\nНажми лайк &#10084;&#65039; и поделись новостью с друзьями &#128071;')))
+    postmsg = ''.join(map(str, (base['podpisi']['zagolovok']['bezfoto'], message,
+                                base['podpisi']['heshteg']['reklama'], base['podpisi']['final'])))
 
     post_msg(vkapp,
              base['id']['post_group']['key'],
              postmsg,
              'photo-158787639_457242313')
 
-    base['all_bezfoto'].extend(base['bezfoto'][:9])
+    base['all_bezfoto'].extend(base['bezfoto'][:10])
     while len(base['all_bezfoto']) > size_base_old_posts:
         del base['all_bezfoto'][0]
-    del base['bezfoto'][:9]
+    del base['bezfoto'][:10]
     return base
 
 

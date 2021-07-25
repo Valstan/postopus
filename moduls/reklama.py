@@ -26,15 +26,15 @@ def reklama(prefix_base):
         shut = random.choice(ruletka)
         shut = clear_copy_history(shut)
         shut = ''.join(map(str, ('wall', shut['owner_id'], '_', shut['id'])))
-        if shut not in base['shut_reklama']:
+        if shut not in base['links']['reklama']:
             break
 
     id_group = base['id']['post_group']['key'] * -1
     try:
         vkapp.wall.repost(object=shut, group_id=id_group)
-        base['shut_reklama'].append(shut)
-        while len(base['shut_reklama']) > 20:
-            del base['shut_reklama'][0]
+        base['links']['reklama'].append(shut)
+        while len(base['links']['reklama']) > 20:
+            del base['links']['reklama'][0]
         writejson(bases + base['prefix'] + fbase, base)
         return True
     except:

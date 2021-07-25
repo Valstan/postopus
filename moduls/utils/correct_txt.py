@@ -6,6 +6,10 @@ def correct_txt(msg):
         msg['text'] = msg['text'].replace(i, '')
     for i in range(6):
         msg['text'] = msg['text'].strip(delete_bad_simbol)
+    for i in delete_word:
+        msg['text'] = msg['text'].replace(i, '')
+    for i in range(6):
+        msg['text'] = msg['text'].strip(delete_bad_simbol)
 
     return msg
 
