@@ -6,6 +6,7 @@ from moduls.read_write.write_json import writejson
 
 base = getjson(bases + 'm' + fbase)
 
+base['links'] = {}
 base['links']['krugozor'] = []
 base['links']['aprel'] = base['aprel_links']
 del base['aprel_links']
