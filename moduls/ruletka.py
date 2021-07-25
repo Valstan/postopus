@@ -3,6 +3,7 @@ import random
 from bases.logpass import login, password
 from config import bases, fbase
 from moduls.aprel import aprel
+from moduls.krugozor import krugozor
 from moduls.read_write.get_session_vk_api import get_session_vk_api
 from moduls.read_write.post_bezfoto import postbezfoto
 from moduls.read_write.write_json import writejson
@@ -43,6 +44,9 @@ def ruletka(prefix_base, prefix_time_of_day):
     elif prefix_base == 'a':
         aprel('m')
         aprel('d')
+    elif prefix_base == 'krugozor':
+        krugozor('m')
+        krugozor('d')
     else:
         print('Базы с таким именем нет')
 
