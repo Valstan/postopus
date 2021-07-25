@@ -12,6 +12,7 @@ base['links']['aprel'] = base['aprel_links']
 del base['aprel_links']
 base['links']['reklama'] = base['shut_reklama']
 del base['shut_reklama']
+base['podpisi'] = {}
 base['podpisi']['zagolovok'] = base['zagolovok']
 del base['zagolovok']
 base['podpisi']['heshteg'] = base['heshteg']
