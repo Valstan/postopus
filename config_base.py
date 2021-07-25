@@ -4,7 +4,7 @@ from moduls.read_write.get_json import getjson
 # Не забудь указать префикс базы данных вручную
 from moduls.read_write.write_json import writejson
 
-base = getjson(bases + 'm' + fbase)
+base = getjson(bases + 'd' + fbase)
 
 base['links'] = {}
 base['links']['krugozor'] = []
@@ -19,7 +19,7 @@ base['podpisi']['heshteg'] = base['heshteg']
 del base['heshteg']
 base['podpisi']['final'] = '\nНажми лайк &#10084;&#65039; и поделись новостью с друзьями &#128071;'
 
-writejson(bases + 'm' + fbase, base)
+writejson(bases + 'd' + fbase, base)
 
 # if 'aprel_links' not in base:
 #    base['aprel_links'] = []
