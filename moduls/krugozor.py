@@ -1,5 +1,5 @@
 from bases.logpass import login, password
-from config import bases, fbase
+from config import bases, fbase, conf
 from moduls.read_write.get_json import getjson
 from moduls.read_write.get_msg import get_msg
 from moduls.read_write.get_session_vk_api import get_session_vk_api
@@ -17,8 +17,10 @@ def krugozor(prefix_base):
         sample = clear_copy_history(sample)
         link = ''.join(map(str, ('wall', sample['owner_id'], '_', sample['id'])))
         if link not in base['links']['krugozor']:
-            sample['text'] = ''.join(map(str, (base['podpisi']['zagolovok']['krugozor'], avtortut(sample),
-                                               base['podpisi']['heshteg']['krugozor'], base['podpisi']['final'])))
+            sample['text'] = ''.join(map(str, (conf[base['prefix']]['podpisi']['zagolovok']['krugozor'],
+                                               avtortut(sample),
+                                               conf[base['prefix']]['podpisi']['heshteg']['krugozor'],
+                                               conf[base['prefix']]['podpisi']['final'])))
             if upload_post_to_main_group(vkapp, sample, base):
                 base['links']['krugozor'].append(link)
                 while len(base['links']['krugozor']) > 50:

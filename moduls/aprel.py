@@ -1,5 +1,5 @@
 from bases.logpass import login, password
-from config import bases, fbase
+from config import bases, fbase, conf
 from moduls.read_write.get_json import getjson
 from moduls.read_write.get_msg import get_msg
 from moduls.read_write.get_session_vk_api import get_session_vk_api
@@ -22,7 +22,7 @@ def aprel(prefix_base):
             break
 
     if msg_link:
-        id_group = base['id']['post_group']['key'] * -1
+        id_group = conf[base['prefix']]['post_group']['key'] * -1
         try:
             vkapp.wall.repost(object=msg_link, group_id=id_group)
             base['links']['aprel'].append(msg_link)

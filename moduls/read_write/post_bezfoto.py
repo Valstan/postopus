@@ -1,4 +1,4 @@
-from config import size_base_old_posts
+from config import size_base_old_posts, conf
 from moduls.read_write.post_msg import post_msg
 
 
@@ -7,13 +7,15 @@ def postbezfoto(vkapp, base):
 
     for sample in base['bezfoto'][:10]:
         message += ''.join(map(str, (sample, '\n')))
-    postmsg = ''.join(map(str, (base['podpisi']['zagolovok']['bezfoto'], message,
-                                base['podpisi']['heshteg']['reklama'], base['podpisi']['final'])))
+    postmsg = ''.join(map(str, (conf[base['prefix']]['podpisi']['zagolovok']['bezfoto'],
+                                message,
+                                conf[base['prefix']]['podpisi']['heshteg']['reklama'],
+                                conf[base['prefix']]['podpisi']['final'])))
 
     post_msg(vkapp,
-             base['id']['post_group']['key'],
+             conf[base['prefix']]['post_group']['key'],
              postmsg,
-             'photo-158787639_457242342')
+             conf[base['prefix']]['podpisi']['image_desatka'])
 
     base['all_bezfoto'].extend(base['bezfoto'][:10])
     while len(base['all_bezfoto']) > size_base_old_posts:
