@@ -21,7 +21,7 @@ def ruletka(prefix_base, prefix_novost):
         if len(base['bezfoto']) > 9:
             base = postbezfoto(vkapp, base)
             writejson(bases + base['prefix'] + fbase, base)
-        if prefix_novost == 'reklama' or prefix_novost == 'novost':
+        if prefix_novost in keys['reklama'] or prefix_novost in keys['novost']:
             for i in range(5):
                 if main_program(vkapp, prefix_novost, prefix_base):
                     break
