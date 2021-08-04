@@ -2,11 +2,12 @@ import os
 import shutil
 
 from PIL import Image, ImageDraw, ImageFont
+from bases.logpass import insta_mi_l, insta_mi_p
 from instabot import Bot
 
-from bases.logpass import insta_mi_l, insta_mi_p
+from config import insta_photo_path
 
-dir_clear = ('config', 'out')
+dir_clear = ('config', insta_photo_path)
 
 for i in dir_clear:
     for filename in os.listdir(i):
@@ -24,7 +25,7 @@ caption = "🔔Продам скоростной велосипед. Цена 11
           " -> https://vk.com/wall-149841761_78984 #ОбъявленияМалмыж Нажми лайк ❤ и поделись новостью с друзьями 👇"
 
 
-photo = 'in/1.jpg'
+photo = insta_photo_path + '1.jpg'
 im = Image.new('RGB', (1080, 1080), color='white')
 
 tatras = Image.open(photo)
@@ -47,11 +48,11 @@ draw_text = ImageDraw.Draw(im)
 font = ImageFont.truetype("arial.ttf", size=18)
 draw_text.text((10, 10), 'Малмыж Инфо', font=font)
 
-im.save('out/1.jpeg')
+im.save(insta_photo_path + '1.jpeg')
 
 
 bot = Bot()
 bot.login(username=insta_mi_l, password=insta_mi_p)
 
 #  upload a picture
-bot.upload_photo('out/1.jpeg', caption=caption)
+bot.upload_photo(insta_photo_path + '1.jpeg', caption=caption)
