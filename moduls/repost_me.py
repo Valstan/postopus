@@ -14,7 +14,7 @@ def post_me():
     for sample in new_posts:
         sample_template_repost = ''.join(map(str, ('wall', sample['owner_id'], '_', sample['id'])))
         if sample_template_repost not in base['template_repost']:
-            if '#ОбъявленияМалмыж' not in sample['text']:
+            if '#ОбъявленияМалмыж' not in sample['text'] and '#Музыка' not in sample['text']:
                 break
         sample_template_repost = ''
     if sample_template_repost:
