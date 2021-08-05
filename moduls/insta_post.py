@@ -1,6 +1,3 @@
-import os
-import shutil
-
 from PIL import Image, ImageDraw, ImageFont
 from bases.logpass import insta_mi_l, insta_mi_p, login, password
 from instabot import Bot
@@ -21,7 +18,7 @@ def insta_post(prefix_base):
     base = getjson(bases + prefix_base + fbase)
     if 'instagram' not in base['links']:
         base['links']['instagram'] = []
-    vkapp = get_session_vk_api(login['valstan'], password['valstan'])
+    vkapp = get_session_vk_api(login['insta_mi_l'], password['insta_mi_p'])
     new_posts = get_msg(vkapp, conf['m']['post_group']['key'], 10, 10)
     sample_template_repost = ''
     sample = {}
