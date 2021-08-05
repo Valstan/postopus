@@ -287,8 +287,7 @@ conf = {
             "Время - вперёд! Только хорошие новости! https://vk.com/rossiya_segodnya": -65614662,
             "SciTopus Популяризируем популяризаторов https://vk.com/scitopus": -112289703,
             "НауЧпок Разные штуки по науке https://vk.com/nowchpok": -73083424,
-            "The Batrachospermum Magazine журнальчик-водоросль https://vk.com/batrachospermum": -85330,
-            "Паблик Шарифова https://vk.com/artmath": -117383696
+            "The Batrachospermum Magazine журнальчик-водоросль https://vk.com/batrachospermum": -85330
         },
         "music": {
             "МУЗЫКА. МОТОР! Русские видеоклипы https://vk.com/russianmusicvideo": -37343149,
