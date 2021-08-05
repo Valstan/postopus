@@ -16,8 +16,8 @@ from moduls.repost_me import post_me
 
 
 def ruletka(prefix_base, prefix_novost):
-    vkapp = get_session_vk_api(login[prefix_base], password[prefix_base])
     if prefix_base in keys['standart']:
+        vkapp = get_session_vk_api(login[prefix_base], password[prefix_base])
         base = getjson(bases + prefix_base + fbase)
         if len(base['bezfoto']) > 9:
             base = postbezfoto(vkapp, base)
