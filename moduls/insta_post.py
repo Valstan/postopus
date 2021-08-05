@@ -1,5 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont
-from bases.logpass import insta_mi_l, insta_mi_p
+from bases.logpass import insta_mi_l, insta_mi_p, valstan_l, valstan_p
 from instabot import Bot
 
 from config import insta_photo_path, bases, fbase, conf
@@ -18,7 +18,7 @@ def insta_post(prefix_base):
     base = getjson(bases + prefix_base + fbase)
     if 'instagram' not in base['links']:
         base['links']['instagram'] = []
-    vkapp = get_session_vk_api(insta_mi_l, insta_mi_p)
+    vkapp = get_session_vk_api(valstan_l, valstan_p)
     new_posts = get_msg(vkapp, conf['m']['post_group']['key'], 10, 10)
     sample_template_repost = ''
     sample = {}
