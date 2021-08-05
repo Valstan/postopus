@@ -4,6 +4,7 @@ from bases.logpass import login, password
 
 from config import bases, fbase, baraban, keys
 from moduls.aprel import aprel
+from moduls.insta_post import insta_post
 from moduls.krugozor import krugozor
 from moduls.main_program import main_program
 from moduls.read_write.get_json import getjson
@@ -49,6 +50,8 @@ def ruletka(prefix_base, prefix_novost):
     elif prefix_base in keys['krugozor']:
         krugozor('m')
         krugozor('d')
+    elif prefix_base in keys['insta']:
+        insta_post('m')
     else:
         print('Базы с таким именем нет')
 

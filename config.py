@@ -8,7 +8,8 @@ keys = {
     "novost": "novost",
     "krugozor": 'krugozor',
     "aprel": 'aprel',
-    "post_me": 'main'
+    "post_me": 'main',
+    "insta": 'insta'
 }
 
 size_base_old_posts = 500  # количество
