@@ -52,9 +52,10 @@ def insta_post(prefix_base):
             tatras = tatras.resize((new_width, new_height), Image.ANTIALIAS)
 
         width, height = tatras.size
-        koordinat = int((1080 - width) / 2)
+        gorizont = int((1080 - width) / 2)
+        vertikal = int((1080 - height) / 2)
 
-        im.paste(tatras, (koordinat, 0))
+        im.paste(tatras, (gorizont, vertikal))
 
         draw_text = ImageDraw.Draw(im)
         font = ImageFont.truetype("georgia.ttf", size=20)
