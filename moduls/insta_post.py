@@ -47,7 +47,7 @@ def insta_post(prefix_base):
         tatras = tatras.resize((new_width, new_height), Image.ANTIALIAS)
         width, height = tatras.size
         if width > 1080:
-            new_width = 680  # ширина
+            new_width = 1080  # ширина
             new_height = int(new_width * height / width)
             tatras = tatras.resize((new_width, new_height), Image.ANTIALIAS)
 
@@ -57,7 +57,7 @@ def insta_post(prefix_base):
         im.paste(tatras, (koordinat, 0))
 
         draw_text = ImageDraw.Draw(im)
-        font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=18)
+        font = ImageFont.truetype("georgia.ttf", size=20)
         draw_text.text((10, 10), 'Малмыж Инфо', font=font)
 
         im.save(insta_photo_path + '1.jpeg')
