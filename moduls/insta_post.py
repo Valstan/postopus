@@ -20,7 +20,7 @@ def insta_post(prefix_base):
     if 'instagram' not in base['links']:
         base['links']['instagram'] = []
     vkapp = get_session_vk_api(valstan_l, valstan_p)
-    new_posts = get_msg(vkapp, conf['m']['post_group']['key'], 10, 10)
+    new_posts = get_msg(vkapp, conf['m']['post_group']['key'], 0, 20)
     sample_template = ''
     sample = {}
     for sample in new_posts:
@@ -30,7 +30,7 @@ def insta_post(prefix_base):
                     conf['m']['podpisi']['heshteg']['music'] not in sample['text']:
                 break
         sample_template = ''
-    sample = clear_copy_history(sample_template)
+    sample = clear_copy_history(sample)
     if sample_template and\
             image_get(sample['attachments'][0]['photo']['sizes'][-1]['url'], insta_photo_path + '1.jpg'):
 
