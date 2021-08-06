@@ -53,7 +53,11 @@ def insta_post(prefix_base):
 
         width, height = tatras.size
         gorizont = int((1080 - width) / 2)
+        if gorizont < 1:
+            gorizont = 0
         vertikal = int((1080 - height) / 2)
+        if vertikal < 1:
+            vertikal = 0
 
         im.paste(tatras, (gorizont, vertikal))
 
