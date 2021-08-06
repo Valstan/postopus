@@ -1,4 +1,6 @@
-from PIL import Image, ImageDraw, ImageFont
+from PIL.Image import Image
+from PIL.ImageDraw import ImageDraw
+from PIL.ImageFont import ImageFont
 from bases.logpass import insta_mi_l, insta_mi_p, valstan_l, valstan_p
 from instabot import Bot
 
@@ -38,6 +40,7 @@ def insta_post(prefix_base):
             image_get(sample_clear['attachments'][0]['photo']['sizes'][-1]['url'], insta_photo_path + '1.jpg'):
 
         photo = insta_photo_path + '1.jpg'
+
         im = Image.new('RGB', (1080, 1080), color='white')
 
         tatras = Image.open(photo)
