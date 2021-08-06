@@ -51,10 +51,9 @@ def insta_post(prefix_base):
 
         im.paste(tatras, (koordinat, 0))
 
-        draw_text = ImageDraw.Draw(im)
+#        draw_text = ImageDraw.Draw(im)
 #        font = ImageFont.truetype("arial.ttf", size=18)
-        font = ImageFont.load_default()
-        draw_text.text((10, 10), 'Малмыж Инфо', font=font)
+#        draw_text.text((10, 10), 'Малмыж Инфо', font=font)
 
         im.save(insta_photo_path + '1.jpeg')
         try:
