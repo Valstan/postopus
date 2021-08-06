@@ -8,6 +8,7 @@ from moduls.read_write.get_json import getjson
 from moduls.read_write.get_msg import get_msg
 from moduls.read_write.get_session_vk_api import get_session_vk_api
 from moduls.read_write.write_json import writejson
+from moduls.utils.clear_copy_history import clear_copy_history
 from moduls.utils.clear_dir import clear_dir
 
 
@@ -20,16 +21,17 @@ def insta_post(prefix_base):
         base['links']['instagram'] = []
     vkapp = get_session_vk_api(valstan_l, valstan_p)
     new_posts = get_msg(vkapp, conf['m']['post_group']['key'], 10, 10)
-    sample_template_repost = ''
+    sample_template = ''
     sample = {}
     for sample in new_posts:
-        sample_template_repost = ''.join(map(str, ('wall', sample['owner_id'], '_', sample['id'])))
-        if sample_template_repost not in base['links']['instagram'] and sample['attachments'][0]['type'] == 'photo':
+        sample_template = ''.join(map(str, ('wall', sample['owner_id'], '_', sample['id'])))
+        if sample_template not in base['links']['instagram'] and sample['attachments'][0]['type'] == 'photo':
             if conf['m']['podpisi']['heshteg']['reklama'] not in sample['text'] and \
                     conf['m']['podpisi']['heshteg']['music'] not in sample['text']:
                 break
-        sample_template_repost = ''
-    if sample_template_repost and\
+        sample_template = ''
+    sample_template = clear_copy_history(sample_template)
+    if sample_template and\
             image_get(sample['attachments'][0]['photo']['sizes'][-1]['url'], insta_photo_path + '1.jpg'):
 
         photo = insta_photo_path + '1.jpg'
@@ -65,7 +67,7 @@ def insta_post(prefix_base):
         except:
             pass
 
-    base['links']['instagram'].append(sample_template_repost)
+    base['links']['instagram'].append(sample_template)
     while len(base['links']['instagram']) > 30:
         del base['links']['instagram'][0]
     writejson(bases + 'm' + fbase, base)
