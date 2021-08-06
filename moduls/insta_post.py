@@ -26,12 +26,13 @@ def insta_post(prefix_base):
     sample_clear = {}
     for sample in new_posts:
         sample_clear = clear_copy_history(sample)
-        if 'attachments' in sample_clear and 'photo' in sample_clear:
-            sample_template = ''.join(map(str, ('wall', sample['owner_id'], '_', sample['id'])))
-            if sample_template not in base['links']['instagram'] and sample['attachments'][0]['type'] == 'photo':
-                if conf['m']['podpisi']['heshteg']['reklama'] not in sample['text'] and \
-                        conf['m']['podpisi']['heshteg']['music'] not in sample['text']:
-                    break
+        if 'attachments' in sample_clear:
+            if sample_clear['attachments']['0']['type'] == 'photo':
+                sample_template = ''.join(map(str, ('wall', sample['owner_id'], '_', sample['id'])))
+                if sample_template not in base['links']['instagram'] and sample['attachments'][0]['type'] == 'photo':
+                    if conf['m']['podpisi']['heshteg']['reklama'] not in sample['text'] and \
+                            conf['m']['podpisi']['heshteg']['music'] not in sample['text']:
+                        break
         sample_template = ''
     if sample_template and \
             image_get(sample_clear['attachments'][0]['photo']['sizes'][-1]['url'], insta_photo_path + '1.jpg'):
