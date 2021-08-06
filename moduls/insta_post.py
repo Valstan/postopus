@@ -27,10 +27,9 @@ def insta_post(prefix_base):
     for sample in new_posts:
         sample_clear = clear_copy_history(sample)
         if 'attachments' in sample_clear:
-            if 'photo' in sample_clear['attachments']['0']['type']:
+            if sample_clear['attachments'][0]['type'] == 'photo':
                 sample_template = ''.join(map(str, ('wall', sample['owner_id'], '_', sample['id'])))
-                if sample_template not in base['links']['instagram']\
-                        and sample_clear['attachments'][0]['type'] == 'photo':
+                if sample_template not in base['links']['instagram']:
                     if conf['m']['podpisi']['heshteg']['reklama'] not in sample['text'] and \
                             conf['m']['podpisi']['heshteg']['music'] not in sample['text']:
                         break
