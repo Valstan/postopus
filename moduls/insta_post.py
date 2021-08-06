@@ -29,7 +29,8 @@ def insta_post(prefix_base):
         if 'attachments' in sample_clear:
             if 'photo' in sample_clear['attachments']['0']['type']:
                 sample_template = ''.join(map(str, ('wall', sample['owner_id'], '_', sample['id'])))
-                if sample_template not in base['links']['instagram'] and sample['attachments'][0]['type'] == 'photo':
+                if sample_template not in base['links']['instagram']\
+                        and sample_clear['attachments'][0]['type'] == 'photo':
                     if conf['m']['podpisi']['heshteg']['reklama'] not in sample['text'] and \
                             conf['m']['podpisi']['heshteg']['music'] not in sample['text']:
                         break
@@ -56,9 +57,9 @@ def insta_post(prefix_base):
 
         im.paste(tatras, (koordinat, 0))
 
-        #        draw_text = ImageDraw.Draw(im)
-        #        font = ImageFont.truetype("arial.ttf", size=18)
-        #        draw_text.text((10, 10), 'Малмыж Инфо', font=font)
+        draw_text = ImageDraw.Draw(im)
+        font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=18)
+        draw_text.text((10, 10), 'Малмыж Инфо', font=font)
 
         im.save(insta_photo_path + '1.jpeg')
         try:
