@@ -30,7 +30,7 @@ def insta_post(prefix_base):
                     conf['m']['podpisi']['heshteg']['music'] not in sample['text']:
                 break
         sample_template = ''
-    sample_template = clear_copy_history(sample_template)
+    sample = clear_copy_history(sample_template)
     if sample_template and\
             image_get(sample['attachments'][0]['photo']['sizes'][-1]['url'], insta_photo_path + '1.jpg'):
 
