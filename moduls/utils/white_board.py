@@ -1,4 +1,4 @@
-from PIL.Image import Image
+from PIL import Image
 
 
 def white_board(img, width, height):
@@ -8,4 +8,4 @@ def white_board(img, width, height):
     y = int((white_img.size[1] - img.size[1]) / 2)
 
     white_img.paste(img, (x, y))
-    return img
+    return white_img

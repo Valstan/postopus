@@ -47,7 +47,7 @@ def insta_post(prefix_base):
 
         if image_get(url, insta_photo_path + '1.jpg'):
             img = Image.open(insta_photo_path + '1.jpg')
-            img = resize_img(img, 1080)
+            img = resize_img(img, 1080, 1080)
             img = white_board(img, 1080, 1080)
             img = draw_text(img, 'Малмыж Инфо', 10, 10)
             img.save(insta_photo_path + '1.jpeg')
@@ -65,3 +65,6 @@ def insta_post(prefix_base):
                 del base['links']['instagram'][0]
             writejson(bases + 'm' + fbase, base)
 
+
+if __name__ == '__main__':
+    pass

@@ -13,3 +13,7 @@ def clear_dir(list_dir):
                     shutil.rmtree(file_path)
             except Exception as e:
                 print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+
+if __name__ == '__main__':
+    pass
