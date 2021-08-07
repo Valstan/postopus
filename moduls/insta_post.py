@@ -38,12 +38,14 @@ def insta_post(prefix_base):
                         break
         sample_template = ''
     if sample_template != '':
-        number = 0
+        height = 0
+        url = ''
         for i in sample_clear['attachments'][0]['photo']['sizes']:
-            if i['height'] > number:
-                number = i['height']
+            if i['height'] > height:
+                height = i['height']
+                url = i['url']
 
-        if image_get(sample_clear['attachments'][0]['photo']['sizes'][number]['url'], insta_photo_path + '1.jpg'):
+        if image_get(url, insta_photo_path + '1.jpg'):
             img = Image.open(insta_photo_path + '1.jpg')
             img = resize_img(img, 1080)
             img = white_board(img, 1080, 1080)
