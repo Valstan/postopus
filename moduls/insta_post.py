@@ -1,6 +1,4 @@
-from PIL.Image import Image
-from PIL.ImageDraw import ImageDraw
-from PIL.ImageFont import ImageFont
+from PIL import Image
 from bases.logpass import insta_mi_l, insta_mi_p, valstan_l, valstan_p
 from instabot import Bot
 
@@ -12,6 +10,9 @@ from moduls.read_write.get_session_vk_api import get_session_vk_api
 from moduls.read_write.write_json import writejson
 from moduls.utils.clear_copy_history import clear_copy_history
 from moduls.utils.clear_dir import clear_dir
+from moduls.utils.draw_text import draw_text
+from moduls.utils.resize_img import resize_img
+from moduls.utils.white_board import white_board
 
 
 def insta_post(prefix_base):
@@ -36,49 +37,29 @@ def insta_post(prefix_base):
                             conf['m']['podpisi']['heshteg']['music'] not in sample['text']:
                         break
         sample_template = ''
-    if sample_template and \
-            image_get(sample_clear['attachments'][0]['photo']['sizes'][-1]['url'], insta_photo_path + '1.jpg'):
+    if sample_template != '':
+        number = 0
+        for i in sample_clear['attachments'][0]['photo']['sizes']:
+            if i['height'] > number:
+                number = i['height']
 
-        photo = insta_photo_path + '1.jpg'
+        if image_get(sample_clear['attachments'][0]['photo']['sizes'][number]['url'], insta_photo_path + '1.jpg'):
+            img = Image.open(insta_photo_path + '1.jpg')
+            img = resize_img(img, 1080)
+            img = white_board(img, 1080, 1080)
+            img = draw_text(img, 'Малмыж Инфо', 10, 10)
+            img.save(insta_photo_path + '1.jpeg')
 
-        im = Image.new('RGB', (1080, 1080), color='white')
+            try:
+                bot = Bot()
+                bot.login(username=insta_mi_l, password=insta_mi_p)
 
-        tatras = Image.open(photo)
-        width, height = tatras.size
-        new_height = 1080  # Высота
-        new_width = int(new_height * width / height)
-        tatras = tatras.resize((new_width, new_height), Image.ANTIALIAS)
-        width, height = tatras.size
-        if width > 1080:
-            new_width = 1080  # ширина
-            new_height = int(new_width * height / width)
-            tatras = tatras.resize((new_width, new_height), Image.ANTIALIAS)
+                #  upload a picture
+                bot.upload_photo(insta_photo_path + '1.jpeg', caption=sample['text'])
+            except:
+                pass
+            base['links']['instagram'].append(sample_template)
+            while len(base['links']['instagram']) > 30:
+                del base['links']['instagram'][0]
+            writejson(bases + 'm' + fbase, base)
 
-        width, height = tatras.size
-        gorizont = int((1080 - width) / 2)
-        if gorizont < 1:
-            gorizont = 0
-        vertikal = int((1080 - height) / 2)
-        if vertikal < 1:
-            vertikal = 0
-
-        im.paste(tatras, (gorizont, vertikal))
-
-        draw_text = ImageDraw.Draw(im)
-        font = ImageFont.truetype("georgia.ttf", size=20)
-        draw_text.text((10, 10), 'Малмыж Инфо', font=font)
-
-        im.save(insta_photo_path + '1.jpeg')
-        try:
-            bot = Bot()
-            bot.login(username=insta_mi_l, password=insta_mi_p)
-
-            #  upload a picture
-            bot.upload_photo(insta_photo_path + '1.jpeg', caption=sample['text'])
-        except:
-            pass
-
-    base['links']['instagram'].append(sample_template)
-    while len(base['links']['instagram']) > 30:
-        del base['links']['instagram'][0]
-    writejson(bases + 'm' + fbase, base)
