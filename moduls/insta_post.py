@@ -33,7 +33,7 @@ def insta_post(prefix_base):
             if sample_clear['attachments'][0]['type'] == 'photo':
                 sample_template = ''.join(map(str, ('wall', sample['owner_id'], '_', sample['id'])))
                 if sample_template not in base['links']['instagram']:
-                    if conf['m']['podpisi']['heshteg']['reklama'] not in sample['text'] and \
+                    if 'ДЕСЯТКА' not in sample['text'] and \
                             conf['m']['podpisi']['heshteg']['music'] not in sample['text']:
                         break
         sample_template = ''
@@ -61,7 +61,7 @@ def insta_post(prefix_base):
             except:
                 pass
             base['links']['instagram'].append(sample_template)
-            while len(base['links']['instagram']) > 30:
+            while len(base['links']['instagram']) > 20:
                 del base['links']['instagram'][0]
             writejson(bases + 'm' + fbase, base)
 
