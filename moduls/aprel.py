@@ -22,7 +22,7 @@ def aprel(prefix_base):
             break
 
     if msg_link:
-        id_group = conf[base['prefix']]['post_group']['key'] * -1
+        id_group = -conf[base['prefix']]['post_group']['key']
         try:
             vkapp.wall.repost(object=msg_link, group_id=id_group)
             base['links']['aprel'].append(msg_link)
