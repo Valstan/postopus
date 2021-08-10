@@ -1,6 +1,6 @@
 from config import conf
-from moduls.read_write.get_attach import get_attach
-from moduls.read_write.post_msg import post_msg
+from bin.rw.get_attach import get_attach
+from bin.rw.post_msg import post_msg
 
 
 def upload_post_to_main_group(vkapp, msg, base):

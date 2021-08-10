@@ -1,4 +1,4 @@
-from moduls.utils.avtortut import avtortut
+from bin.utils.avtortut import avtortut
 
 
 def sort_sfoto_bezfoto(msg, base):

@@ -1,7 +1,7 @@
 import time
 
 from config import conf
-from moduls.read_write.get_msg import get_msg
+from bin.rw.get_msg import get_msg
 
 
 def readposts(vkapp, base, name, count):

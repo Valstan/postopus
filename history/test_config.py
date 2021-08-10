@@ -1,5 +1,5 @@
 from config import delete_msg_blacklist
-from moduls.read_write.write_json import writejson
+from bin.rw.write_json import writejson
 
 new = []
 for i in delete_msg_blacklist:

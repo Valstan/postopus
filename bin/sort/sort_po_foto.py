@@ -3,9 +3,9 @@ import hashlib
 from PIL import Image
 
 from config import bases, fimage
-from moduls.read_write.get_image import image_get
-from moduls.sort.sort_black_list import sort_black_list
-from moduls.utils.tesseract import tesseract
+from bin.rw.get_image import image_get
+from bin.sort.sort_black_list import sort_black_list
+from bin.utils.tesseract import tesseract
 
 
 def sort_po_foto(msg, base):

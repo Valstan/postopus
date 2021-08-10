@@ -1,5 +1,5 @@
 from config import size_base_old_posts, conf
-from moduls.read_write.post_msg import post_msg
+from bin.rw.post_msg import post_msg
 
 
 def postbezfoto(vkapp, base):

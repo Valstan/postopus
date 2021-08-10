@@ -1,15 +1,15 @@
 from config import conf
-from moduls.sort.sort_old_date import sort_old_date
-from moduls.utils.avtortut import avtortut
-from moduls.utils.clear_copy_history import clear_copy_history
-from moduls.utils.correct_txt import correct_txt
-from moduls.read_write.read_groups_posts import readposts
-from moduls.sort.sort_black_list import sort_black_list
-from moduls.sort.sort_double import sort_double
-from moduls.sort.sort_lip import sort_lip
-from moduls.sort.sort_po_foto import sort_po_foto
-from moduls.sort.sort_sfoto_bezfoto import sort_sfoto_bezfoto
-from moduls.sort.sort_views_bezfoto import sort_views_bezfoto
+from bin.sort.sort_old_date import sort_old_date
+from bin.utils.avtortut import avtortut
+from bin.utils.clear_copy_history import clear_copy_history
+from bin.utils.correct_txt import correct_txt
+from bin.rw.read_groups_posts import readposts
+from bin.sort.sort_black_list import sort_black_list
+from bin.sort.sort_double import sort_double
+from bin.sort.sort_lip import sort_lip
+from bin.sort.sort_po_foto import sort_po_foto
+from bin.sort.sort_sfoto_bezfoto import sort_sfoto_bezfoto
+from bin.sort.sort_views_bezfoto import sort_views_bezfoto
 
 
 def parser(vkapp, base, name_novost):

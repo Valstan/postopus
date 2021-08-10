@@ -1,12 +1,12 @@
 import random
 
-from moduls.read_write.change_lp import change_lp
+from bin.rw.change_lp import change_lp
 from config import bases, fbase, conf
-from moduls.read_write.get_json import getjson
-from moduls.read_write.get_msg import get_msg
-from moduls.read_write.get_session_vk_api import get_session_vk_api
-from moduls.read_write.write_json import writejson
-from moduls.utils.clear_copy_history import clear_copy_history
+from bin.rw.get_json import getjson
+from bin.rw.get_msg import get_msg
+from bin.rw.get_session_vk_api import get_session_vk_api
+from bin.rw.write_json import writejson
+from bin.utils.clear_copy_history import clear_copy_history
 
 
 def reklama(prefix_base):

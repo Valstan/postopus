@@ -1,16 +1,16 @@
 import random
 from config import bases, fbase, baraban, keys
-from moduls.aprel import aprel
-from moduls.insta_post import insta_post
-from moduls.krugozor import krugozor
-from moduls.main_program import main_program
-from moduls.read_write.change_lp import change_lp
-from moduls.read_write.get_json import getjson
-from moduls.read_write.get_session_vk_api import get_session_vk_api
-from moduls.read_write.post_bezfoto import postbezfoto
-from moduls.read_write.write_json import writejson
-from moduls.reklama import reklama
-from moduls.repost_me import post_me
+from bin.aprel import aprel
+from bin.insta_post import insta_post
+from bin.krugozor import krugozor
+from bin.main_program import main_program
+from bin.rw.change_lp import change_lp
+from bin.rw.get_json import getjson
+from bin.rw.get_session_vk_api import get_session_vk_api
+from bin.rw.post_bezfoto import postbezfoto
+from bin.rw.write_json import writejson
+from bin.reklama import reklama
+from bin.repost_me import post_me
 
 
 def ruletka(prefix_base, prefix_novost):

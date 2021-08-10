@@ -1,18 +1,18 @@
 from PIL import Image
-from moduls.read_write.change_lp import change_lp
+from bin.rw.change_lp import change_lp
 from instabot import Bot
 
 from config import insta_photo_path, bases, fbase, conf
-from moduls.read_write.get_image import image_get
-from moduls.read_write.get_json import getjson
-from moduls.read_write.get_msg import get_msg
-from moduls.read_write.get_session_vk_api import get_session_vk_api
-from moduls.read_write.write_json import writejson
-from moduls.utils.clear_copy_history import clear_copy_history
-from moduls.utils.clear_dir import clear_dir
-from moduls.utils.draw_text import draw_text
-from moduls.utils.resize_img import resize_img
-from moduls.utils.white_board import white_board
+from bin.rw.get_image import image_get
+from bin.rw.get_json import getjson
+from bin.rw.get_msg import get_msg
+from bin.rw.get_session_vk_api import get_session_vk_api
+from bin.rw.write_json import writejson
+from bin.utils.clear_copy_history import clear_copy_history
+from bin.utils.clear_dir import clear_dir
+from bin.utils.draw_text import draw_text
+from bin.utils.resize_img import resize_img
+from bin.utils.white_board import white_board
 
 
 def insta_post(prefix_base):
