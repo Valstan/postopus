@@ -1,5 +1,5 @@
 from PIL import Image
-from bases.logpass import insta_mi_l, insta_mi_p, valstan_l, valstan_p
+from bases.logpass import change_lp
 from instabot import Bot
 
 from config import insta_photo_path, bases, fbase, conf
@@ -18,11 +18,12 @@ from moduls.utils.white_board import white_board
 def insta_post(prefix_base):
     list_dir_for_clear = ('config', insta_photo_path)
     clear_dir(list_dir_for_clear)
+    insta_lp = change_lp("insta_mi")
 
     base = getjson(bases + prefix_base + fbase)
     if 'instagram' not in base['links']:
         base['links']['instagram'] = []
-    vkapp = get_session_vk_api(valstan_l, valstan_p)
+    vkapp = get_session_vk_api(change_lp("valstan"))
     new_posts = get_msg(vkapp, conf['m']['post_group']['key'], 0, 20)
     sample_template = ''
     sample = {}
@@ -54,7 +55,7 @@ def insta_post(prefix_base):
 
             try:
                 bot = Bot()
-                bot.login(username=insta_mi_l, password=insta_mi_p)
+                bot.login(username=insta_lp[0], password=insta_lp[1])
 
                 #  upload a picture
                 bot.upload_photo(insta_photo_path + '1.jpeg', caption=sample['text'])

@@ -1,4 +1,4 @@
-from bases.logpass import login, password
+from bases.logpass import change_lp
 from config import bases, fbase, conf
 from moduls.read_write.get_json import getjson
 from moduls.read_write.get_msg import get_msg
@@ -11,7 +11,7 @@ from moduls.utils.clear_copy_history import clear_copy_history
 
 def krugozor(prefix_base):
     base = getjson(bases + prefix_base + fbase)
-    vkapp = get_session_vk_api(login[prefix_base], password[prefix_base])
+    vkapp = get_session_vk_api(change_lp(prefix_base))
     msgs = get_msg(vkapp, -168171570, 0, 50)
     for sample in msgs:
         sample = clear_copy_history(sample)

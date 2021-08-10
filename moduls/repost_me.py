@@ -1,4 +1,4 @@
-from bases.logpass import login, password
+from bases.logpass import change_lp
 from config import bases, fbase, conf
 from moduls.read_write.get_msg import get_msg
 from moduls.read_write.get_session_vk_api import get_session_vk_api
@@ -10,7 +10,7 @@ def post_me():
     base = getjson(bases + 'm' + fbase)
     if 'repost' not in base['links']:
         base['links']['repost'] = []
-    vkapp = get_session_vk_api(login['valstan'], password['valstan'])
+    vkapp = get_session_vk_api(change_lp('valstan'))
     new_posts = get_msg(vkapp, conf['m']['post_group']['key'], 10, 10)
     sample_template_repost = ''
     for sample in new_posts:

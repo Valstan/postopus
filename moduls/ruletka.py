@@ -1,7 +1,5 @@
 import random
-
-from bases.logpass import login, password
-
+from bases.logpass import change_lp
 from config import bases, fbase, baraban, keys
 from moduls.aprel import aprel
 from moduls.insta_post import insta_post
@@ -17,7 +15,7 @@ from moduls.repost_me import post_me
 
 def ruletka(prefix_base, prefix_novost):
     if prefix_base in keys['standart']:
-        vkapp = get_session_vk_api(login[prefix_base], password[prefix_base])
+        vkapp = get_session_vk_api(change_lp(prefix_base))
         base = getjson(bases + prefix_base + fbase)
         if len(base['bezfoto']) > 9:
             base = postbezfoto(vkapp, base)
