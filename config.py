@@ -12,6 +12,8 @@ keys = {
     "insta": 'insta'
 }
 
+repost_accounts = ("valstan", "brigadir")
+
 size_base_old_posts = 500  # количество
 difference_old_posts = 259200  # в секундах (259200 секунд это 3 дня)
 

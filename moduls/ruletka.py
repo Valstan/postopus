@@ -1,10 +1,10 @@
 import random
-from bases.logpass import change_lp
 from config import bases, fbase, baraban, keys
 from moduls.aprel import aprel
 from moduls.insta_post import insta_post
 from moduls.krugozor import krugozor
 from moduls.main_program import main_program
+from moduls.read_write.change_lp import change_lp
 from moduls.read_write.get_json import getjson
 from moduls.read_write.get_session_vk_api import get_session_vk_api
 from moduls.read_write.post_bezfoto import postbezfoto
@@ -41,7 +41,7 @@ def ruletka(prefix_base, prefix_novost):
             if reklama('d'):
                 break
     elif prefix_base in keys['post_me']:
-        post_me()
+        post_me('m')
     elif prefix_base in keys['aprel']:
         aprel('m')
         aprel('d')

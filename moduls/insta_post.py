@@ -1,5 +1,5 @@
 from PIL import Image
-from bases.logpass import change_lp
+from moduls.read_write.change_lp import change_lp
 from instabot import Bot
 
 from config import insta_photo_path, bases, fbase, conf

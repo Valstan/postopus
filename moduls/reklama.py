@@ -1,6 +1,6 @@
 import random
 
-from bases.logpass import change_lp
+from moduls.read_write.change_lp import change_lp
 from config import bases, fbase, conf
 from moduls.read_write.get_json import getjson
 from moduls.read_write.get_msg import get_msg
