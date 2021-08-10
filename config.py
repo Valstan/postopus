@@ -263,8 +263,8 @@ delete_msg_blacklist = (
     "онлайн консультант"
 )
 
-baraban = ["krugozor", "krugozor", "krugozor", "krugozor", "krugozor", "krugozor",
-           "prikol", "prikol", "prikol",
+baraban = ["krugozor", "krugozor", "krugozor", "krugozor",
+           "prikol", "prikol",
            "music",
            "art"]
 
