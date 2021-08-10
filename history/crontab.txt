@@ -1,11 +1,11 @@
 10 9,10,13,14 * * * cd /root/postopus && /usr/bin/python3 start.py m reklama
 10 7,19,21,22 * * * cd /root/postopus && /usr/bin/python3 start.py m novost
 10 8,12,18,20,23 * * * cd /root/postopus && /usr/bin/python3 start.py m
-20 9,10,13,14,18 * * * cd /root/postopus && /usr/bin/python3 start.py d reklama
-20 7,20,21,23 * * * cd /root/postopus && /usr/bin/python3 start.py d novost
-20 8,11,12,15,19,22 * * * cd /root/postopus && /usr/bin/python3 start.py d
+40 9,10,13,14,18 * * * cd /root/postopus && /usr/bin/python3 start.py d reklama
+40 7,20,21,23 * * * cd /root/postopus && /usr/bin/python3 start.py d novost
+40 8,11,12,15,19,22 * * * cd /root/postopus && /usr/bin/python3 start.py d
 30 9,13,18 * * * cd /root/postopus && /usr/bin/python3 start.py reklama
-40 6-23 * * * cd /root/postopus && /usr/bin/python3 start.py main
+15 6-23 * * * cd /root/postopus && /usr/bin/python3 start.py main
 50 19 * * * cd /root/postopus && /usr/bin/python3 start.py aprel
 50 7,20 * * * cd /root/postopus && /usr/bin/python3 start.py krugozor
-00 7,9,10,13,14,19,20,21,22 * * * cd /root/postopus && /usr/bin/python3 start.py insta
+20 7,9,10,13,14,19,20,21,22 * * * cd /root/postopus && /usr/bin/python3 start.py insta
