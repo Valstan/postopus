@@ -2,6 +2,7 @@ bases = 'bases/'
 fbase = 'base.json'
 fimage = 'image'
 insta_photo_path = bases + 'insta_photo/'
+insta_photo_path_manual = bases + 'insta_photo_manual/'
 keys = {
     "standart": ('m', 'd', 't'),
     "reklama": 'reklama',  # Используется для двух разных скриптов
