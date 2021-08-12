@@ -19,9 +19,7 @@ def ruletka(session):
 
     if session['base'] in session['keys']['standart']:
         vkapp = get_session_vk_api(change_lp(session))
-        session.update({'bezfoto': get_json(session, 'bezfoto')})
-        if len(session['bezfoto']) > 9:
-            session = postbezfoto(vkapp, session)
+        postbezfoto(vkapp, session)
         if category in keys['reklama'] or category in keys['novost']:
             for i in range(5):
                 if main_program(vkapp, prefix_base, category):
