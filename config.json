@@ -1,6 +1,9 @@
 {
-  "bases": "bases/",
-  "fbase": "base.json",
+  "path_base": "bases/",
+  "base": "",
+  "category": "",
+  "login": "",
+  "password": "",
   "fimage": "image",
   "bezfoto": "bezfoto",
   "insta_photo_path": "insta_photo/",
@@ -302,7 +305,7 @@
     "art"
   ],
   "conf": {
-    "m": {
+    "mi": {
       "prefix": "m",
       "bag_report": -168172770,
       "post_group": {
@@ -377,7 +380,7 @@
         "image_desatka": "photo-158787639_457242342"
       }
     },
-    "d": {
+    "dran": {
       "prefix": "d",
       "bag_report": -168172770,
       "post_group": {

@@ -1,25 +1,27 @@
 import random
+
+from bin.driver_base import add_session
 from config import bases, fbase, baraban, keys
 from bin.aprel import aprel
 from bin.insta_post import insta_post
 from bin.krugozor import krugozor
 from bin.main_program import main_program
 from bin.rw.change_lp import change_lp
-from bin.rw.get_json import getjson
+from bin.rw.get_json import get_json
 from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.post_bezfoto import postbezfoto
-from bin.rw.write_json import writejson
+from bin.rw.write_json import write_json
 from bin.reklama import reklama
 from bin.repost_me import post_me
 
 
 def ruletka(session):
-    if session['base'] in keys['standart']:
+
+    if session['base'] in session['keys']['standart']:
         vkapp = get_session_vk_api(change_lp(session))
-        base = getjson({"base": session['base'], "category": 'bezfoto'})
-        if len(base['bezfoto']) > 9:
-            base = postbezfoto(vkapp, prefix_base, base)
-            writejson(bases + prefix_base, 'bezfoto', base)
+        session.update({'bezfoto': get_json(session, 'bezfoto')})
+        if len(session['bezfoto']) > 9:
+            session = postbezfoto(vkapp, session)
         if category in keys['reklama'] or category in keys['novost']:
             for i in range(5):
                 if main_program(vkapp, prefix_base, category):
@@ -33,7 +35,7 @@ def ruletka(session):
                     if main_program(vkapp, shut, prefix_base):
                         break
                 old_ruletka = shut
-    elif prefix_base in keys['reklama']:
+    elif session['base'] in keys['reklama']:
         for i in range(20):
             if reklama('m'):
                 break

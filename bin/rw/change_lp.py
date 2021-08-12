@@ -1,10 +1,9 @@
-from bases.logpass import prefix_lp
 
 
 def change_lp(session):
-    for i in prefix_lp:
-        if session['base'] in i[0] and session['category'] in i[0]:
-            return session.update({"login": i[1], "password": i[2]})
+    for k, v in session.items['logpass']:
+        if session['base'] in k and session['category'] in k:
+            return session.update({"login": v[0], "password": v[1]})
 
 
 if __name__ == '__main__':
