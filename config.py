@@ -1,16 +1,19 @@
 bases = 'bases/'
 fbase = 'base.json'
 fimage = 'image'
+bezfoto = 'bezfoto'
 insta_photo_path = bases + 'insta_photo/'
 insta_photo_path_manual = bases + 'insta_photo_manual/'
 keys = {
-    "standart": ('m', 'd', 't'),
+    'm': 'mi/',
+    'd': 'dran/',
+    "standart": ('mi', 'dran', 'test'),
     "reklama": 'reklama',  # Используется для двух разных скриптов
     "novost": "novost",
     "krugozor": 'krugozor',
     "aprel": 'aprel',
     "post_me": 'main',
-    "insta": 'insta'
+    "instagram": 'instagram'
 }
 
 repost_accounts = ("valstan", "brigadir")

@@ -6,9 +6,9 @@ from bin.rw.write_json import writejson
 from bin.sort.sort_po_foto import sort_po_foto
 
 
-def main_program(vkapp, name_novost, prefix_base):
-    base = getjson(bases + prefix_base + fbase)
-    base, msg_list = parser(vkapp, base, name_novost)
+def main_program(vkapp, prefix_base, category):
+    base = getjson(bases + prefix_base, category)
+    base, msg_list = parser(vkapp, base, category)
     if msg_list:
         for sample in msg_list:
             if upload_post_to_main_group(vkapp, sample, base):
@@ -23,7 +23,7 @@ def main_program(vkapp, name_novost, prefix_base):
                         del base['hash'][0]
                 writejson(bases + base['prefix'] + fbase, base)
                 return True
-    writejson(bases + base['prefix'] + fbase, base)
+    writejson(bases + prefix_base, category, base)
     return False
 
 

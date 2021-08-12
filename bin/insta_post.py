@@ -15,15 +15,15 @@ from bin.utils.resize_img import resize_img
 from bin.utils.white_board import white_board
 
 
-def insta_post(prefix_base):
+def insta_post(session):
     list_dir_for_clear = ('config', insta_photo_path)
     clear_dir(list_dir_for_clear)
-    insta_lp = change_lp("insta_mi")
+    lp = change_lp(session)
 
-    base = getjson(bases + prefix_base + fbase)
-    if 'instagram' not in base['links']:
-        base['links']['instagram'] = []
-    vkapp = get_session_vk_api(change_lp("valstan"))
+    base = getjson(session)
+    if session[1] not in base:
+        base[session[1]] = []
+    vkapp = get_session_vk_api(change_lp(prefix_base, category))
     new_posts = get_msg(vkapp, conf['m']['post_group']['key'], 0, 20)
     sample_template = ''
     sample = {}
@@ -55,7 +55,7 @@ def insta_post(prefix_base):
 
             try:
                 bot = Bot()
-                bot.login(username=insta_lp[0], password=insta_lp[1])
+                bot.login(username=lp[0], password=lp[1])
 
                 #  upload a picture
                 bot.upload_photo(insta_photo_path + '1.jpeg', caption=sample['text'])

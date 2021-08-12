@@ -2,8 +2,11 @@ import json
 import os
 
 
-def getjson(put):
-    with open(os.path.join(put), 'r', encoding='utf-8') as f:
+def get_json(session, param):
+    if session['path_bases'] and session['base'] and not os.path.isdir(session['path_bases'] + session['base']):
+        os.makedirs(session['path_bases'] + session['base'])
+    with open(os.path.join(session['path_bases'] + session['base'] +
+                           param + '.json'), 'r', encoding='utf-8') as f:
         file = json.load(f)
         return file
 
