@@ -1,12 +1,11 @@
 import time
 
-from config import conf
 from bin.rw.get_msg import get_msg
 
 
-def readposts(vkapp, base, name, count):
+def read_posts(vkapp, group_list, count):
     posts = []
-    for group in conf[base['prefix']][name].values():
+    for group in group_list.values():
         try:
             posts += get_msg(vkapp, group, 0, count)
         except:

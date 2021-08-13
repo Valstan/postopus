@@ -1,14 +1,13 @@
 from config import bases, fbase, size_base_old_posts
 from bin.parser import parser
-from bin.rw.get_json import getjson
+from bin.rw.get_json import get_json
 from bin.rw.upload_post_to_main_group import upload_post_to_main_group
-from bin.rw.write_json import writejson
+from bin.rw.write_json import write_json
 from bin.sort.sort_po_foto import sort_po_foto
 
 
-def main_program(vkapp, prefix_base, category):
-    base = getjson(bases + prefix_base, category)
-    base, msg_list = parser(vkapp, base, category)
+def main_program(vkapp, session):
+    base, msg_list = parser(vkapp, session, check_session['category'])
     if msg_list:
         for sample in msg_list:
             if upload_post_to_main_group(vkapp, sample, base):

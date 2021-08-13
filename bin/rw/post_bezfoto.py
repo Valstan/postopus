@@ -1,31 +1,29 @@
-from bin.driver_base import save_session
-from bin.rw.get_json import get_json
+from bin.driver import load_table, save_table
 from bin.rw.post_msg import post_msg
 
 
 def postbezfoto(vkapp, session):
-
-    session.update({'bezfoto': get_json(session, 'bezfoto')})
+    session = load_table(session, 'bezfoto')
     if len(session['bezfoto']) > 9:
-        session.update({'all_bezfoto': get_json(session, 'all_bezfoto')})
+        session = load_table(session, 'all_bezfoto')
         message = ''
         for sample in session['bezfoto'][:10]:
             message += ''.join(map(str, (sample, '\n')))
-        postmsg = ''.join(map(str, (session['conf'][session['base']]['podpisi']['zagolovok']['bezfoto'],
+        postmsg = ''.join(map(str, (session['podpisi']['zagolovok']['bezfoto'],
                                     message,
-                                    session['conf'][session['base']]['podpisi']['heshteg']['reklama'],
-                                    session['conf'][session['base']]['podpisi']['final'])))
+                                    session['podpisi']['heshteg']['reklama'],
+                                    session['podpisi']['final'])))
 
         post_msg(vkapp,
-                 session['conf'][session['base']]['post_group']['key'],
+                 session['post_group']['key'],
                  postmsg,
-                 session['conf'][session['base']]['podpisi']['image_desatka'])
+                 session['podpisi']['image_desatka'])
 
         session['all_bezfoto'].extend(session['bezfoto'][:10])
         while len(session['all_bezfoto']) > session['size_base_old_posts']:
             del session['all_bezfoto'][0]
         del session['bezfoto'][:10]
-        save_session(session, ['bezfoto', 'all_bezfoto'])
+        save_table(session, ('bezfoto', 'all_bezfoto'))
 
 
 if __name__ == '__main__':
