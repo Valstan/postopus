@@ -2,12 +2,12 @@ import json
 import os
 
 
-def get_json(path, filename):
+def open_file_json(path, filename):
     if path and not os.path.isdir(path):
         os.makedirs(path)
     with open(os.path.join(path + filename + '.json'), 'r', encoding='utf-8') as f:
-        file = json.load(f)
-        return file
+        value = json.load(f)
+        return value
 
 
 if __name__ == '__main__':

@@ -1,9 +1,7 @@
 import re
 
-from config import delete_msg_blacklist
 
-
-def sort_black_list(msg):
+def sort_black_list(delete_msg_blacklist, msg):
     msg = msg.replace('"', '')
     msg.lower()
     for sample in delete_msg_blacklist:

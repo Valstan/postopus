@@ -1,17 +1,18 @@
 from sys import argv
 
-from bin.ruletka import ruletka
-from bin.rw.get_json import get_json
+from bin.control import control
+from bin.rw.open_file_json import open_file_json
 
 if len(argv) == 3:
-    name_session = argv[1]
-    name_base = argv[2]
+    name_session = str(argv[1])
+    name_base = str(argv[2])
 else:
-    name_session = input("Enter name session:")
-    name_base = input("Enter name base:")
+    name_session = str(input("Enter name session:"))
+    name_base = str(input("Enter name base:"))
 
-session = get_json('', 'config')
+session = open_file_json('', 'config')
 session.update(session['config_bases'][name_base])
 del session['config_bases']
 session.update({"name_session": name_session})
-ruletka(session)
+session.update(open_file_json('bases/', 'logpass'))
+control(session)

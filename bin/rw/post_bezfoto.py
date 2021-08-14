@@ -4,10 +4,10 @@ from bin.rw.post_msg import post_msg
 
 def postbezfoto(vkapp, session):
     session = load_table(session, 'bezfoto')
-    if len(session['bezfoto']) > 9:
+    if len(session['bezfoto']['list']) > 9:
         session = load_table(session, 'all_bezfoto')
         message = ''
-        for sample in session['bezfoto'][:10]:
+        for sample in session['bezfoto']['list'][:10]:
             message += ''.join(map(str, (sample, '\n')))
         postmsg = ''.join(map(str, (session['podpisi']['zagolovok']['bezfoto'],
                                     message,
@@ -19,11 +19,12 @@ def postbezfoto(vkapp, session):
                  postmsg,
                  session['podpisi']['image_desatka'])
 
-        session['all_bezfoto'].extend(session['bezfoto'][:10])
-        while len(session['all_bezfoto']) > session['size_base_old_posts']:
-            del session['all_bezfoto'][0]
-        del session['bezfoto'][:10]
-        save_table(session, ('bezfoto', 'all_bezfoto'))
+        session['all_bezfoto']['list'].extend(session['bezfoto']['list'][:10])
+        while len(session['all_bezfoto']['list']) > session['all_bezfoto']['size_base_old_posts']:
+            del session['all_bezfoto']['list'][0]
+        del session['bezfoto']['list'][:10]
+        save_table(session, 'bezfoto')
+        save_table(session, 'all_bezfoto')
 
 
 if __name__ == '__main__':

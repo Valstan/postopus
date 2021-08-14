@@ -1,9 +1,8 @@
-from config import delete_word, delete_bad_simbol
 
 
-def correct_txt(msg):
+def correct_txt(session, msg):
     text_lower = msg['text'].lower()
-    for i in delete_word:
+    for i in session['delete_word']:
         sample = i.lower()
         while True:
             pos = text_lower.find(sample)
@@ -24,7 +23,7 @@ def correct_txt(msg):
         msg['text'] = msg['text'].replace(',.', '.')
         msg['text'] = msg['text'].replace('.!', '!')
         msg['text'] = msg['text'].replace(',!', '!')
-        msg['text'] = msg['text'].strip(delete_bad_simbol)
+        msg['text'] = msg['text'].strip(session['delete_bad_simbol'])
 
     return msg
 

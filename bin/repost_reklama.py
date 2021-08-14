@@ -1,17 +1,11 @@
 import random
 
-from bin.rw.change_lp import change_lp
-from config import bases, fbase, conf
-from bin.rw.get_json import getjson
+from bin.driver import save_table
 from bin.rw.get_msg import get_msg
-from bin.rw.get_session_vk_api import get_session_vk_api
-from bin.rw.write_json import writejson
 from bin.utils.clear_copy_history import clear_copy_history
 
 
-def reklama(prefix_base):
-    base = getjson(bases + prefix_base + fbase)
-    vkapp = get_session_vk_api(change_lp(prefix_base))
+def repost_reklama(vkapp, session):
     glav = -163580976
     zam = -172650802
     dvorniki = -171276826
@@ -26,20 +20,18 @@ def reklama(prefix_base):
         shut = random.choice(ruletka)
         shut = clear_copy_history(shut)
         shut = ''.join(map(str, ('wall', shut['owner_id'], '_', shut['id'])))
-        if shut not in base['links']['reklama']:
+        if shut not in session[session['name_session']]:
             break
 
-    id_group = conf[base['prefix']]['post_group']['key'] * -1
+    id_group = session['post_group']['key'] * -1
     try:
         vkapp.wall.repost(object=shut, group_id=id_group)
-        base['links']['reklama'].append(shut)
-        while len(base['links']['reklama']) > 20:
-            del base['links']['reklama'][0]
-        writejson(bases + base['prefix'] + fbase, base)
-        return True
+        session[session['name_session']]['lip'].append(shut)
     except:
-        return False
+        pass
+
+    return session
 
 
 if __name__ == '__main__':
-    reklama('t')
+    pass

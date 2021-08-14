@@ -1,9 +1,14 @@
+from bin.driver import load_table, save_table
 from bin.utils.avtortut import avtortut
 
 
-def sort_sfoto_bezfoto(msg, base):
+def sort_sfoto_bezfoto(session, msg):
+    session = load_table(session, 'bezfoto')
+    session = load_table(session, 'all_bezfoto')
     if 'attachments' not in msg:
-        if len(msg['text']) > 20 and msg['text'] not in base['bezfoto'] and msg['text'] not in base['all_bezfoto']:
-            base['bezfoto'].append('&#128073; ' + avtortut(msg))
+        if len(msg['text']) > 20 and msg['text'] not in (session['bezfoto']['list'],
+                                                         session['all_bezfoto']['list']):
+            session['bezfoto'].append('&#128073; ' + avtortut(msg))
         msg = []
-    return msg, base
+    save_table(session, 'bezfoto')
+    return msg
