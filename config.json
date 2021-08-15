@@ -13,23 +13,6 @@
     "hash": [],
     "list": []
   },
-  "keys": {
-    "standart": [
-      "novost",
-      "reklama"
-    ],
-    "addons": [
-      "prikol",
-      "krugozor",
-      "art",
-      "music"
-    ],
-    "repost_reklama": "repost_reklama",
-    "repost_krugozor": "repost_krugozor",
-    "aprel": "repost_aprel",
-    "repost_me": "repost_me",
-    "instagram": "instagram"
-  },
   "repost_accounts": [
     "repost_valstan",
     "repost_brigadir"

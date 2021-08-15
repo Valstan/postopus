@@ -1,9 +1,9 @@
 import random
 
-from bin.aprel import aprel
+from bin.repost_aprel import repost_aprel
 from bin.driver import save_table, load_table
 from bin.instagram_mi import instagram_mi
-from bin.krugozor import krugozor
+from bin.repost_krugozor import repost_krugozor
 from bin.parser import parser
 from bin.posting_post import posting_post
 from bin.repost_me import repost_me
@@ -19,13 +19,13 @@ def control(session):
     if session['name_session'] != 'addons':
         session = load_table(session, session['name_session'])
 
-    if session['name_session'] in session['keys']['standart']:
+    if session['name_session'] in ('novost', 'reklama'):
 
         session, msg_list = parser(vkapp, session)
         if msg_list:
             session = posting_post(vkapp, session, msg_list)
 
-    elif session['name_session'] in session['keys']['addons']:
+    elif session['name_session'] == 'addons':
         old_ruletka = ''
 
         for sample in range(5):
@@ -41,19 +41,19 @@ def control(session):
                     break
             old_ruletka = shut
 
-    elif session['name_session'] in session['keys']['repost_reklama']:
+    elif session['name_session'] == 'repost_reklama':
         session = repost_reklama(vkapp, session)
 
-    elif session['name_session'] in session['keys']['repost_me']:
+    elif session['name_session'] == 'repost_me':
         session = repost_me(session)
 
-    elif session['name_session'] in session['keys']['aprel']:
-        session = aprel(vkapp, session)
+    elif session['name_session'] == 'repost_aprel':
+        session = repost_aprel(vkapp, session)
 
-    elif session['name_session'] in session['keys']['krugozor']:
-        session = krugozor(vkapp, session)
+    elif session['name_session'] == 'repost_krugozor':
+        session = repost_krugozor(vkapp, session)
 
-    elif session['name_session'] in session['keys']['instagram']:
+    elif session['name_session'] == 'instagram':
         session = instagram_mi(vkapp, session)
 
     else:

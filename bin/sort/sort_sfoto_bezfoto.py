@@ -8,7 +8,7 @@ def sort_sfoto_bezfoto(session, msg):
     if 'attachments' not in msg:
         if len(msg['text']) > 20 and msg['text'] not in (session['bezfoto']['list'],
                                                          session['all_bezfoto']['list']):
-            session['bezfoto'].append('&#128073; ' + avtortut(msg))
+            session['bezfoto']['list'].append('&#128073; ' + avtortut(msg))
         msg = []
     save_table(session, 'bezfoto')
     return msg

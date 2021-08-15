@@ -4,7 +4,7 @@ from bin.utils.avtortut import avtortut
 from bin.utils.clear_copy_history import clear_copy_history
 
 
-def krugozor(vkapp, session):
+def repost_krugozor(vkapp, session):
     krugozor_id = -168171570
     msgs = get_msg(vkapp, krugozor_id, 0, 50)
     for sample in msgs:

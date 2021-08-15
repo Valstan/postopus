@@ -25,7 +25,7 @@ def parser(vkapp, session):
         if not sort_old_date(session, sample):
             continue
         sample = clear_copy_history(sample)
-        sample, skleika = sort_lip(sample, session['name_session']['lip'])
+        sample, skleika = sort_lip(sample, session[session['name_session']]['lip'])
         if not sample:
             continue
         if sort_black_list(session['delete_msg_blacklist'], sample['text']):

@@ -7,9 +7,7 @@ def posting_post(vkapp, session, msg_list):
         if upload_post_to_main_group(vkapp, session['post_group']['key'], sample):
             skleika = str(sample['owner_id']) + str(sample['id'])
             session[session['name_session']]['lip'].append(skleika)
-            sample, histo = sort_po_foto(sample, session[session['name_session']]['hash'])
-            if histo:
-                session[session['name_session']]['hash'].append(histo)
+            session, sample = sort_po_foto(session, sample)
             break
     return session
 
