@@ -14,8 +14,13 @@ from bin.rw.post_bezfoto import postbezfoto
 
 
 def control(session):
+    if session['name_session'] == 'repost_me':
+        repost_me(session)
+        quit()
+
     vkapp = get_session_vk_api(change_lp(session))
     postbezfoto(vkapp, session)
+
     if session['name_session'] != 'addons':
         session = load_table(session, session['name_session'])
 
@@ -44,9 +49,6 @@ def control(session):
     elif session['name_session'] == 'repost_reklama':
         session = repost_reklama(vkapp, session)
 
-    elif session['name_session'] == 'repost_me':
-        session = repost_me(session)
-
     elif session['name_session'] == 'repost_aprel':
         session = repost_aprel(vkapp, session)
 
@@ -54,7 +56,8 @@ def control(session):
         session = repost_krugozor(vkapp, session)
 
     elif session['name_session'] == 'instagram':
-        session = instagram_mi(vkapp, session)
+        instagram_mi(vkapp, session)
+        quit()
 
     else:
         print('Базы с таким именем нет')

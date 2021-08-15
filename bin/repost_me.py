@@ -13,7 +13,7 @@ def repost_me(session):
         sample_template_repost = ''
         for sample in new_posts:
             sample_template_repost = ''.join(map(str, ('wall', sample['owner_id'], '_', sample['id'])))
-            if sample_template_repost not in session[session['name_session']['lip']]:
+            if sample_template_repost not in session[session['name_session']]['lip']:
                 if session['podpisi']['heshteg']['reklama'] not in sample['text'] and \
                         session['podpisi']['heshteg']['music'] not in sample['text']:
                     break

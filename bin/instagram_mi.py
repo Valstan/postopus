@@ -1,6 +1,7 @@
 from PIL import Image
 from instabot import Bot
 
+from bin.driver import save_table
 from bin.rw.change_lp import change_lp
 from bin.rw.get_image import image_get
 from bin.rw.get_msg import get_msg
@@ -12,23 +13,23 @@ from bin.utils.white_board import white_board
 
 
 def instagram_mi(vkapp, session):
-    list_dir_for_clear = ('config', session['insta_photo_path'])
+    list_dir_for_clear = ('config', session['bases_path'] + session['insta_photo_path'])
     clear_dir(list_dir_for_clear)
     new_posts = get_msg(vkapp, session['post_group']['key'], 0, 20)
     sample_template = ''
-    sample = {}
     sample_clear = {}
     for sample in new_posts:
         sample_clear = clear_copy_history(sample)
         if 'attachments' in sample_clear:
             if sample_clear['attachments'][0]['type'] == 'photo':
-                sample_template = ''.join(map(str, ('wall', sample['owner_id'], '_', sample['id'])))
+                sample_template = ''.join(map(str, ('wall', sample_clear['owner_id'], '_', sample_clear['id'])))
                 if sample_template not in session['instagram']['lip']:
-                    if 'ДЕСЯТКА' not in sample['text'] and \
-                            session['podpisi']['heshteg']['music'] not in sample['text']:
+                    if any(x == sample_clear['text'] for x in ([session['podpisi']['heshteg']['music'], 'ДЕСЯТКА'])):
                         break
         sample_template = ''
     if sample_template != '':
+        session[session['name_session']]['lip'].append(sample_template)
+        save_table(session, session['name_session'])
         height = 0
         url = ''
         for i in sample_clear['attachments'][0]['photo']['sizes']:
@@ -43,11 +44,6 @@ def instagram_mi(vkapp, session):
             img = draw_text(img, 'Малмыж Инфо', 10, 10)
             img.save(session['insta_photo_path'] + '1.jpeg')
 
-            # подмена имени базы данных нужна для получения логина-пароля
-            # для подключения к инстаграмму МалмыжИнфо
-            # сохранили имя базы
-            name_base = session['name_base'][:]
-            # подменили имя базы
             session['name_base'] = 'insta_mi'
             session = change_lp(session)
 
@@ -56,14 +52,9 @@ def instagram_mi(vkapp, session):
                 bot.login(username=session['login'], password=session['password'])
 
                 #  upload a picture
-                bot.upload_photo(session['insta_photo_path'] + '1.jpeg', caption=sample['text'])
+                bot.upload_photo(session['insta_photo_path'] + '1.jpeg', caption=sample_clear['text'])
             except:
                 pass
-            # возвратили имя базы на место
-            session['name_base'] = name_base
-            session[session['name_session']]['lip'].append(sample_template)
-
-            return session
 
 
 if __name__ == '__main__':
