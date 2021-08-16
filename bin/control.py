@@ -20,14 +20,14 @@ def control(session):
 
     vkapp = get_session_vk_api(change_lp(session))
 
+    if session['name_session'] != 'addons':
+        session = load_table(session, session['name_session'])
+
     if session['name_session'] == 'instagram':
         instagram_mi(vkapp, session)
         quit()
 
     postbezfoto(vkapp, session)
-
-    if session['name_session'] != 'addons':
-        session = load_table(session, session['name_session'])
 
     if session['name_session'] in ('novost', 'reklama'):
 
