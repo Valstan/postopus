@@ -6,7 +6,6 @@ from bin.utils.clear_dir import clear_dir
 from bin.utils.draw_text import draw_text
 from bin.utils.resize_img import resize_img
 from bin.utils.white_board import white_board
-from config import insta_photo_path, insta_photo_path_manual
 
 
 def insta_post_manual():
