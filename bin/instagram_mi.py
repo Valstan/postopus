@@ -24,7 +24,7 @@ def instagram_mi(vkapp, session):
             if sample_clear['attachments'][0]['type'] == 'photo':
                 sample_template = ''.join(map(str, ('wall', sample_clear['owner_id'], '_', sample_clear['id'])))
                 if sample_template not in session['instagram']['lip']:
-                    if 'ДЕСЯТКА' in sample_clear['text'] or '#Музыка' in sample_clear['text']:
+                    if 'ДЕСЯТКА' not in sample_clear['text'] or '#Музыка' not in sample_clear['text']:
                         break
         sample_template = ''
     if sample_template:
@@ -47,12 +47,15 @@ def instagram_mi(vkapp, session):
             session['name_base'] = 'insta_mi'
             session = change_lp(session)
 
+            caption = sample_clear['text'][:2000]
+
             try:
                 bot = Bot()
                 bot.login(username=session['login'], password=session['password'])
 
                 #  upload a picture
-                bot.upload_photo(session['bases_path'] + session['insta_photo_path'] + '1.jpeg', caption=sample_clear['text'])
+                bot.upload_photo(session['bases_path'] + session['insta_photo_path'] + '1.jpeg',
+                                 caption=caption)
             except:
                 pass
 
