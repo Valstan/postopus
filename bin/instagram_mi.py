@@ -27,7 +27,7 @@ def instagram_mi(vkapp, session):
                     if 'ДЕСЯТКА' in sample_clear['text'] or '#Музыка' in sample_clear['text']:
                         break
         sample_template = ''
-    if sample_template != '':
+    if sample_template:
         session[session['name_session']]['lip'].append(sample_template)
         save_table(session, session['name_session'])
         height = 0
@@ -37,12 +37,12 @@ def instagram_mi(vkapp, session):
                 height = i['height']
                 url = i['url']
 
-        if image_get(url, session['insta_photo_path'] + '1.jpg'):
-            img = Image.open(session['insta_photo_path'] + '1.jpg')
+        if image_get(url, session['bases_path'] + session['insta_photo_path'] + '1.jpg'):
+            img = Image.open(session['bases_path'] + session['insta_photo_path'] + '1.jpg')
             img = resize_img(img, 1080, 1080)
             img = white_board(img, 1080, 1080)
             img = draw_text(img, 'Малмыж Инфо', 10, 10)
-            img.save(session['insta_photo_path'] + '1.jpeg')
+            img.save(session['bases_path'] + session['insta_photo_path'] + '1.jpeg')
 
             session['name_base'] = 'insta_mi'
             session = change_lp(session)
@@ -52,7 +52,7 @@ def instagram_mi(vkapp, session):
                 bot.login(username=session['login'], password=session['password'])
 
                 #  upload a picture
-                bot.upload_photo(session['insta_photo_path'] + '1.jpeg', caption=sample_clear['text'])
+                bot.upload_photo(session['bases_path'] + session['insta_photo_path'] + '1.jpeg', caption=sample_clear['text'])
             except:
                 pass
 
