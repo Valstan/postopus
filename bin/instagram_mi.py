@@ -15,7 +15,7 @@ from bin.utils.white_board import white_board
 def instagram_mi(vkapp, session):
     list_dir_for_clear = ('config', session['bases_path'] + session['insta_photo_path'])
     clear_dir(list_dir_for_clear)
-    new_posts = get_msg(vkapp, session['post_group']['key'], 0, 20)
+    new_posts = get_msg(vkapp, session['post_group']['key'], 0, 30)
     sample_template = ''
     sample_clear = {}
     for sample in new_posts:
