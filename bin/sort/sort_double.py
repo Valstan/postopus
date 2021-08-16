@@ -1,13 +1,12 @@
 from bin.driver import load_table
 
 
-def sort_double(session, msg, msg_list, all_posts):
+def sort_double(session, msg, news_msg_list, maingroup_msg_list):
     session = load_table(session, 'bezfoto')
     session = load_table(session, 'all_bezfoto')
-    if msg['text'] not in (session['all_bezfoto']['list'],
-                           session['bezfoto']['list'],
-                           msg_list,
-                           all_posts) \
-        and msg['attachments'] not in (all_posts,
-                                       msg_list):
-        return msg
+    if msg['text'] in (session['all_bezfoto']['list'],
+                       session['bezfoto']['list'],
+                       news_msg_list,
+                       maingroup_msg_list):
+        msg = []
+    return msg

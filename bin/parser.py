@@ -44,8 +44,7 @@ def parser(vkapp, session):
                                            session['podpisi']['heshteg'][session['name_session']],
                                            session['podpisi']['final'])))
         sample = sort_double(session, sample, news_msg_list, maingroup_msg_list)
-        if not sample:
-            continue
-        news_msg_list.append(sample)
+        if sample:
+            news_msg_list.append(sample)
     news_msg_list.sort(key=lambda x: x['views']['count'], reverse=True)
     return session, news_msg_list
