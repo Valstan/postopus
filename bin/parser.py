@@ -19,7 +19,7 @@ def parser(vkapp, session):
     for sample in oldposts_maingroup:
         maingroup_msg_list.append(clear_copy_history(sample))
 
-    news_msg_list = []
+    new_msg_list = []
 
     for sample in new_posts:
         if not sort_old_date(session, sample):
@@ -39,12 +39,12 @@ def parser(vkapp, session):
         session, sample = sort_po_foto(session, sample)
         if not sample:
             continue
+        sample = sort_double(session, sample, new_msg_list, maingroup_msg_list)
         sample['text'] = ''.join(map(str, (session['podpisi']['zagolovok'][session['name_session']],
                                            avtortut(sample),
                                            session['podpisi']['heshteg'][session['name_session']],
                                            session['podpisi']['final'])))
-        sample = sort_double(session, sample, news_msg_list, maingroup_msg_list)
         if sample:
-            news_msg_list.append(sample)
-    news_msg_list.sort(key=lambda x: x['views']['count'], reverse=True)
-    return session, news_msg_list
+            new_msg_list.append(sample)
+    new_msg_list.sort(key=lambda x: x['views']['count'], reverse=True)
+    return session, new_msg_list
