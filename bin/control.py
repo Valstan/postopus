@@ -19,6 +19,11 @@ def control(session):
         quit()
 
     vkapp = get_session_vk_api(change_lp(session))
+
+    if session['name_session'] == 'instagram':
+        instagram_mi(vkapp, session)
+        quit()
+
     postbezfoto(vkapp, session)
 
     if session['name_session'] != 'addons':
@@ -54,13 +59,8 @@ def control(session):
 
     elif session['name_session'] == 'repost_krugozor':
         session = repost_krugozor(vkapp, session)
-
-    elif session['name_session'] == 'instagram':
-        instagram_mi(vkapp, session)
-        quit()
-
     else:
-        print('Базы с таким именем нет')
+        print('Аргументы запуска не совпадают ни с одним вариантом')
         return False
 
     save_table(session, session['name_session'])
