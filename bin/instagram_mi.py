@@ -24,7 +24,7 @@ def instagram_mi(vkapp, session):
             if sample_clear['attachments'][0]['type'] == 'photo':
                 sample_template = ''.join(map(str, ('wall', sample_clear['owner_id'], '_', sample_clear['id'])))
                 if sample_template not in session['instagram']['lip']:
-                    if 'ДЕСЯТКА' not in sample_clear['text'] or '#Музыка' not in sample_clear['text']:
+                    if 'ДЕСЯТКА' not in sample_clear['text'] and '#Музыка' not in sample_clear['text']:
                         break
         sample_template = ''
     if sample_template:
