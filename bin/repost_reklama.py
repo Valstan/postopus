@@ -1,5 +1,6 @@
 import random
 
+from bin.driver import save_table
 from bin.rw.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history
 
@@ -30,8 +31,7 @@ def repost_reklama(vkapp, session):
         pass
 
     session['size_base_old_posts'] = 6
-
-    return session
+    save_table(session, session['name_session'])
 
 
 if __name__ == '__main__':
