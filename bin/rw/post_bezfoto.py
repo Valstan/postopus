@@ -2,7 +2,7 @@ from bin.driver import load_table, save_table
 from bin.rw.post_msg import post_msg
 
 
-def postbezfoto(vkapp, session):
+def post_bezfoto(vkapp, session):
     session = load_table(session, 'bezfoto')
     if len(session['bezfoto']['list']) > 9:
         session = load_table(session, 'all_bezfoto')

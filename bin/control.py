@@ -1,16 +1,16 @@
 import random
 
-from bin.repost_aprel import repost_aprel
 from bin.driver import save_table, load_table
 from bin.instagram_mi import instagram_mi
-from bin.repost_krugozor import repost_krugozor
 from bin.parser import parser
 from bin.posting_post import posting_post
+from bin.repost_aprel import repost_aprel
+from bin.repost_krugozor import repost_krugozor
 from bin.repost_me import repost_me
 from bin.repost_reklama import repost_reklama
 from bin.rw.change_lp import change_lp
 from bin.rw.get_session_vk_api import get_session_vk_api
-from bin.rw.post_bezfoto import postbezfoto
+from bin.rw.post_bezfoto import post_bezfoto
 
 
 def control(session):
@@ -20,20 +20,13 @@ def control(session):
 
     vkapp = get_session_vk_api(change_lp(session))
 
-    if session['name_session'] != 'addons':
-        session = load_table(session, session['name_session'])
-
-    if session['name_session'] == 'instagram':
-        instagram_mi(vkapp, session)
-        quit()
-
-    postbezfoto(vkapp, session)
-
     if session['name_session'] in ('novost', 'reklama'):
 
         session, msg_list = parser(vkapp, session)
+        post_bezfoto(vkapp, session)
         if msg_list:
             session = posting_post(vkapp, session, msg_list)
+        save_table(session, session['name_session'])
 
     elif session['name_session'] == 'addons':
         old_ruletka = ''
@@ -47,23 +40,30 @@ def control(session):
                 session = load_table(session, session['name_session'])
                 session, msg_list = parser(vkapp, session)
                 if msg_list:
+                    post_bezfoto(vkapp, session)
                     session = posting_post(vkapp, session, msg_list)
+                    save_table(session, session['name_session'])
                     break
             old_ruletka = shut
 
     elif session['name_session'] == 'repost_reklama':
-        session = repost_reklama(vkapp, session)
+        post_bezfoto(vkapp, session)
+        repost_reklama(vkapp, session)
 
     elif session['name_session'] == 'repost_aprel':
-        session = repost_aprel(vkapp, session)
+        post_bezfoto(vkapp, session)
+        repost_aprel(vkapp, session)
 
     elif session['name_session'] == 'repost_krugozor':
-        session = repost_krugozor(vkapp, session)
+        post_bezfoto(vkapp, session)
+        repost_krugozor(vkapp, session)
+
+    elif session['name_session'] == 'instagram':
+        instagram_mi(vkapp, session)
+
     else:
         print('Аргументы запуска не совпадают ни с одним вариантом')
         return False
-
-    save_table(session, session['name_session'])
 
 
 if __name__ == '__main__':

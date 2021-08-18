@@ -1,3 +1,4 @@
+from bin.driver import save_table
 from bin.rw.get_msg import get_msg
 from bin.rw.upload_post_to_main_group import upload_post_to_main_group
 from bin.utils.avtortut import avtortut
@@ -18,4 +19,6 @@ def repost_krugozor(vkapp, session):
             if upload_post_to_main_group(vkapp, session['post_group']['key'], sample):
                 session[session['name_session']]['lip'].append(link)
                 break
-    return session
+
+    session['size_base_old_posts'] = 20
+    save_table(session, session['name_session'])

@@ -1,3 +1,4 @@
+from bin.driver import save_table
 from bin.rw.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history
 
@@ -22,7 +23,8 @@ def repost_aprel(vkapp, session):
         except:
             pass
 
-    return session
+    session['size_base_old_posts'] = 3
+    save_table(session, session['name_session'])
 
 
 if __name__ == '__main__':

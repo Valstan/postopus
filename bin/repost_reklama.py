@@ -19,7 +19,7 @@ def repost_reklama(vkapp, session):
         shut = random.choice(ruletka)
         shut = clear_copy_history(shut)
         shut = ''.join(map(str, ('wall', shut['owner_id'], '_', shut['id'])))
-        if shut not in session[session['name_session']]:
+        if shut not in session[session['name_session']['lip']]:
             break
 
     id_group = session['post_group']['key'] * -1
@@ -28,6 +28,8 @@ def repost_reklama(vkapp, session):
         session[session['name_session']]['lip'].append(shut)
     except:
         pass
+
+    session['size_base_old_posts'] = 6
 
     return session
 

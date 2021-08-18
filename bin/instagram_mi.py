@@ -29,6 +29,7 @@ def instagram_mi(vkapp, session):
         sample_template = ''
     if sample_template:
         session[session['name_session']]['lip'].append(sample_template)
+        session['size_base_old_posts'] = 20
         save_table(session, session['name_session'])
         height = 0
         url = ''
