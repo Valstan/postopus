@@ -1,5 +1,4 @@
-from bin.instagram_mi import insta_post
-from bin.insta_post_manual import insta_post_manual
+from bin.control.instagram_mi import insta_post
 
 insta_post('insta')
 # insta_post_manual()

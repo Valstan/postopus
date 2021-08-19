@@ -1,4 +1,4 @@
-from bin.driver import save_table
+from bin.utils.driver import save_table, load_table
 from bin.rw.get_msg import get_msg
 from bin.rw.upload_post_to_main_group import upload_post_to_main_group
 from bin.utils.avtortut import avtortut
@@ -6,6 +6,7 @@ from bin.utils.clear_copy_history import clear_copy_history
 
 
 def repost_krugozor(vkapp, session):
+    session = load_table(session, session['name_session'])
     krugozor_id = -168171570
     msgs = get_msg(vkapp, krugozor_id, 0, 50)
     for sample in msgs:

@@ -1,4 +1,4 @@
-from bin.driver import load_table
+from bin.utils.driver import load_table
 
 
 def sort_double(session, msg, news_msg_list, maingroup_msg_list):

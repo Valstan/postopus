@@ -1,4 +1,4 @@
-from bin.driver import load_table, save_table
+from bin.utils.driver import load_table, save_table
 from bin.rw.post_msg import post_msg
 
 

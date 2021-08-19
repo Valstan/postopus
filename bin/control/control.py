@@ -1,13 +1,13 @@
 import random
 
-from bin.driver import save_table, load_table
-from bin.instagram_mi import instagram_mi
-from bin.parser import parser
-from bin.posting_post import posting_post
-from bin.repost_aprel import repost_aprel
-from bin.repost_krugozor import repost_krugozor
-from bin.repost_me import repost_me
-from bin.repost_reklama import repost_reklama
+from bin.utils.driver import save_table, load_table
+from bin.control.instagram_mi import instagram_mi
+from bin.rw.parser import parser
+from bin.rw.posting_post import posting_post
+from bin.control.repost_aprel import repost_aprel
+from bin.control.repost_krugozor import repost_krugozor
+from bin.control.repost_me import repost_me
+from bin.control.repost_reklama import repost_reklama
 from bin.rw.change_lp import change_lp
 from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.post_bezfoto import post_bezfoto

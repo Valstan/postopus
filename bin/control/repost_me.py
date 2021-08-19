@@ -1,4 +1,4 @@
-from bin.driver import load_table, save_table
+from bin.utils.driver import load_table, save_table
 from bin.rw.change_lp import change_lp
 from bin.rw.get_msg import get_msg
 from bin.rw.get_session_vk_api import get_session_vk_api

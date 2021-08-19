@@ -1,7 +1,7 @@
 from PIL import Image
 from instabot import Bot
 
-from bin.driver import save_table, load_table
+from bin.utils.driver import save_table, load_table
 from bin.rw.change_lp import change_lp
 from bin.rw.get_image import image_get
 from bin.rw.get_msg import get_msg

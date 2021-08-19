@@ -1,11 +1,12 @@
 import random
 
-from bin.driver import save_table
+from bin.utils.driver import save_table, load_table
 from bin.rw.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history
 
 
 def repost_reklama(vkapp, session):
+    session = load_table(session, session['name_session'])
     glav = -163580976
     zam = -172650802
     dvorniki = -171276826

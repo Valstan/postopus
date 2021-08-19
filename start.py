@@ -1,6 +1,6 @@
 from sys import argv
 
-from bin.control import control
+from bin.control.control import control
 from bin.rw.open_file_json import open_file_json
 
 if len(argv) == 3:
