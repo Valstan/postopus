@@ -14,7 +14,7 @@ from bin.rw.post_bezfoto import post_bezfoto
 
 
 def control(session):
-    if session['name_session'] == 'repost':
+    if session['name_session'] == 'repost_me':
         repost_me(session)
         quit()
 
