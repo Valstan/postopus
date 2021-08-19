@@ -1,7 +1,7 @@
 from PIL import Image
 from instabot import Bot
 
-from bin.driver import save_table
+from bin.driver import save_table, load_table
 from bin.rw.change_lp import change_lp
 from bin.rw.get_image import image_get
 from bin.rw.get_msg import get_msg
@@ -13,6 +13,7 @@ from bin.utils.white_board import white_board
 
 
 def instagram_mi(vkapp, session):
+    session = load_table(session, session['name_session'])
     list_dir_for_clear = ('config', session['bases_path'] + session['insta_photo_path'])
     clear_dir(list_dir_for_clear)
     new_posts = get_msg(vkapp, session['post_group']['key'], 0, 30)
