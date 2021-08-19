@@ -22,6 +22,7 @@ def control(session):
 
     if session['name_session'] in ('novost', 'reklama'):
 
+        session = load_table(session, session['name_session'])
         session, msg_list = parser(vkapp, session)
         post_bezfoto(vkapp, session)
         if msg_list:
