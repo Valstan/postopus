@@ -1,5 +1,6 @@
 import random
 
+from bin.control.instagram_manual import instagram_manual
 from bin.utils.driver import save_table, load_table
 from bin.control.instagram_mi import instagram_mi
 from bin.rw.parser import parser
@@ -61,6 +62,10 @@ def control(session):
 
     elif session['name_session'] == 'instagram':
         instagram_mi(vkapp, session)
+        quit()
+
+    elif session['name_session'] == 'instagram_manual':
+        instagram_manual(vkapp, session)
 
     else:
         print('Аргументы запуска не совпадают ни с одним вариантом')
