@@ -1,5 +1,5 @@
-from bin.rw.open_file_json import open_file_json
-from bin.rw.save_file_json import save_file_json
+from bin.r_w.open_file_json import open_file_json
+from bin.r_w.save_file_json import save_file_json
 
 
 def load_table(session, name_table):

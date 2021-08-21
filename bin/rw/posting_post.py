@@ -1,4 +1,4 @@
-from bin.rw.upload_post_to_main_group import upload_post_to_main_group
+from bin.r_w.upload_post_to_main_group import upload_post_to_main_group
 
 
 def posting_post(vkapp, session, msg_list):

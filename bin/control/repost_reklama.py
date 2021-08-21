@@ -1,7 +1,7 @@
 import random
 
 from bin.utils.driver import save_table, load_table
-from bin.rw.get_msg import get_msg
+from bin.r_w.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history
 
 

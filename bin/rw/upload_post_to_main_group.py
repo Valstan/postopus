@@ -1,5 +1,5 @@
-from bin.rw.get_attach import get_attach
-from bin.rw.post_msg import post_msg
+from bin.r_w.get_attach import get_attach
+from bin.r_w.post_msg import post_msg
 
 
 def upload_post_to_main_group(vkapp, group_id, msg):

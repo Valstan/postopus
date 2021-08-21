@@ -1,5 +1,5 @@
 from bin.utils.driver import load_table, save_table
-from bin.rw.post_msg import post_msg
+from bin.r_w.post_msg import post_msg
 
 
 def post_bezfoto(vkapp, session):
