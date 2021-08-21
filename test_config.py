@@ -1,11 +1,9 @@
-import os
+from bin.rw import RWFile
 
-from bin.rw.open_file_json import open_file_json
-from bin.rw.save_file_json import save_file_json
-
-i = open_file_json('', "config")
-os.rename('config.json', 'old_config.json')
-save_file_json("", "config", i)
+i = RWFile('', "config")
+i.open()
+i.rename()
+i.save()
 
 '''new = []
 for i in delete_msg_blacklist:
