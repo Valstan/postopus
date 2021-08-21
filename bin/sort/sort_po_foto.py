@@ -2,7 +2,7 @@ import hashlib
 
 from PIL import Image
 
-from bin.r_w.get_image import image_get
+from bin.rw.get_image import image_get
 from bin.sort.sort_black_list import sort_black_list
 from bin.utils.tesseract import tesseract
 

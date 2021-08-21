@@ -1,9 +1,9 @@
 from PIL import Image
 from instabot import Bot
 
-from bin.r_w.change_lp import change_lp
-from bin.r_w.get_image import image_get
-from bin.r_w.get_msg import get_msg
+from bin.rw.change_lp import change_lp
+from bin.rw.get_image import image_get
+from bin.rw.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.clear_dir import clear_dir
 from bin.utils.draw_text import draw_text

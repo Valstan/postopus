@@ -1,6 +1,6 @@
 from bin.utils.driver import save_table, load_table
-from bin.r_w.get_msg import get_msg
-from bin.r_w.upload_post_to_main_group import upload_post_to_main_group
+from bin.rw.get_msg import get_msg
+from bin.rw.upload_post_to_main_group import upload_post_to_main_group
 from bin.utils.avtortut import avtortut
 from bin.utils.clear_copy_history import clear_copy_history
 

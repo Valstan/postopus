@@ -1,6 +1,6 @@
 import time
 
-from bin.r_w.get_msg import get_msg
+from bin.rw.get_msg import get_msg
 
 
 def read_posts(vkapp, group_list, count):

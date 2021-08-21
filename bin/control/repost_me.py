@@ -1,7 +1,7 @@
 from bin.utils.driver import load_table, save_table
-from bin.r_w.change_lp import change_lp
-from bin.r_w.get_msg import get_msg
-from bin.r_w.get_session_vk_api import get_session_vk_api
+from bin.rw.change_lp import change_lp
+from bin.rw.get_msg import get_msg
+from bin.rw.get_session_vk_api import get_session_vk_api
 
 
 def repost_me(session):

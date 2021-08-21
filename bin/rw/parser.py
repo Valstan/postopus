@@ -1,4 +1,4 @@
-from bin.r_w.read_posts import read_posts
+from bin.rw.read_posts import read_posts
 from bin.sort.sort_black_list import sort_black_list
 from bin.sort.sort_double import sort_double
 from bin.sort.sort_lip import sort_lip
