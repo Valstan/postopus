@@ -12,9 +12,16 @@ from bin.control.repost_reklama import repost_reklama
 from bin.rw.change_lp import change_lp
 from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.post_bezfoto import post_bezfoto
+from bin.utils.zip_base import zip_base
+from bin.rw.get_session import get_session
 
 
-def control(session):
+def control(name_session, name_base):
+    if name_session == 'zip':
+        zip_base()
+
+    session = get_session(name_session, name_base)
+
     if session['name_session'] == 'repost_me':
         repost_me(session)
         quit()
