@@ -19,6 +19,7 @@ from bin.rw.get_session import get_session
 def control(name_session, name_base):
     if name_session == 'zip':
         zip_base()
+        quit()
 
     session = get_session(name_session, name_base)
 
