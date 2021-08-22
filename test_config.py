@@ -1,4 +1,4 @@
-from bin.rw import RWFile
+from bin.rw_file import RWFile
 
 i = RWFile('', "config")
 i.open()
