@@ -1,7 +1,7 @@
 import cv2
 import pytesseract
 
-# pytesseract.pytesseract.tesseract_cmd = 'c:\\tesseract_orc\\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = 'c:\\tesseract_orc\\tesseract.exe'
 
 
 def tesseract(patch):
