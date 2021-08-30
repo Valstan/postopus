@@ -1,8 +1,8 @@
-from bin.utils.driver import save_table, load_table
 from bin.rw.get_msg import get_msg
-from bin.rw.upload_post_to_main_group import upload_post_to_main_group
+from bin.rw.posting_post import posting_post
 from bin.utils.avtortut import avtortut
 from bin.utils.clear_copy_history import clear_copy_history
+from bin.utils.driver import save_table, load_table
 
 
 def repost_krugozor(vkapp, session):
@@ -11,15 +11,14 @@ def repost_krugozor(vkapp, session):
     msgs = get_msg(vkapp, krugozor_id, 0, 50)
     for sample in msgs:
         sample = clear_copy_history(sample)
-        link = ''.join(map(str, ('wall', sample['owner_id'], '_', sample['id'])))
+        link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
         if link not in session[session['name_session']]['lip']:
             sample['text'] = ''.join(map(str, (session['podpisi']['zagolovok']['krugozor'],
                                                avtortut(sample),
                                                session['podpisi']['heshteg']['krugozor'],
                                                session['podpisi']['final'])))
-            if upload_post_to_main_group(vkapp, session['post_group']['key'], sample):
-                session[session['name_session']]['lip'].append(link)
-                break
+            session = posting_post(vkapp, session, sample, session['post_group']['key'])
+            break
 
-    session['size_base_old_posts'] = 20
+    session['last_posts_counter'] = 20
     save_table(session, session['name_session'])

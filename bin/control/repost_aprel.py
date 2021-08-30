@@ -12,7 +12,7 @@ def repost_aprel(vkapp, session):
 
     for msg in msgs:
         msg = clear_copy_history(msg)
-        msg_link = ''.join(map(str, ('wall', msg['owner_id'], '_', msg['id'])))
+        msg_link = ''.join(map(str, ('https://vk.com/wall', msg['owner_id'], '_', msg['id'])))
         if msg_link not in session[session['name_session']]['lip']:
             break
 
@@ -24,7 +24,7 @@ def repost_aprel(vkapp, session):
         except:
             pass
 
-    session['size_base_old_posts'] = 3
+    session['last_posts_counter'] = 3
     save_table(session, session['name_session'])
 
 

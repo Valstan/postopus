@@ -23,14 +23,16 @@ def instagram_mi(vkapp, session):
         sample_clear = clear_copy_history(sample)
         if 'attachments' in sample_clear:
             if sample_clear['attachments'][0]['type'] == 'photo':
-                sample_template = ''.join(map(str, ('wall', sample_clear['owner_id'], '_', sample_clear['id'])))
+                sample_template = ''.join(map(str, ('https://vk.com/wall',
+                                                    sample_clear['owner_id'],
+                                                    '_', sample_clear['id'])))
                 if sample_template not in session['instagram']['lip']:
                     if 'ДЕСЯТКА' not in sample_clear['text'] and '#Музыка' not in sample_clear['text']:
                         break
         sample_template = ''
     if sample_template:
         session[session['name_session']]['lip'].append(sample_template)
-        session['size_base_old_posts'] = 20
+        session['last_posts_counter'] = 20
         save_table(session, session['name_session'])
         height = 0
         url = ''

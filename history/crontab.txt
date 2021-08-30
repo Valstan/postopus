@@ -9,4 +9,3 @@
 30 9,10,11,13,14,18,20 * * * cd /root/postopus && /usr/bin/python3 start.py reklama dran
 45 6,7,19,20,21,23 * * * cd /root/postopus && /usr/bin/python3 start.py novost dran
 50 6,8,11,12,15,19,22 * * * cd /root/postopus && /usr/bin/python3 start.py addons dran
-50 23 * * * cd /root/postopus && /usr/bin/python3 start.py zip mi  

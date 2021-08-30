@@ -22,7 +22,7 @@ def load_table(session, name_table):
 def save_table(session, name_table):
 
     for n in session['constructor_table']:
-        while len(session[name_table][n]) > session['size_base_old_posts']:
+        while len(session[name_table][n]) > session['last_posts_counter']:
             del session[name_table][n][0]
     collection = get_mongo_base()[session['name_base']]
     if not collection.find_one({"title": name_table}):
