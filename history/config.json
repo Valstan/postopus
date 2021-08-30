@@ -1,5 +1,5 @@
 {
-  "bases_path": "bases/",
+  "title": "config",
   "insta_photo_path": "insta_photo/",
   "name_session": "",
   "login": "",
@@ -8,7 +8,6 @@
   "size_base_old_posts": 100,
   "difference_old_posts": 259200,
   "constructor_table": {
-    "title": "",
     "lip": [],
     "hash": [],
     "list": []

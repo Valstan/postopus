@@ -21,7 +21,7 @@ def control(name_session, name_base):
         zip_base()
         quit()
 
-    session = get_session(name_session, name_base)
+    session = get_session(name_base, 'config', name_session)
 
     if session['name_session'] == 'repost_me':
         repost_me(session)

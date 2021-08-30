@@ -2,15 +2,19 @@ from bin.rw.get_mongo_base import get_mongo_base
 
 
 def load_table(session, name_table):
+
     collection = get_mongo_base()[session['name_base']]
     session[name_table] = collection.find_one({'title': name_table})
+
+    # Если нет такой коллекции
     if not session[name_table]:
-        session[name_table] = {}
+        session.update({name_table: {'title': name_table}})
         session[name_table].update(session['constructor_table'])
+
+    # Если коллекция есть, но она не полная
     for k, v in session['constructor_table'].items():
         if k not in session[name_table]:
             session[name_table][k] = v
-    session[name_table]['title'] = name_table
 
     return session
 

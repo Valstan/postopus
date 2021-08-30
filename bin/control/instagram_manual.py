@@ -13,7 +13,7 @@ from bin.utils.white_board import white_board
 
 def instagram_manual(vkapp, session):
     group_shablon = -179203620
-    list_dir_for_clear = ('config', session['bases_path'] + session['insta_photo_path'])
+    list_dir_for_clear = ('config', session['insta_photo_path'])
     clear_dir(list_dir_for_clear)
     sample = get_msg(vkapp, group_shablon, 0, 1)[0]
     sample = clear_copy_history(sample)
@@ -25,12 +25,12 @@ def instagram_manual(vkapp, session):
             height = i['height']
             url = i['url']
 
-    image_get(url, session['bases_path'] + session['insta_photo_path'] + '1.jpg')
-    img = Image.open(session['bases_path'] + session['insta_photo_path'] + '1.jpg')
+    image_get(url, session['insta_photo_path'] + '1.jpg')
+    img = Image.open(session['insta_photo_path'] + '1.jpg')
     img = resize_img(img, 1080, 1080)
     img = white_board(img, 1080, 1080)
     img = draw_text(img, 'Малмыж Инфо', 10, 10)
-    img.save(session['bases_path'] + session['insta_photo_path'] + '1.jpeg')
+    img.save(session['insta_photo_path'] + '1.jpeg')
 
     session['name_base'] = 'insta_mi'
     session = change_lp(session)
@@ -41,7 +41,7 @@ def instagram_manual(vkapp, session):
     bot.login(username=session['login'], password=session['password'])
 
     #  upload a picture
-    bot.upload_photo(session['bases_path'] + session['insta_photo_path'] + '1.jpeg',
+    bot.upload_photo(session['insta_photo_path'] + '1.jpeg',
                      caption=caption)
 
 

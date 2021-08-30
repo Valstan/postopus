@@ -14,7 +14,7 @@ from bin.utils.white_board import white_board
 
 def instagram_mi(vkapp, session):
     session = load_table(session, session['name_session'])
-    list_dir_for_clear = ('config', session['bases_path'] + session['insta_photo_path'])
+    list_dir_for_clear = ('config', session['insta_photo_path'])
     clear_dir(list_dir_for_clear)
     new_posts = get_msg(vkapp, session['post_group']['key'], 0, 30)
     sample_template = ''
@@ -39,12 +39,12 @@ def instagram_mi(vkapp, session):
                 height = i['height']
                 url = i['url']
 
-        if image_get(url, session['bases_path'] + session['insta_photo_path'] + '1.jpg'):
-            img = Image.open(session['bases_path'] + session['insta_photo_path'] + '1.jpg')
+        if image_get(url, session['insta_photo_path'] + '1.jpg'):
+            img = Image.open(session['insta_photo_path'] + '1.jpg')
             img = resize_img(img, 1080, 1080)
             img = white_board(img, 1080, 1080)
             img = draw_text(img, 'Малмыж Инфо', 10, 10)
-            img.save(session['bases_path'] + session['insta_photo_path'] + '1.jpeg')
+            img.save(session['insta_photo_path'] + '1.jpeg')
 
             session['name_base'] = 'insta_mi'
             session = change_lp(session)
@@ -56,7 +56,7 @@ def instagram_mi(vkapp, session):
                 bot.login(username=session['login'], password=session['password'])
 
                 #  upload a picture
-                bot.upload_photo(session['bases_path'] + session['insta_photo_path'] + '1.jpeg',
+                bot.upload_photo(session['insta_photo_path'] + '1.jpeg',
                                  caption=caption)
             except:
                 pass
