@@ -21,7 +21,7 @@ def repost_reklama(vkapp, session):
         shut = random.choice(ruletka)
         shut = clear_copy_history(shut)
         shut = ''.join(map(str, ('https://vk.com/wall', shut['owner_id'], '_', shut['id'])))
-        if shut not in session[session['name_session']['lip']]:
+        if shut not in session[session['name_session']]['lip']:
             break
 
     id_group = session['post_group']['key'] * -1
