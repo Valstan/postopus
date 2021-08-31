@@ -20,7 +20,7 @@ def post_bezfoto(vkapp, session):
                  session['podpisi']['image_desatka'])
 
         session['all_bezfoto']['lip'].extend(session['bezfoto']['lip'][:10])
-        while len(session['all_bezfoto']['lip']) > session['size_base_old_posts']:
+        while len(session['all_bezfoto']['lip']) > session['last_posts_counter']:
             del session['all_bezfoto']['lip'][0]
         del session['bezfoto']['lip'][:10]
         save_table(session, 'bezfoto')
