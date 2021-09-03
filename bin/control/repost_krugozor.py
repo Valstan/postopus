@@ -9,6 +9,7 @@ def repost_krugozor(vkapp, session):
     session = load_table(session, session['name_session'])
     krugozor_id = -168171570
     msgs = get_msg(vkapp, krugozor_id, 0, 50)
+    msg_list = []
     for sample in msgs:
         sample = clear_copy_history(sample)
         link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
@@ -17,7 +18,8 @@ def repost_krugozor(vkapp, session):
                                                avtortut(sample),
                                                session['podpisi']['heshteg']['krugozor'],
                                                session['podpisi']['final'])))
-            session = posting_post(vkapp, session, sample, session['post_group']['key'])
+            msg_list.append(sample)
+            session = posting_post(vkapp, session, msg_list, session['post_group']['key'])
             break
 
     session['last_posts_counter'] = 20
