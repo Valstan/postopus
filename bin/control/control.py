@@ -1,24 +1,24 @@
 import random
 
 from bin.control.instagram_manual import instagram_manual
-from bin.utils.driver import save_table, load_table
 from bin.control.instagram_mi import instagram_mi
-from bin.rw.parser import parser
-from bin.rw.posting_post import posting_post
 from bin.control.repost_aprel import repost_aprel
 from bin.control.repost_krugozor import repost_krugozor
 from bin.control.repost_me import repost_me
 from bin.control.repost_reklama import repost_reklama
 from bin.rw.change_lp import change_lp
-from bin.rw.get_session_vk_api import get_session_vk_api
-from bin.rw.post_bezfoto import post_bezfoto
-from bin.utils.zip_base import zip_base
 from bin.rw.get_session import get_session
+from bin.rw.get_session_vk_api import get_session_vk_api
+from bin.rw.parser import parser
+from bin.rw.post_bezfoto import post_bezfoto
+from bin.rw.posting_post import posting_post
+from bin.utils.driver import save_table, load_table
+from service_base import service_base
 
 
 def control(name_session, name_base):
-    if name_session == 'zip':
-        zip_base()
+    if name_session == '1':
+        service_base()
         quit()
 
     session = get_session(name_base, 'config', name_session)
