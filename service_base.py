@@ -40,6 +40,7 @@ def del_msg_blacklist(collection):
                           "0 - Save and Exit"))
         if click == "1":
             text = str(input("Input text:"))
+            text = text.lower()
             new_set.add(text)
         elif click == "0":
             collection.update_one({'title': "config"}, {'$set': {"delete_msg_blacklist": list(new_set)}})

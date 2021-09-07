@@ -8,8 +8,8 @@ def load_table(session, name_table):
 
     # Если нет такой коллекции
     if not session[name_table]:
-        session.update({name_table: {'title': name_table}})
-        session[name_table].update(session['constructor_table'])
+        session[name_table] = session['constructor_table']
+        session[name_table]['title'] = name_table
 
     # Если коллекция есть, но она не полная
     for k, v in session['constructor_table'].items():
@@ -25,10 +25,7 @@ def save_table(session, name_table):
         while len(session[name_table][n]) > session['last_posts_counter']:
             del session[name_table][n][0]
     collection = get_mongo_base()[session['name_base']]
-    if not collection.find_one({"title": name_table}):
-        collection.insert_one(session[name_table])
-    else:
-        collection.replace_one({'title': name_table}, session[name_table], True)
+    collection.replace_one({'title': name_table}, session[name_table], True)
 
 
 if __name__ == '__main__':
