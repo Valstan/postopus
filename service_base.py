@@ -1,14 +1,6 @@
 from pymongo import MongoClient
 
 
-def hook(db):
-    collection = db['config']
-    table = collection.find_one({'title': "config"})
-    new_set = set(table["delete_msg_blacklist"])
-    table["delete_msg_blacklist"] = new_set
-    collection.replace_one({'title': "config"}, table, True)
-
-
 def service_base():
     client = MongoClient(
         "mongodb+srv://valstan:nitro2000@postopus.qjxr9.mongodb.net/postopus?retryWrites=true&w=majority")
@@ -23,17 +15,36 @@ def service_base():
     elif click == "4":
         pass
     elif click == "000":
-        hook(db)
+        print("Эта функция не написана.")
+        pass  # hook(db)
 
 
 def service_config(db):
     collection = db['config']
-    table = collection.find_one({'title': "config"})
+    click = str(input("1 - config delete_msg_blacklist\n"
+                      "Enter - Exit"))
+    if click == "1":
+        del_msg_blacklist(collection)
+    print("Скрипт завершил работу.")
+
+
+def del_msg_blacklist(collection):
+    delete_msg_blacklist = collection.find_one({'title': "config"})["delete_msg_blacklist"]
+    new_delete_msg_blacklist = []
+    for i in delete_msg_blacklist:
+        i = i.lower()
+        new_delete_msg_blacklist.append(i)
+    new_set = set(new_delete_msg_blacklist)
     while True:
-        click = input("1-add text to delete_msg_blacklist\nEnter Завершить")
-        if click == 1:
-            text = str(input("Input text"))
-            table["delete_msg_blacklist"].add(text)
-            collection.replace_one({'title': "config"}, table, True)
-        else:
+        click = str(input("1 - add text to delete_msg_blacklist\n"
+                          "0 - Save and Exit"))
+        if click == "1":
+            text = str(input("Input text:"))
+            new_set.add(text)
+        elif click == "0":
+            collection.update_one({'title': "config"}, {'$set': {"delete_msg_blacklist": list(new_set)}})
             break
+
+
+# def hook(db):
+#    pass  # что нибудь сделать одноразово и быстро

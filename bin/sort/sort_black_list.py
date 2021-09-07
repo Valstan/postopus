@@ -3,9 +3,9 @@ import re
 
 def sort_black_list(delete_msg_blacklist, msg):
     msg = msg.replace('"', '')
-    msg.lower()
+    msg = msg.lower()
     for sample in delete_msg_blacklist:
-        sample.lower()
+        sample = sample.lower()
         if re.search(sample, msg):
             return True
 
