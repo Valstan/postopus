@@ -13,7 +13,7 @@ from bin.rw.parser import parser
 from bin.rw.post_bezfoto import post_bezfoto
 from bin.rw.posting_post import posting_post
 from bin.utils.driver import save_table, load_table
-from service_base import service_base
+from bin.utils.service_base import service_base
 
 
 def control(name_session, name_base):
