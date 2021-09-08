@@ -25,7 +25,7 @@ def save_table(session, name_table):
         while len(session[name_table][n]) > session['last_posts_counter']:
             del session[name_table][n][0]
     collection = get_mongo_base()[session['name_base']]
-    collection.update_one({'title': name_table}, {'$set': {session[name_table]}}, upsert=True)
+    collection.update_one({'title': name_table}, {'$set': session[name_table]}, upsert=True)
 
 
 if __name__ == '__main__':

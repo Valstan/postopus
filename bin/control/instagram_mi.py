@@ -20,7 +20,7 @@ def instagram_mi(vkapp, session):
     sample_template = ''
     sample_clear = {}
     for sample in new_posts:
-        sample_clear = clear_copy_history(sample)
+        sample_clear = clear_copy_history(vkapp, sample)
         if 'attachments' in sample_clear:
             if sample_clear['attachments'][0]['type'] == 'photo':
                 sample_template = ''.join(map(str, ('https://vk.com/wall',

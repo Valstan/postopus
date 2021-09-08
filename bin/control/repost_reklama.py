@@ -19,7 +19,7 @@ def repost_reklama(vkapp, session):
     random.shuffle(ruletka)
     for i in range(20):
         shut = random.choice(ruletka)
-        shut = clear_copy_history(shut)
+        shut = clear_copy_history(vkapp, shut)
         shut = ''.join(map(str, ('https://vk.com/wall', shut['owner_id'], '_', shut['id'])))
         if shut not in session[session['name_session']]['lip']:
             break
