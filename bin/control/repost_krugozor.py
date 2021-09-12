@@ -22,5 +22,5 @@ def repost_krugozor(vkapp, session):
             session = posting_post(vkapp, session, msg_list, session['post_group']['key'])
             break
 
-    session['last_posts_counter'] = 20
+    session['last_posts_counter'] = 40
     save_table(session, session['name_session'])

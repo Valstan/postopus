@@ -31,7 +31,7 @@ def repost_reklama(vkapp, session):
     except:
         pass
 
-    session['last_posts_counter'] = 6
+    session['last_posts_counter'] = 10
     save_table(session, session['name_session'])
 
 
