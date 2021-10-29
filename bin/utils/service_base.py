@@ -19,12 +19,25 @@ def service_base():
         pass  # hook(db)
 
 
+def add_group_for_parsing(collection):
+    base = str(input("Name base (mi, dran, test): "))
+    tema = str(input("Name tematika (reklama, novost, prikol, krugozor, music, art): "))
+    sample = collection.find_one({'title': "config"})["config_bases"][base]["id"][tema]
+    caption = str(input("Caption (Малмыжский музей http://museum.ru): "))
+    number_group = str(input("Number group (-89542154): "))
+    sample[caption] = number_group
+    collection["config_bases"][base]["id"].insert_one({tema: sample})
+
+
 def service_config(db):
     collection = db['config']
     click = str(input("1 - config delete_msg_blacklist\n"
+                      "2 - add group for parsing\n"
                       "Enter - Exit"))
     if click == "1":
         del_msg_blacklist(collection)
+    elif click == "2":
+        add_group_for_parsing(collection)
     print("Скрипт завершил работу.")
 
 
