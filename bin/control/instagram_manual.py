@@ -16,7 +16,7 @@ def instagram_manual(vkapp, session):
     list_dir_for_clear = ('config', session['insta_photo_path'])
     clear_dir(list_dir_for_clear)
     sample = get_msg(vkapp, group_shablon, 0, 1)[0]
-    sample = clear_copy_history(vkapp, sample)
+    sample = clear_copy_history(sample)
 
     height = 0
     url = ''

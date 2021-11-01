@@ -11,7 +11,7 @@ def repost_krugozor(vkapp, session):
     msgs = get_msg(vkapp, krugozor_id, 0, 50)
     msg_list = []
     for sample in msgs:
-        sample = clear_copy_history(vkapp, sample)
+        sample = clear_copy_history(sample)
         link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
         if link not in session[session['name_session']]['lip']:
             sample['text'] = ''.join(map(str, (session['podpisi']['zagolovok']['krugozor'],

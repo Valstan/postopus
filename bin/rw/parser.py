@@ -17,14 +17,14 @@ def parser(vkapp, session):
     maingroup_msg_list = []
 
     for sample in oldposts_maingroup:
-        maingroup_msg_list.append(clear_copy_history(vkapp, sample))
+        maingroup_msg_list.append(clear_copy_history(sample))
 
     new_msg_list = []
 
     for sample in new_posts:
         if not sort_old_date(session, sample):
             continue
-        sample = clear_copy_history(vkapp, sample)
+        sample = clear_copy_history(sample)
         sample, skleika = sort_lip(sample, session[session['name_session']]['lip'])
         if not sample:
             continue

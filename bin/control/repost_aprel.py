@@ -11,7 +11,7 @@ def repost_aprel(vkapp, session):
     msg_link = []
 
     for msg in msgs:
-        msg = clear_copy_history(vkapp, msg)
+        msg = clear_copy_history(msg)
         msg_link = ''.join(map(str, ('https://vk.com/wall', msg['owner_id'], '_', msg['id'])))
         if msg_link not in session[session['name_session']]['lip']:
             break
