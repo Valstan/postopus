@@ -1,6 +1,5 @@
-
-
 def correct_txt(session, msg):
+
     text_lower = msg['text'].lower()
     for i in session['delete_word']:
         sample = i.lower()
