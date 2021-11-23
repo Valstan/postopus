@@ -10,12 +10,12 @@ def repost_me(session):
         vkapp = get_session_vk_api(change_lp(session))
         new_posts = get_msg(vkapp, session['post_group']['key'], 0, 15)
         link = ''
+        reklama = session['podpisi']['heshteg']['reklama']
+        music = session['podpisi']['heshteg']['music']
         for sample in new_posts:
             link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
             if link not in session[session['name_session']]['lip']:
-                if session['podpisi']['heshteg']['reklama'] not in sample['text']\
-                    and\
-                    session['podpisi']['heshteg']['music'] not in sample['text']:
+                if reklama not in sample['text'] and music not in sample['text']:
                     break
             link = ''
         if link:
