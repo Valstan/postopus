@@ -6,7 +6,7 @@ def correct_txt(text):
     del_anon = re.compile(pattern_anon, re.IGNORECASE)
 
     text = del_anon.sub(' ', text)
-    text = re.sub(r'^[\W|\D]|[\W|\D]$', '', text)
+    text = re.sub(r'^[\W]|[\W]$', '', text)
 
     for i in range(6):
         text = text.replace(' !', '!')
