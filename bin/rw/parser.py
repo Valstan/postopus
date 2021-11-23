@@ -30,7 +30,7 @@ def parser(vkapp, session):
             continue
         if sort_black_list(session['delete_msg_blacklist'], sample['text']):
             continue
-        sample = correct_txt(session, sample)
+        sample['text'] = correct_txt(sample['text'])
         sample = sort_views_bezfoto(sample)
         sample = sort_sfoto_bezfoto(session, sample)
         if not sample:
