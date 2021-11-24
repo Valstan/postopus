@@ -1,3 +1,5 @@
+import re
+
 from bin.rw.read_posts import read_posts
 from bin.sort.sort_black_list import sort_black_list
 from bin.sort.sort_double import sort_double
@@ -8,7 +10,6 @@ from bin.sort.sort_sfoto_bezfoto import sort_sfoto_bezfoto
 from bin.sort.sort_views_bezfoto import sort_views_bezfoto
 from bin.utils.avtortut import avtortut
 from bin.utils.clear_copy_history import clear_copy_history
-from bin.utils.correct_txt import correct_txt
 
 
 def parser(vkapp, session):
@@ -30,7 +31,13 @@ def parser(vkapp, session):
             continue
         if sort_black_list(session['delete_msg_blacklist'], sample['text']):
             continue
-        sample['text'] = correct_txt(sample['text'])
+
+        for i in range(5):
+            sample['text'] = re.sub(
+                r"(\b|не|не )ан[оа]н(\b|\S+)|п[оа]жал[уй]?ст[ао]|админ[уы]?( пр[ао]пусти)?|\([\W_]*?\)|  ",
+                ' ', sample['text'], 0, re.IGNORECASE)
+            sample['text'] = re.sub(r'^\W|\W$|[\W ](?=[!,._])', '', sample['text'], 0, re.MULTILINE)
+
         sample = sort_views_bezfoto(sample)
         sample = sort_sfoto_bezfoto(session, sample)
         if not sample:
