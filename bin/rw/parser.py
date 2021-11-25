@@ -32,10 +32,20 @@ def parser(vkapp, session):
         if sort_black_list(session['delete_msg_blacklist'], sample['text']):
             continue
         # Чистка и исправление текста
-        sample['text'] = re.sub(r"(\b|не|не )ан[оа]н\w*|п[оа]жалу?й?ст[ао]|админ[уы]?( пр[ао]пусти)?|блядь",
+        sample['text'] = re.sub(r"(\b|не|не )ан[оа]н\w*|"
+                                r"п[оа]жалу?й?ст[ао]|"
+                                r"админ[уы]? пр[ао]пустит?е?|"
+                                r"админ[уы]?\b|"
+                                r"Здрав?с?т?в?у?й?т?е?",
                                 '', sample['text'], 0, re.IGNORECASE)
-        sample['text'] = re.sub(r"\([\W_]+\)| (?= )|[\W_](?=[!,._?])[$]?|^\W| $", '', sample['text'], 0, re.MULTILINE)
-        sample['text'] = re.sub(r"\([\W_]+\)| (?= )|[\W_](?=[!,._?])[$]?|^\W| $", '', sample['text'], 0, re.MULTILINE)
+        for i in range(1):
+            sample['text'] = re.sub(r"\([.,!?_/*+ ]+\)|"
+                                    r"[.,!?_/*+ ]+(?=[!?])|"
+                                    r"[.,_/*+ ]+(?=[.,])|"
+                                    r"^[).,!?_/*+ ]+|"
+                                    r"[,_(/*+ ]+$|"
+                                    r"\n$",
+                                    '', sample['text'], 0, re.MULTILINE)
 
         sample = sort_views_bezfoto(sample)
         sample = sort_sfoto_bezfoto(session, sample)
