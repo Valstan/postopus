@@ -32,20 +32,20 @@ def parser(vkapp, session):
         if sort_black_list(session['delete_msg_blacklist'], sample['text']):
             continue
         # Чистка и исправление текста
-        sample['text'] = re.sub(r"(\b|не|не )ан[оа]н\w*|"
-                                r"п[оа]жалу?й?ст[ао]|"
-                                r"админ[уы]? пр[ао]пустит?е?|"
-                                r"админ[уы]?\b|"
-                                r"Здрав?с?т?в?у?й?т?е?",
-                                '', sample['text'], 0, re.IGNORECASE)
-        for i in range(1):
-            sample['text'] = re.sub(r"\([.,!?_/*+ ]+\)|"
+        for i in range(3):
+            sample['text'] = re.sub(r"(\b|не|не )ан[оа]н\w*|"
+                                    r"п[оа]жалу?й?ст[ао]|"
+                                    r"админ[уы]? пр[ао]пустит?е?|"
+                                    r"админ[уы]?\b|"
+                                    r"Здрав?с?т?в?у?й?т?е?"
+                                    r"\([.,!?_/*+ ]+\)|"
                                     r"[.,!?_/*+ ]+(?=[!?])|"
                                     r"[.,_/*+ ]+(?=[.,])|"
                                     r"^[).,!?_/*+ ]+|"
                                     r"[,_(/*+ ]+$|"
                                     r"\n$",
-                                    '', sample['text'], 0, re.MULTILINE)
+                                    '', sample['text'],
+                                    0, flags=re.MULTILINE + re.IGNORECASE)
 
         sample = sort_views_bezfoto(sample)
         sample = sort_sfoto_bezfoto(session, sample)
