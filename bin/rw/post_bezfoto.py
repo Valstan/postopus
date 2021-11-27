@@ -1,3 +1,5 @@
+import random
+
 from bin.utils.driver import load_table, save_table
 from bin.rw.post_msg import post_msg
 
@@ -17,7 +19,7 @@ def post_bezfoto(vkapp, session):
         post_msg(vkapp,
                  session['post_group']['key'],
                  postmsg,
-                 session['podpisi']['image_desatka'])
+                 random.choice(session['podpisi']['image_desatka']))
 
         session['all_bezfoto']['lip'].extend(session['bezfoto']['lip'][:10])
         while len(session['all_bezfoto']['lip']) > session['last_posts_counter']:
