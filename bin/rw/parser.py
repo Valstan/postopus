@@ -58,7 +58,7 @@ def parser(vkapp, session):
         sample = sort_double(session, sample, new_msg_list, maingroup_msg_list)
 
         if sample:
-            if session['name_session'] == 'novost':
+            if session['name_session'] != 'reklama':
                 sample['text'] = ''.join(map(str, (session['podpisi']['zagolovok'][session['name_session']],
                                                    avtortut(sample),
                                                    session['podpisi']['heshteg'][session['name_session']],
