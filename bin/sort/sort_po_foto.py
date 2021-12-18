@@ -3,8 +3,8 @@ import hashlib
 from PIL import Image
 
 from bin.rw.get_image import image_get
-from bin.sort.sort_black_list import sort_black_list
-from bin.utils.tesseract import tesseract
+# from bin.sort.sort_black_list import sort_black_list
+# from bin.utils.tesseract import tesseract
 
 
 def sort_po_foto(session, msg):
@@ -17,9 +17,9 @@ def sort_po_foto(session, msg):
         histo = hash_object.hexdigest()
         if histo in session[session['name_session']]['hash']:
             return session, []
-        if sort_black_list(session['delete_msg_blacklist'], tesseract('image')):
-            session[session['name_session']]['hash'].append(histo)
-            return session, []
+        # if sort_black_list(session['delete_msg_blacklist'], tesseract('image')):
+        #     session[session['name_session']]['hash'].append(histo)
+        #     return session, []
         session[session['name_session']]['hash'].append(histo)
 
     return session, msg

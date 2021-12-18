@@ -56,11 +56,19 @@ def parser(vkapp, session):
         if not sample:
             continue
         sample = sort_double(session, sample, new_msg_list, maingroup_msg_list)
-        sample['text'] = ''.join(map(str, (session['podpisi']['zagolovok'][session['name_session']],
-                                           avtortut(sample),
-                                           session['podpisi']['heshteg'][session['name_session']],
-                                           session['podpisi']['final'])))
+
         if sample:
-            new_msg_list.append(sample)
-    new_msg_list.sort(key=lambda x: x['views']['count'], reverse=True)
+            if session['name_session'] == 'novost':
+                sample['text'] = ''.join(map(str, (session['podpisi']['zagolovok'][session['name_session']],
+                                                   avtortut(sample),
+                                                   session['podpisi']['heshteg'][session['name_session']],
+                                                   session['podpisi']['final'])))
+                new_msg_list.append(sample)
+            else:
+                if sample['text']:
+                    del sample['attachments']
+                    sort_sfoto_bezfoto(session, sample)
+
+    if new_msg_list:
+        new_msg_list.sort(key=lambda x: x['views']['count'], reverse=True)
     return session, new_msg_list

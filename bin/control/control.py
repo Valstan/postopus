@@ -33,7 +33,8 @@ def control(name_session, name_base):
 
         session = load_table(session, session['name_session'])
         session, msg_list = parser(vkapp, session)
-        post_bezfoto(vkapp, session)
+        if session['name_session'] == 'novost':
+            post_bezfoto(vkapp, session)
         if msg_list:
             session = posting_post(vkapp, session, msg_list, session['post_group']['key'])
         save_table(session, session['name_session'])
