@@ -18,9 +18,10 @@ def parser(vkapp, session):
     maingroup_msg_list = []
 
     for sample in oldposts_maingroup:
-        maingroup_msg_list.append(clear_copy_history(sample))
+        maingroup_msg_list.append(clear_copy_history(sample)['text'])
 
     new_msg_list = []
+    new_msg_list_string = []
 
     for sample in new_posts:
         if not sort_old_date(session, sample):
@@ -55,7 +56,7 @@ def parser(vkapp, session):
         session, sample = sort_po_foto(session, sample)
         if not sample:
             continue
-        sample = sort_double(session, sample, new_msg_list, maingroup_msg_list)
+        sample = sort_double(session, sample, new_msg_list_string, maingroup_msg_list)
 
         if sample:
             if session['name_session'] != 'reklama':
@@ -64,6 +65,7 @@ def parser(vkapp, session):
                                                    session['podpisi']['heshteg'][session['name_session']],
                                                    session['podpisi']['final'])))
                 new_msg_list.append(sample)
+                new_msg_list_string.append(sample['text'])
             else:
                 if sample['text']:
                     del sample['attachments']
