@@ -5,17 +5,10 @@ from bin.utils.avtortut import avtortut
 def sort_sfoto_bezfoto(session, msg):
     session = load_table(session, 'bezfoto')
     session = load_table(session, 'all_bezfoto')
-    flag = False
+    data_string = " ".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip'])
     if 'attachments' not in msg:
-        if len(msg['text']) > 20:
-            for text in  session['bezfoto']['lip']:
-                if msg['text'] not in text:
-                    flag = True
-                    break
-            for text in session['all_bezfoto']['lip']:
-                if msg['text'] not in text and flag:
-                    session['bezfoto']['lip'].append('&#128073; ' + avtortut(msg))
-                    break
+        if len(msg['text']) > 20 and msg['text'] not in data_string:
+            session['bezfoto']['lip'].append('&#128073; ' + avtortut(msg))
         msg = []
     save_table(session, 'bezfoto')
     return msg
