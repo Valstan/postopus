@@ -16,7 +16,7 @@ def sort_po_foto(session, msg):
         hash_object = hashlib.md5(str(histo).encode())
         histo = hash_object.hexdigest()
         if histo in session[session['name_session']]['hash']:
-            return session, []
+            return session, False
         # if sort_black_list(session['delete_msg_blacklist'], tesseract('image')):
         #     session[session['name_session']]['hash'].append(histo)
         #     return session, []
