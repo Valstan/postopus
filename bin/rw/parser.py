@@ -19,17 +19,17 @@ def parser(vkapp, session):
         maingroup_msg_list.append(clear_copy_history(sample)['text'])
 
     new_msg_list = []
-
     for sample in new_posts:
         if not sort_old_date(session, sample):
             continue
         sample = clear_copy_history(sample)
-        sample, skleika = sort_lip(sample, session[session['name_session']]['lip'])
-        if sample:
-            session[session['name_session']]['lip'].append(skleika)
-        else:
+        skleika = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
+        if skleika in session[session['name_session']]['lip']:
             continue
+        session[session['name_session']]['lip'].append(skleika)
 
+        # if ai_sort(sample) < 0.5:
+        #     continue
         if sort_black_list(session['delete_msg_blacklist'], sample['text']):
             continue
 
@@ -68,7 +68,7 @@ def parser(vkapp, session):
     save_table(session, 'bezfoto')
 
     new_msg_list = []
-    for sample in new_msg_list:
+    for sample in new_posts:
         session, sample = sort_po_foto(session, sample)
         if sample:
             if sample['text'] not in data_string:
