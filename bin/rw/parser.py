@@ -26,7 +26,6 @@ def parser(vkapp, session):
         skleika = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
         if skleika in session[session['name_session']]['lip']:
             continue
-        session[session['name_session']]['lip'].append(skleika)
 
         # if ai_sort(sample) < 0.5:
         #     continue
