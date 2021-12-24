@@ -1,8 +1,8 @@
 import re
 
+from bin.ai.ai_sort import ai_sort
 from bin.rw.read_posts import read_posts
 from bin.sort.sort_black_list import sort_black_list
-from bin.sort.sort_lip import sort_lip
 from bin.sort.sort_old_date import sort_old_date
 from bin.sort.sort_po_foto import sort_po_foto
 from bin.utils.avtortut import avtortut
@@ -27,7 +27,7 @@ def parser(vkapp, session):
         if skleika in session[session['name_session']]['lip']:
             continue
 
-        # if ai_sort(sample) < 0.5:
+        # if not ai_sort(sample):
         #     continue
         if sort_black_list(session['delete_msg_blacklist'], sample['text']):
             continue
@@ -62,7 +62,7 @@ def parser(vkapp, session):
             if len(sample['text']) > 20 and sample['text'] not in data_string:
                 session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample))
                 data_string += sample['text']
-                continue
+            continue
         new_posts.append(sample)
     save_table(session, 'bezfoto')
 
