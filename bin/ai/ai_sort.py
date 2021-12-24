@@ -28,9 +28,9 @@ def predict(sample):
     text = pad_sequences(new_text, maxlen=100)
     result = model.predict(text)[0][0]
     f = open('ai_predict.txt', 'a', encoding="utf-8")
-    f.write(f'{sample} - {result}\n')
+    f.write(f'{sample[:100]}\n{result}\n_____________________\n')
     f.close()
-    if result < 0.3:
+    if result < 0.6:
         return False
     return True
 

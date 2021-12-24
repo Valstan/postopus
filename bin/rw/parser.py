@@ -1,6 +1,6 @@
 import re
 
-from bin.ai.ai_sort import ai_sort
+# from bin.ai.ai_sort import ai_sort
 from bin.rw.read_posts import read_posts
 from bin.sort.sort_black_list import sort_black_list
 from bin.sort.sort_old_date import sort_old_date
