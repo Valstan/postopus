@@ -1,4 +1,24 @@
 # mi
+05 7,10,12,14,18,19,20,21,22 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py novost mi
+10 9,13,17 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py repost_reklama mi
+15 7,12,18,20,22 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py addons mi
+20 21 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py repost_krugozor mi
+25 6-23 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py repost_me mi
+30 19 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py repost_aprel mi
+# dran
+35 7,9,12,18,20,22 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py novost dran
+35 6,8,11,15,19,21,23 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py addons dran
+# sbor reklamy
+45 * * * * cd /home/valstan/postopus && /usr/bin/python3 start.py reklama dran
+55 * * * * cd /home/valstan/postopus && /usr/bin/python3 start.py reklama mi
+# instagram
+40 7,9,10,13,14,19,20,21,22 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py instagram mi
+
+
+cd /home/valstan/postopus && /usr/bin/python3 start.py addons test
+******************************************
+СТАРЫЙ КРОНТАБ
+# mi
 05 7,10,12,14,18,19,20,21,22 * * * cd /root/postopus && /usr/bin/python3 start.py novost mi
 10 9,13,17 * * * cd /root/postopus && /usr/bin/python3 start.py repost_reklama mi
 15 7,12,18,20,22 * * * cd /root/postopus && /usr/bin/python3 start.py addons mi
