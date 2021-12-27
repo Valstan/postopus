@@ -41,7 +41,7 @@ def ai_sort(sample):
             return False
 
     if 'attachments' in sample and sample['attachments'][0]['type'] == 'photo':
-        height = 410
+        height = 250
         url = ''
         for x in sample['attachments'][0]['photo']['sizes']:
             if height > x['height'] > height - 100:
