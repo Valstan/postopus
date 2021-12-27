@@ -1,6 +1,7 @@
 import easyocr
 
-reader = easyocr.Reader(["ru", "en"], gpu=False)
+# reader = easyocr.Reader(["ru", "en"], gpu=False)
+reader = easyocr.Reader(["ru", "en"])
 
 
 def free_ocr(path_image):
