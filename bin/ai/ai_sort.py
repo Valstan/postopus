@@ -45,7 +45,7 @@ def ai_sort(sample):
         url = ''
         for x in sample['attachments'][0]['photo']['sizes']:
             if height > x['height'] > height - 100:
-                height = x['height']
+                # height = x['height']
                 url = x['url']
         if image_get(url, 'image'):
             a = free_ocr('image')
