@@ -12,7 +12,7 @@
 45 * * * * cd /home/valstan/postopus && /usr/bin/python3 start.py reklama dran
 55 * * * * cd /home/valstan/postopus && /usr/bin/python3 start.py reklama mi
 # instagram
-40 7,9,10,13,14,19,20,21,22 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py instagram mi
+# 40 7,9,10,13,14,19,20,21,22 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py instagram mi
 
 
 cd /home/valstan/postopus && /usr/bin/python3 start.py addons test
