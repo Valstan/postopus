@@ -8,7 +8,7 @@ for pkg in pkgs:
 
 '''
 adduser valstan
-usermod -aG sudo valstan
+usermod -a -G sudo valstan
 reboot
 su - valstan
 sudo -S apt update
