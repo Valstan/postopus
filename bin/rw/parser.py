@@ -1,6 +1,6 @@
 import re
 
-from bin.ai.ai_sort import ai_sort
+# from bin.ai.ai_sort import ai_sort
 from bin.rw.read_posts import read_posts
 from bin.sort.sort_black_list import sort_black_list
 from bin.sort.sort_old_date import sort_old_date
@@ -27,8 +27,8 @@ def parser(vkapp, session):
         if skleika in session[session['name_session']]['lip']:
             continue
 
-        if not ai_sort(sample):
-            continue
+        # if not ai_sort(sample):
+        #     continue
         if sort_black_list(session['delete_msg_blacklist'], sample['text']):
             continue
 
