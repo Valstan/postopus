@@ -11,7 +11,7 @@ adduser valstan
 usermod -a -G sudo valstan
 reboot
 su - valstan
-sudo -S apt update
+sudo apt update
 sudo apt upgrade
 sudo dpkg-reconfigure locales
 sudo apt install mc
