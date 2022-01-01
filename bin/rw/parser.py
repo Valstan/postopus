@@ -1,6 +1,8 @@
+import random
 import re
 
 # from bin.ai.ai_sort import ai_sort
+from bin.rw.get_msg import get_msg
 from bin.rw.read_posts import read_posts
 from bin.sort.sort_black_list import sort_black_list
 from bin.sort.sort_old_date import sort_old_date
@@ -11,12 +13,10 @@ from bin.utils.driver import load_table, save_table
 
 
 def parser(vkapp, session):
-    new_posts = read_posts(vkapp, session['id'][session['name_session']], 20)
-    oldposts_maingroup = read_posts(vkapp, session['post_group'], 100)
-    maingroup_msg_list = []
-
-    for sample in oldposts_maingroup:
-        maingroup_msg_list.append(clear_copy_history(sample)['text'])
+    if session['name_session'] == 'novost' or session['name_session'] == 'reklama':
+        new_posts = read_posts(vkapp, session['id'][session['name_session']], 20)
+    else:
+        new_posts = get_msg(vkapp, random.choice(session['name_session'].values()), 0, 20)
 
     new_msg_list = []
     for sample in new_posts:
@@ -32,21 +32,6 @@ def parser(vkapp, session):
         if sort_black_list(session['delete_msg_blacklist'], sample['text']):
             continue
 
-        # Чистка и исправление текста
-        for i in range(3):
-            sample['text'] = re.sub(r"(\b|не|не )ан[оа]н\w*|"
-                                    r"п[оа]жалу?й?ст[ао]|"
-                                    r"админ[уы]? пр[ао]пустит?е?|"
-                                    r"админ[уы]?\b|"
-                                    r"Здрав?с?тв?у?й?т?е?|"
-                                    r"\([.,!?_/*+ ]+\)|"
-                                    r"[.,!?_/*+ ]+(?=[!?])|"
-                                    r"[.,_/*+ ]+(?=[.,])|"
-                                    r"^[).,!?_/*+ ]+|"
-                                    r"[,_(/*+ ]+$|"
-                                    r"\n$",
-                                    '', sample['text'],
-                                    0, flags=re.MULTILINE + re.IGNORECASE)
         new_msg_list.append(sample)
 
     session = load_table(session, 'bezfoto')
@@ -59,6 +44,21 @@ def parser(vkapp, session):
         if session['name_session'] == 'reklama' and 'attachments' in sample:
             del sample['attachments']
         if 'attachments' not in sample:
+            # Чистка и исправление текста
+            for i in range(3):
+                sample['text'] = re.sub(r"(\b|не|не )ан[оа]н\w*|"
+                                        r"п[оа]жалу?й?ст[ао]|"
+                                        r"админ[уы]? пр[ао]пустит?е?|"
+                                        r"админ[уы]?\b|"
+                                        r"Здрав?с?тв?у?й?т?е?|"
+                                        r"\([.,!?_/*+ ]+\)|"
+                                        r"[.,!?_/*+ ]+(?=[!?])|"
+                                        r"[.,_/*+ ]+(?=[.,])|"
+                                        r"^[).,!?_/*+ ]+|"
+                                        r"[,_(/*+ ]+$|"
+                                        r"\n$",
+                                        '', sample['text'],
+                                        0, flags=re.MULTILINE + re.IGNORECASE)
             if len(sample['text']) > 20 and sample['text'] not in data_string:
                 session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample))
                 data_string += sample['text']
