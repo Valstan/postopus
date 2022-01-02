@@ -16,7 +16,7 @@ def parser(vkapp, session):
     if session['name_session'] == 'novost' or session['name_session'] == 'reklama':
         new_posts = read_posts(vkapp, session['id'][session['name_session']], 20)
     else:
-        new_posts = get_msg(vkapp, random.choice(session['id'][session['name_session']]).values(), 0, 20)
+        new_posts = get_msg(vkapp, random.choice(session['id'][session['name_session']]), 0, 20)
 
     new_msg_list = []
     for sample in new_posts:
