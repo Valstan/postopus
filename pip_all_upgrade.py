@@ -14,6 +14,11 @@ su - valstan
 sudo apt update
 sudo apt upgrade
 sudo dpkg-reconfigure locales
+timedatectl list-timezones | grep Moscow
+sudo timedatectl set-timezone Europe/Moscow
+timedatectl
+sudo apt-get install ntp -y
+date
 sudo apt install mc
 sudo apt -y install python3-pip
 sudo apt install nano
