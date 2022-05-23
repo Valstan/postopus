@@ -36,7 +36,7 @@ def control(name_session, name_base):
         if session['name_session'] == 'novost':
             post_bezfoto(vkapp, session)
         if msg_list:
-            session = posting_post(vkapp, session, msg_list, session['post_group']['key'])
+            session = posting_post(vkapp, session, msg_list)
         save_table(session, session['name_session'])
 
     elif session['name_session'] == 'addons':
@@ -52,7 +52,7 @@ def control(name_session, name_base):
                 session, msg_list = parser(vkapp, session)
                 if msg_list:
                     post_bezfoto(vkapp, session)
-                    session = posting_post(vkapp, session, msg_list, session['post_group']['key'])
+                    session = posting_post(vkapp, session, msg_list)
                     save_table(session, session['name_session'])
                     break
             old_ruletka = shut

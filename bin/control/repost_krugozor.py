@@ -19,7 +19,7 @@ def repost_krugozor(vkapp, session):
                                                session['podpisi']['heshteg']['krugozor'],
                                                session['podpisi']['final'])))
             msg_list.append(sample)
-            session = posting_post(vkapp, session, msg_list, session['post_group']['key'])
+            session = posting_post(vkapp, session, msg_list)
             break
 
     session['last_posts_counter'] = 40
