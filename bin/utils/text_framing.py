@@ -1,7 +1,7 @@
 from bin.utils.avtortut import avtortut
 
 
-def text_framing(heading, body, hashtag, final, source=None):
-    if source:
-        return ''.join(map(str, heading, avtortut(body), hashtag, final))
-    return ''.join(map(str, heading, body, hashtag, final))
+def text_framing(heading, body, hashtag, final, body_source=None):
+    if body_source:
+        body = avtortut(body)
+    return ''.join(map(str, [heading, body, hashtag, final]))

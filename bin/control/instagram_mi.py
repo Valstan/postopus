@@ -1,5 +1,5 @@
 from PIL import Image
-from instabot import Bot
+# from instabot import Bot
 
 from bin.utils.driver import save_table, load_table
 from bin.rw.change_lp import change_lp
