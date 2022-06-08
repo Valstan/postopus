@@ -15,7 +15,7 @@ def repost_me(session):
         for sample in new_posts:
             link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
             if link not in session[session['name_session']]['lip']:
-                if reklama not in sample['text'] and music not in sample['text']:
+                if reklama not in sample['text'] or music not in sample['text']:
                     break
             link = ''
         if link:

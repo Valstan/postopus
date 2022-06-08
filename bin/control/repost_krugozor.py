@@ -3,6 +3,7 @@ from bin.rw.posting_post import posting_post
 from bin.utils.avtortut import avtortut
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.driver import save_table, load_table
+from bin.utils.text_framing import text_framing
 
 
 def repost_krugozor(vkapp, session):
@@ -14,10 +15,10 @@ def repost_krugozor(vkapp, session):
         sample = clear_copy_history(sample)
         link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
         if link not in session[session['name_session']]['lip']:
-            sample['text'] = ''.join(map(str, (session['podpisi']['zagolovok']['krugozor'],
-                                               avtortut(sample),
-                                               session['podpisi']['heshteg']['krugozor'],
-                                               session['podpisi']['final'])))
+            sample['text'] = text_framing(session['podpisi']['zagolovok']['krugozor'],
+                                          sample,
+                                          session['podpisi']['heshteg']['krugozor'],
+                                          session['podpisi']['final'], 1)
             msg_list.append(sample)
             session = posting_post(vkapp, session, msg_list)
             break

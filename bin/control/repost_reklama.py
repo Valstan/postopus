@@ -24,7 +24,7 @@ def repost_reklama(vkapp, session):
         if shut not in session[session['name_session']]['lip']:
             break
 
-    id_group = session['post_group']['key'] * -1
+    id_group = -session['post_group']['key']
     try:
         vkapp.wall.repost(object=shut, group_id=id_group)
         session[session['name_session']]['lip'].append(shut)
