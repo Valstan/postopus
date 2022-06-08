@@ -7,20 +7,19 @@ from bin.rw.get_session_vk_api import get_session_vk_api
 def repost_me(session):
     for session['name_session'] in session['repost_accounts']:
         session = load_table(session, session['name_session'])
-        vkapp = get_session_vk_api(change_lp(session))
-        new_posts = get_msg(vkapp, session['post_group']['key'], 0, 15)
+        vk_app = get_session_vk_api(change_lp(session))
+        new_posts = get_msg(vk_app, session['post_group']['key'], 0, 15)
         link = ''
-        reklama = session['podpisi']['heshteg']['reklama']
-        music = session['podpisi']['heshteg']['music']
         for sample in new_posts:
             link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
-            if link not in session[session['name_session']]['lip']:
-                if reklama not in sample['text'] or music not in sample['text']:
-                    break
+            if link not in session[session['name_session']]['lip'] and \
+                session['podpisi']['heshteg']['reklama'] not in sample['text'] or \
+                session['podpisi']['heshteg']['music'] not in sample['text']:
+                break
             link = ''
         if link:
             try:
-                vkapp.wall.repost(object=link)
+                vk_app.wall.repost(object=link)
             except:
                 pass
             session[session['name_session']]['lip'].append(link)
