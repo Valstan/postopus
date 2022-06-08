@@ -10,16 +10,17 @@ from bin.sort.sort_po_foto import sort_po_foto
 from bin.utils.avtortut import avtortut
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.driver import load_table, save_table
+from bin.utils.text_framing import text_framing
 
 
-def parser(vkapp, session):
+def parser(vk_app, session):
     if session['name_session'] == 'novost' or session['name_session'] == 'reklama':
-        new_posts = read_posts(vkapp, session['id'][session['name_session']], 20)
+        new_posts = read_posts(vk_app, session['id'][session['name_session']], 20)
     else:
         groups = []
         for group in session['id'][session['name_session']].values():
             groups.append(int(group))
-        new_posts = get_msg(vkapp, random.choice(groups), 0, 20)
+        new_posts = get_msg(vk_app, random.choice(groups), 0, 20)
 
     new_msg_list = []
     for sample in new_posts:
@@ -89,10 +90,11 @@ def parser(vkapp, session):
         session, sample = sort_po_foto(session, sample)
         if sample:
             if sample['text'] not in data_string:
-                sample['text'] = ''.join(map(str, (session['podpisi']['zagolovok'][session['name_session']],
-                                                   avtortut(sample),
-                                                   session['podpisi']['heshteg'][session['name_session']],
-                                                   session['podpisi']['final'])))
+                sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
+                                              sample,
+                                              session['podpisi']['heshteg'][session['name_session']],
+                                              session['podpisi']['final'],
+                                              1)
                 new_msg_list.append(sample)
                 data_string += sample['text']
 

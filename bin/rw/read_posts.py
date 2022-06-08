@@ -3,11 +3,11 @@ import time
 from bin.rw.get_msg import get_msg
 
 
-def read_posts(vkapp, group_list, count):
+def read_posts(vk_app, group_list, count):
     posts = []
     for group in group_list.values():
         try:
-            posts += get_msg(vkapp, group, 0, count)
+            posts += get_msg(vk_app, group, 0, count)
         except:
             pass
         time.sleep(1)

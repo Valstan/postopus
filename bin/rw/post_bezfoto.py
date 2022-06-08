@@ -2,23 +2,24 @@ import random
 
 from bin.utils.driver import load_table, save_table
 from bin.rw.post_msg import post_msg
+from bin.utils.text_framing import text_framing
 
 
-def post_bezfoto(vkapp, session):
+def post_bezfoto(vk_app, session):
     session = load_table(session, 'bezfoto')
     if len(session['bezfoto']['lip']) > 9:
         session = load_table(session, 'all_bezfoto')
-        message = ''
+        text = ''
         for sample in session['bezfoto']['lip'][:10]:
-            message += ''.join(map(str, (sample, '\n')))
-        postmsg = ''.join(map(str, (session['podpisi']['zagolovok']['bezfoto'],
-                                    message,
-                                    session['podpisi']['heshteg']['reklama'],
-                                    session['podpisi']['final'])))
+            text += ''.join(map(str, (sample, '\n')))
+        text = text_framing(session['podpisi']['zagolovok']['bezfoto'],
+                            text,
+                            session['podpisi']['heshteg']['reklama'],
+                            session['podpisi']['final'])
 
-        post_msg(vkapp,
+        post_msg(vk_app,
                  session['post_group']['key'],
-                 postmsg,
+                 text,
                  random.choice(session['podpisi']['image_desatka']))
 
         session['all_bezfoto']['lip'].extend(session['bezfoto']['lip'][:10])
