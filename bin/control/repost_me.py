@@ -18,8 +18,9 @@ def repost_me(session):
             link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
 
             if link in session[session['name_session']]['lip'] or \
-                re.search(session['podpisi']['heshteg']['reklama'], sample['text'][1:], flags=re.MULTILINE) or \
-                re.search(session['podpisi']['heshteg']['music'], sample['text'][1:], flags=re.MULTILINE):
+                re.search(session['podpisi']['heshteg']['reklama'][1:], sample['text'], flags=re.MULTILINE) or \
+                re.search(session['podpisi']['heshteg']['music'][1:], sample['text'], flags=re.MULTILINE) or \
+                re.search('#kinozal_Aprel', sample['text'], flags=re.MULTILINE):
                 link = ''
                 continue
             break
