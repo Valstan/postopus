@@ -6,7 +6,7 @@ from bin.control.repost_aprel import repost_aprel
 from bin.control.repost_krugozor import repost_krugozor
 from bin.control.repost_me import repost_me
 from bin.control.repost_reklama import repost_reklama
-from config import change_lp
+from config import change_lp, baraban
 from bin.rw.get_session import get_session
 from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.parser import parser
@@ -43,8 +43,8 @@ def control(name_session, name_base):
         old_ruletka = ''
 
         for sample in range(5):
-            random.shuffle(session['baraban'])
-            shut = random.choice(session['baraban'])
+            random.shuffle(baraban)
+            shut = random.choice(baraban)
 
             if shut != old_ruletka:
                 session['name_session'] = shut

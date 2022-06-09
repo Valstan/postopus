@@ -11,6 +11,7 @@ if len(argv) == 2:
 for i in range(3):
     name_base = change_base(name_session)
     if name_base:
+        name_session = name_session.split('_', 1)[1]
         control(name_session, name_base)
         quit()
     else:
