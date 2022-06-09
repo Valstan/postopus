@@ -17,12 +17,12 @@ def repost_me(session):
 
             link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
 
-            if link not in session[session['name_session']]['lip'] and \
-                not re.search(session['podpisi']['heshteg']['reklama'], sample['text'], flags=re.MULTILINE) or \
-                not re.search(session['podpisi']['heshteg']['music'], sample['text'], flags=re.MULTILINE):
-                break
-
-            link = ''
+            if link in session[session['name_session']]['lip'] or \
+                re.search(session['podpisi']['heshteg']['reklama'], sample['text'][1:], flags=re.MULTILINE) or \
+                re.search(session['podpisi']['heshteg']['music'], sample['text'][1:], flags=re.MULTILINE):
+                link = ''
+                continue
+            break
 
         if link:
             try:
