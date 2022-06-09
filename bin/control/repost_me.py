@@ -46,6 +46,7 @@ def repost_me(session):
                 session['last_posts_counter'] = 10
                 save_table(session, session['name_session'])
                 time.sleep(1)
+            continue
         if link:
             vk_app.wall.repost(object=link)
             session[session['name_session']]['lip'].append(link)
