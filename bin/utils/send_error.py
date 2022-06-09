@@ -1,13 +1,15 @@
+import os
+
 import requests
 
-from se_config import TELEGA_API_TOKEN, URL, parametrs
+from config import TB_url, TB_parametrs
 
 
 def send_error(text):
-    method = URL + TELEGA_API_TOKEN + "/sendMessage"
-    parametrs['text'] = str(text)
+    method = TB_url + os.getenv('TELEGA_TOKEN_VALSTANBOT') + "/sendMessage"
+    TB_parametrs['text'] = str(text)
 
-    requests.post(method, data=parametrs)
+    requests.post(method, data=TB_parametrs)
 
 
 if __name__ == '__main__':

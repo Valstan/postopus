@@ -1,4 +1,13 @@
-import re
+from vk_api import VkApi
+
+vk_session = VkApi('79229005910', 'Tutmos@1941')
+vk_session.auth()
+vk_app = vk_session.get_api()
+
+result = vk_app.groups.getById(group_id=158787639)
+print(result)
+
+'''import re
 
 reklama = '\n#Реклама'
 music = '\n#Музыка'
@@ -17,4 +26,4 @@ for sample in new_posts:
     link = sample
     break
 
-print(link)
+print(link)'''

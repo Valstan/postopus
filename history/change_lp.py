@@ -1,4 +1,5 @@
 def change_lp(session):
+
     for k, v in session['logpass'].items():
         if session['name_base'] in k and session['name_session'] in k:
             session.update({"login": v[0], "password": v[1]})

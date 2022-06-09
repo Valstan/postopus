@@ -1,7 +1,7 @@
 from PIL import Image
 # from instabot import Bot
 
-from bin.rw.change_lp import change_lp
+from config import change_lp
 from bin.rw.get_image import image_get
 from bin.rw.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history

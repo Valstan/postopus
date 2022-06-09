@@ -6,7 +6,7 @@ from bin.control.repost_aprel import repost_aprel
 from bin.control.repost_krugozor import repost_krugozor
 from bin.control.repost_me import repost_me
 from bin.control.repost_reklama import repost_reklama
-from bin.rw.change_lp import change_lp
+from config import change_lp
 from bin.rw.get_session import get_session
 from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.parser import parser

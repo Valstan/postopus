@@ -1,12 +1,18 @@
 from sys import argv
 
 from bin.control.control import control
+from config import Start_Script_Message, change_base
 
-if len(argv) == 3:
+name_session = ''
+
+if len(argv) == 2:
     name_session = str(argv[1])
-    name_base = str(argv[2])
-else:
-    name_session = str(input("Enter name session:\n1-config\nOr novost,reklama,addons and more...\n"))
-    name_base = str(input("Enter name base:\n1-config\nOr mi,dran,test\n"))
 
-control(name_session, name_base)
+for i in range(3):
+    name_base = change_base(name_session)
+    if name_base:
+        control(name_session, name_base)
+        quit()
+    else:
+        name_session = str(input(f"\n...{3-i} attempts left...{Start_Script_Message}"))
+print('\n\nThe script has been stopped. Invalid session arguments...')
