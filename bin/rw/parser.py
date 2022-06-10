@@ -43,39 +43,19 @@ def parser(vk_app, session):
     data_string = " ".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip'])
     new_posts = []
     for sample in new_msg_list:
+        # Чистка и исправление текста
+        clear_text_blacklist = '|'.join(session['clear_text_blacklist']['novost'])
+        sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
+                                '', sample['text'],
+                                0, flags=re.MULTILINE + re.IGNORECASE)
         if 'views' not in sample and 'attachments' in sample:
             del sample['attachments']
         if session['name_session'] == 'reklama' and 'attachments' in sample:
             del sample['attachments']
         if 'attachments' not in sample:
-            # Чистка и исправление текста
+            clear_text_blacklist = '|'.join(session['clear_text_blacklist']['reklama'])
             for i in range(3):
-                sample['text'] = re.sub(r"(\b|не|не )ан[оа]н\w*|"
-                                        r"п[оа]жалу?й?ст[ао]|"
-                                        r"админ[уы]? пр[ао]пустит?е?|"
-                                        r"админ[уы]?\b|"
-                                        r"Здрав?с?тв?у?й?т?е?|"
-                                        r"ВАШ ЛАЙК - для нас стимул на качество|"
-                                        r"Нет войне на Украине, Хватит убивать!|"
-                                        r"Нет войне на украине|"
-                                        r"Нет войне на украине, Хватит убивать мирный народ и детей Украины|"
-                                        r"Нет войне на украине, П@тин Хватит убивать мирный народ и детей|"
-                                        r"Нет войне на украине, Хватит убивать мирный народ|"
-                                        r"Нет Войне на Украине|"
-                                        r"Нет войне на Украине|"
-                                        r"Нет Войне с Украиной, этой братский Народ! Путин хватит убивать детей и мирный народ!|"
-                                        r"Нет Войне с Украиной, этой братский Народ!|"
-                                        r"Нет войне на Украине! Это Братский Народ!|"
-                                        r"Нет войне на Украине! А русским войскам пора домой!|"
-                                        r"Нет войне с Украиной! мы за мир!|"
-                                        r"Нет войне с Украиной!|"
-                                        r"Нет Войне с Украиной, мы за Мир с Украиной|"
-                                        r"\([.,!?_/*+ ]+\)|"
-                                        r"[.,!?_/*+ ]+(?=[!?])|"
-                                        r"[.,_/*+ ]+(?=[.,])|"
-                                        r"^[).,!?_/*+ ]+|"
-                                        r"[,_(/*+ ]+$|"
-                                        r"\n$",
+                sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
                                         '', sample['text'],
                                         0, flags=re.MULTILINE + re.IGNORECASE)
             if len(sample['text']) > 20 and sample['text'] not in data_string:
