@@ -43,7 +43,7 @@ def parser(vk_app, session):
     data_string = " ".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip'])
     new_posts = []
     for sample in new_msg_list:
-        # Чистка и исправление текста
+        # Чистка и исправление текста для всех публичный мягкий набор
         clear_text_blacklist = '|'.join(session['clear_text_blacklist']['novost'])
         sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
                                 '', sample['text'],
@@ -53,6 +53,7 @@ def parser(vk_app, session):
         if session['name_session'] == 'reklama' and 'attachments' in sample:
             del sample['attachments']
         if 'attachments' not in sample:
+            # Жесткая чистка текста для постов из рекламных групп
             clear_text_blacklist = '|'.join(session['clear_text_blacklist']['reklama'])
             for i in range(3):
                 sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",

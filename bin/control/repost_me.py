@@ -1,9 +1,9 @@
 import re
 import time
 
-from config import change_lp
 from bin.rw.get_msg import get_msg
 from bin.rw.get_session_vk_api import get_session_vk_api
+from bin.utils.change_lp import change_lp
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.driver import load_table, save_table
 
@@ -28,11 +28,7 @@ def repost_me(session):
                     re.search(session['podpisi']['heshteg']['music'][1:], sample['text'], flags=re.MULTILINE) or \
                     re.search(session['podpisi']['heshteg']['reklama'][1:], copy_history['text'], flags=re.MULTILINE) or \
                     re.search(session['podpisi']['heshteg']['music'][1:], copy_history['text'], flags=re.MULTILINE) or \
-                    copy_history['owner_id'] == -179037590 or \
-                    copy_history['owner_id'] == -144647350 or \
-                    copy_history['owner_id'] == -162751110 or \
-                    copy_history['owner_id'] == -174650587 or \
-                    copy_history['owner_id'] == -190134660:
+                    copy_history['owner_id'] in (-179037590, -144647350, -162751110, -174650587, -190134660):
                     link = ''
                     continue
                 break
