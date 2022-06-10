@@ -1,6 +1,11 @@
-name_session = 'mi_repost_me'
+import os
+
+print(os.getenv('VK_LOGIN_BRIGADIR'))
+
+
+'''name_session = 'mi_repost_me'
 name_session = name_session.split('_', 1)[1]
-print(name_session)
+print(name_session)'''
 
 
 '''from vk_api import VkApi
