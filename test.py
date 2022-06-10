@@ -2,7 +2,7 @@ import os
 
 from bin.utils.send_error import send_error
 
-send_error(os.environ)
+send_error('Привет')
 
 
 '''name_session = 'mi_repost_me'
