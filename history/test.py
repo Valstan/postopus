@@ -1,6 +1,8 @@
 import os
 
-print(os.getenv('VK_LOGIN_BRIGADIR'))
+from bin.utils.send_error import send_error
+
+send_error(os.getenv('VK_LOGIN_BRIGADIR'))
 
 
 '''name_session = 'mi_repost_me'
