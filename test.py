@@ -1,14 +1,6 @@
-import os
-
-from bin.utils.send_error import send_error
-
-send_error('Привет')
-
-
 '''name_session = 'mi_repost_me'
 name_session = name_session.split('_', 1)[1]
 print(name_session)'''
-
 
 '''from vk_api import VkApi
 
