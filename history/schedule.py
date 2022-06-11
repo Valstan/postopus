@@ -1,4 +1,4 @@
-from datetime import time, timedelta, datetime
+from datetime import timedelta, datetime
 from time import sleep
 
 from config import cron_schedule
