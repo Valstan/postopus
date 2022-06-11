@@ -38,6 +38,7 @@ if name_session == '1':
     service_base()
     quit()
 
+# Если имя базы есть, то качаем базу и подсовываем из окружения в сессию логины-пароли
 if name_base:
     try:
         session = get_session(name_base, 'config', name_session)

@@ -3,7 +3,7 @@ from bin.rw.get_mongo_base import get_mongo_base
 
 def load_table(session, name_table):
 
-    collection = get_mongo_base()[session['name_base']]
+    collection = get_mongo_base(session)[session['name_base']]
     session[name_table] = collection.find_one({'title': name_table})
 
     # Если нет такой коллекции
@@ -24,7 +24,7 @@ def save_table(session, name_table):
     for n in session['constructor_table']:
         while len(session[name_table][n]) > session['last_posts_counter']:
             del session[name_table][n][0]
-    collection = get_mongo_base()[session['name_base']]
+    collection = get_mongo_base(session)[session['name_base']]
     collection.update_one({'title': name_table}, {'$set': session[name_table]}, upsert=True)
 
 
