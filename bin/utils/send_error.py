@@ -2,10 +2,11 @@ import os
 
 import requests
 
+from config import tb_url, tb_params
+
 
 def send_error(text):
-    tb_url = 'https://api.telegram.org/bot'
-    tb_params = {'chat_id': -1001746966097}  # канал Тест-тест-тест2000
+
     method = tb_url + os.getenv('TELEGA_TOKEN_VALSTANBOT') + "/sendMessage"
     tb_params['text'] = str(text)
 

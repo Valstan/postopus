@@ -3,11 +3,11 @@ def change_lp(session):
     nb = session['name_base']
     if ns in session['arg']['public'] and nb == 'mi' or ns in session['arg']['public'] and nb == 'test':
         session.update({"login": session['VK_LOGIN_BRIGADIR'], "password": session['VK_PASSWORD_BRIGADIR']})
-    elif session['name_session'] in session['arg']['public'] and session['name_base'] == 'dran':
+    elif ns in session['arg']['public'] and nb == 'dran':
         session.update({"login": session['VK_LOGIN_DRAN'], "password": session['VK_PASSWORD_DRAN']})
-    elif session['name_session'] in session['arg']['valstan']:
+    elif ns in session['arg']['valstan']:
         session.update({"login": session['VK_LOGIN_VALSTAN'], "password": session['VK_PASSWORD_VALSTAN']})
-    elif session['name_session'] in session['arg']['instagram']:
+    elif ns in session['arg']['instagram']:
         session.update({"login": session['INSTA_LOGIN_MI'], "password": session['INSTA_PASSWORD_MI']})
     else:
         session.update({"login": session['VK_LOGIN_BRIGADIR'], "password": session['VK_PASSWORD_BRIGADIR']})
