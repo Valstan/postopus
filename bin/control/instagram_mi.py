@@ -15,7 +15,7 @@ def instagram_mi(vkapp, session):
     session = load_table(session, session['name_session'])
     list_dir_for_clear = ('config', session['insta_photo_path'])
     clear_dir(list_dir_for_clear)
-    new_posts = get_msg(vkapp, session['post_group']['key'], 0, 30)
+    new_posts = get_msg(session, vkapp, session['post_group']['key'], 0, 30)
     sample_template = ''
     sample_clear = {}
     for sample in new_posts:

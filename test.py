@@ -1,4 +1,16 @@
-cron_schedule = (
+from bin.utils.send_error import send_error
+from config import TELEGA_TOKEN_VALSTANBOT
+
+
+def proverka_imeni_dobavlu(session):
+    send_error(session, f'Модуль - {proverka_imeni_dobavlu.__name__}')
+
+
+if __name__ == '__main__':
+    sessia = {'TELEGA_TOKEN_VALSTANBOT': TELEGA_TOKEN_VALSTANBOT}
+    proverka_imeni_dobavlu(sessia)
+
+'''cron_schedule = (
     # mi
     '05 7,8,10,12,14-23 mi_novost',
     '15 9,13 mi_repost_reklama',
@@ -15,7 +27,7 @@ cron_schedule = (
 
 for string_schedule in cron_schedule:
     minute, hours_all, prefix = string_schedule.split()
-    print('Минуты - ', minute, '\nСписок часов - ', hours_all, '\nПрефикс - ', prefix)
+    print('Минуты - ', minute, '\nСписок часов - ', hours_all, '\nПрефикс - ', prefix)'''
 
 '''name_session = 'mi_repost_me'
 name_session = name_session.split('_', 1)[1]

@@ -15,7 +15,7 @@ def repost_reklama(vkapp, session):
                dvorniki]
     random.shuffle(ruletka)
     shut = random.choice(ruletka)
-    ruletka = get_msg(vkapp, shut, 0, 50)
+    ruletka = get_msg(session, vkapp, shut, 0, 50)
     random.shuffle(ruletka)
     for i in range(20):
         shut = random.choice(ruletka)

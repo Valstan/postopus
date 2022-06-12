@@ -7,7 +7,7 @@ def repost_aprel(vkapp, session):
     session = load_table(session, session['name_session'])
 
     aprel_id = -144647350
-    msgs = get_msg(vkapp, aprel_id, 0, 10)
+    msgs = get_msg(session, vkapp, aprel_id, 0, 10)
     msg_link = []
 
     for msg in msgs:

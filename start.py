@@ -1,4 +1,5 @@
 import random
+import traceback
 from datetime import datetime, timedelta
 from sys import argv
 from time import sleep
@@ -16,6 +17,7 @@ from bin.rw.post_bezfoto import post_bezfoto
 from bin.rw.posting_post import posting_post
 from bin.utils.change_lp import change_lp
 from bin.utils.driver import save_table, load_table
+from bin.utils.send_error import send_error
 from bin.utils.service_base import service_base
 from config import cron_schedule
 
@@ -38,8 +40,11 @@ def start(name_session):
     if name_base:
         try:
             session = get_session(name_base, 'config', name_session)
-        except:
-            print(f'Сессию ({name_session}) загрузить не удалось, скрипт остановлен.')
+        except Exception as exc:
+            send_error(session,
+                       f'Модуль - {start.__name__}\n'
+                       f'АШИПКА - {exc}\n'
+                       f'{traceback.print_exc()}')
             quit()
     else:
         print(f'Имя базы пустое ({name_session}), скрипт остановлен.')
@@ -58,7 +63,7 @@ def start(name_session):
         if session['name_session'] == 'novost':
             post_bezfoto(vkapp, session)
         if msg_list:
-            session = posting_post(vkapp, session, msg_list)
+            session = posting_post(session, vkapp, msg_list)
         save_table(session, session['name_session'])
 
     elif session['name_session'] == 'addons':
@@ -74,7 +79,7 @@ def start(name_session):
                 session, msg_list = parser(vkapp, session)
                 if msg_list:
                     post_bezfoto(vkapp, session)
-                    session = posting_post(vkapp, session, msg_list)
+                    session = posting_post(session, vkapp, msg_list)
                     save_table(session, session['name_session'])
                     break
             old_ruletka = shut

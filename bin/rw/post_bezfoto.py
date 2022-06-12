@@ -17,7 +17,8 @@ def post_bezfoto(vk_app, session):
                             session['podpisi']['heshteg']['reklama'],
                             session['podpisi']['final'])
 
-        post_msg(vk_app,
+        post_msg(session,
+                 vk_app,
                  session['post_group']['key'],
                  text,
                  random.choice(session['podpisi']['image_desatka']))

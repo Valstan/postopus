@@ -1,16 +1,19 @@
+import traceback
+
 from bin.rw.get_attach import get_attach
 from bin.rw.post_msg import post_msg
 from bin.utils.send_error import send_error
 
 
-def posting_post(vk_app, session, msg_list):
+def posting_post(session, vk_app, msg_list):
     for sample in msg_list:
 
         try:
             attachments = ''
             if 'attachments' in sample:
                 attachments = get_attach(sample)
-            post_msg(vk_app,
+            post_msg(session,
+                     vk_app,
                      session['post_group']['key'],
                      sample['text'],
                      attachments)
@@ -19,11 +22,12 @@ def posting_post(vk_app, session, msg_list):
             # vk_app.wall.repost(object=url_post, group_id=-session['post_group']['key'])
             session[session['name_session']]['lip'].append(url_post)
             break
-        except:
-            send_error('Выполнен posting_post но ничего никуда не отправилось'
-                       + session['name_base']
-                       + session['name_session']
-                       + sample['text'])
+        except Exception as exc:
+            send_error(session,
+                       f'Модуль - {posting_post.__name__}\n'
+                       f'АШИПКА - {exc}\n'
+                       f'{traceback.print_exc()}')
+            quit()
 
     return session
 

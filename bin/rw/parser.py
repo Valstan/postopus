@@ -15,12 +15,12 @@ from bin.utils.text_framing import text_framing
 
 def parser(vk_app, session):
     if session['name_session'] == 'novost' or session['name_session'] == 'reklama':
-        new_posts = read_posts(vk_app, session['id'][session['name_session']], 20)
+        new_posts = read_posts(session, vk_app, session['id'][session['name_session']], 20)
     else:
         groups = []
         for group in session['id'][session['name_session']].values():
             groups.append(int(group))
-        new_posts = get_msg(vk_app, random.choice(groups), 0, 20)
+        new_posts = get_msg(session, vk_app, random.choice(groups), 0, 20)
 
     new_msg_list = []
     for sample in new_posts:
