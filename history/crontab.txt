@@ -1,28 +1,28 @@
 # mi
-05 7,8,10,12,14-23 * * * /usr/bin/python3 /home/valstan/postopus/start.py mi_novost
-15 9,13 * * * /usr/bin/python3 /home/valstan/postopus/start.py mi_repost_reklama
-15 7,12,18,20,22 * * * /usr/bin/python3 /home/valstan/postopus/start.py mi_addons
-15 21 * * * /usr/bin/python3 /home/valstan/postopus/start.py mi_repost_krugozor
-15 19 * * * /usr/bin/python3 /home/valstan/postopus/start.py mi_repost_aprel
-20 6-23 * * * /usr/bin/python3 /home/valstan/postopus/start.py mi_repost_me
+05 7,8,10,12,14-23 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_novost
+15 9,13 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_repost_reklama
+15 7,12,18,20,22 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_addons
+15 21 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_repost_krugozor
+15 19 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_repost_aprel
+20 6-23 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_repost_me
 # dran
-25 7,9,12,18,20,22 * * * /usr/bin/python3 /home/valstan/postopus/start.py dran_novost
-25 6,8,11,15,19,21,23 * * * /usr/bin/python3 /home/valstan/postopus/start.py dran_addons
+25 7,9,12,18,20,22 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py dran_novost
+25 6,8,11,15,19,21,23 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py dran_addons
 # sbor reklamy
-40 5-22 * * * /usr/bin/python3 /home/valstan/postopus/start.py dran_reklama
-50 6-22 * * * /usr/bin/python3 /home/valstan/postopus/start.py mi_reklama
+40 5-22 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py dran_reklama
+50 6-22 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_reklama
 
-КРОН С ПРОФИЛЕМ НЕ РАБОТАЕТ
+КРОН С ПРОФИЛЕМ
+SHELL=/bin/bash
 # mi
-05 7,8,10,12,14-23 * * * . /home/valstan/.profile; /usr/bin/python3 /home/valstan/postopus/start.py mi_novost
-15 9,13 * * * . /home/valstan/.profile; /usr/bin/python3 /home/valstan/postopus/start.py mi_repost_reklama
-15 7,12,18,20,22 * * * . /home/valstan/.profile; /usr/bin/python3 /home/valstan/postopus/start.py mi_addons
-15 21 * * * . /home/valstan/.profile; /usr/bin/python3 /home/valstan/postopus/start.py mi_repost_krugozor
-15 19 * * * . /home/valstan/.profile; /usr/bin/python3 /home/valstan/postopus/start.py mi_repost_aprel
-20 6-23 * * * . /home/valstan/.profile; /usr/bin/python3 /home/valstan/postopus/start.py mi_repost_me
+30 6-22 * * * . /home/valstan/.profile; cd /home/valstan/postopus && /usr/bin/python3 start.py mi_reklama
+35 7,8,10,12,14-23 * * * . /home/valstan/.profile; cd /home/valstan/postopus && /usr/bin/python3 start.py mi_novost
+35 9,13 * * * . /home/valstan/.profile; cd /home/valstan/postopus && /usr/bin/python3 start.py mi_repost_reklama
+40 7,12,18,20,22 * * * . /home/valstan/.profile; cd /home/valstan/postopus && /usr/bin/python3 start.py mi_addons
+40 21 * * * . /home/valstan/.profile; cd /home/valstan/postopus && /usr/bin/python3 start.py mi_repost_krugozor
+40 19 * * * . /home/valstan/.profile; cd /home/valstan/postopus && /usr/bin/python3 start.py mi_repost_aprel
+45 6-23 * * * . /home/valstan/.profile; cd /home/valstan/postopus && /usr/bin/python3 start.py mi_repost_me
 # dran
-25 7,9,12,18,20,22 * * * . /home/valstan/.profile; /usr/bin/python3 /home/valstan/postopus/start.py dran_novost
-25 6,8,11,15,19,21,23 * * * . /home/valstan/.profile; /usr/bin/python3 /home/valstan/postopus/start.py dran_addons
-# sbor reklamy
-40 5-22 * * * . /home/valstan/.profile; /usr/bin/python3 /home/valstan/postopus/start.py dran_reklama
-50 6-22 * * * . /home/valstan/.profile; /usr/bin/python3 /home/valstan/postopus/start.py mi_reklama
+50 6-22 * * * . /home/valstan/.profile; cd /home/valstan/postopus && /usr/bin/python3 start.py dran_reklama
+55 7,9,12,18,20,22 * * * . /home/valstan/.profile; cd /home/valstan/postopus && /usr/bin/python3 start.py dran_novost
+55 6,8,11,15,19,21,23 * * * . /home/valstan/.profile; cd /home/valstan/postopus && /usr/bin/python3 start.py dran_addons

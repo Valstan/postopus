@@ -5,3 +5,5 @@
 /.pytest_cache/
 /image
 /insta_photo/
+/config.py
+/.editorconfig
