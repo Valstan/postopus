@@ -126,12 +126,13 @@ def schedule():
             hours_all = hours_all.split(',')
             hours = []
             for hour in hours_all:
-                if '-' in hour:
+                if len(hour) < 3:
+                    hours.append(int(hour))
+                else:
                     hour = hour.split('-')
                     hour = [i for i in range(int(hour[0]), int(hour[1]) + 1)]
                     hours.extend(hour)
-                    continue
-                hours.append(int(hour))
+
             for hour in hours:
                 time_schedule = hour * 60 * 60 + minute * 60
                 now_interval = abs(timenow - time_schedule)
