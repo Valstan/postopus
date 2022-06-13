@@ -5,15 +5,14 @@ from bin.utils.send_error import send_error
 
 def change_lp(session):
     try:
-        ns = session['name_session']
-        nb = session['name_base']
-        if ns in session['arg']['public'] and nb == 'mi' or ns in session['arg']['public'] and nb == 'test':
+        if session['name_session'] in session['arg']['public'] and session['name_base'] == 'mi' or\
+            session['name_session'] in session['arg']['public'] and session['name_base'] == 'test':
             session.update({"login": session['VK_LOGIN_BRIGADIR'], "password": session['VK_PASSWORD_BRIGADIR']})
-        elif ns in session['arg']['public'] and nb == 'dran':
+        elif session['name_session'] in session['arg']['public'] and session['name_base'] == 'dran':
             session.update({"login": session['VK_LOGIN_DRAN'], "password": session['VK_PASSWORD_DRAN']})
-        elif ns in session['arg']['valstan']:
+        elif session['name_session'] in session['arg']['valstan']:
             session.update({"login": session['VK_LOGIN_VALSTAN'], "password": session['VK_PASSWORD_VALSTAN']})
-        elif ns in session['arg']['instagram']:
+        elif session['name_session'] in session['arg']['instagram']:
             session.update({"login": session['INSTA_LOGIN_MI'], "password": session['INSTA_PASSWORD_MI']})
         else:
             session.update({"login": session['VK_LOGIN_BRIGADIR'], "password": session['VK_PASSWORD_BRIGADIR']})

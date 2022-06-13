@@ -149,9 +149,6 @@ def schedule():
 
 
 if __name__ == '__main__':
-    if len(argv) == 1:
-        print('Постопус запущен в автоматическом режиме.')
-        schedule()
     if len(argv) == 2:
         name_ses = str(argv[1])
     else:
@@ -160,7 +157,12 @@ if __name__ == '__main__':
                              "\nmi_novost  mi_repost_reklama  mi_addons  mi_repost_krugozor"
                              "\nmi_repost_aprel  mi_reklama  mi_repost_me  mi_instagram"
                              "\nmi_ or dran_ or test_ prefix of base"))
-    if name_ses:
+
+    if name_ses == "100":
+        print('Постопус запущен в автоматическом режиме.')
+        schedule()
+    elif name_ses:
+        print('Скрипт будет запущен с аргументом - ', name_ses)
         start(name_ses)
     else:
-        print('Скрипт не запустился, аргументы запуска не введены.')
+        print('Вы не ввели ни одного аргумента. Скрипт остановлен...')
