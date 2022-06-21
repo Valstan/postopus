@@ -1,5 +1,3 @@
-from pymongo import MongoClient
-
 import config
 from bin.rw.get_mongo_base import get_mongo_base
 from bin.utils.driver_tables import load_table

@@ -19,7 +19,7 @@ def start():
         arguments = str(argv[1])
     else:
         arguments = str(input("\nEnter name session of:"
-                              "\n1-config"
+                              "\n1-config, 100-автоматрежим, 000-тест"
                               "\nmi_novost  mi_repost_reklama  mi_addons  mi_repost_krugozor"
                               "\nmi_repost_aprel  mi_reklama  mi_repost_valstan  mi_instagram"
                               "\nmi_ or dran_ or test_ prefix of base"))
@@ -30,6 +30,11 @@ def start():
 
     elif arguments == '1':
         service_base()
+
+    # elif arguments == '000':
+    #     get_mongo_base('postopus')
+    #     get_session('test_novost')
+    #     test()
 
     elif arguments:
         get_mongo_base('postopus')

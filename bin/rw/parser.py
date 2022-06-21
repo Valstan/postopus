@@ -47,7 +47,7 @@ def parser():
     posts = []
     for sample in clear_posts:
         # Чистка и исправление текста для всех публичный мягкий набор
-        clear_text_blacklist = '|'.join(session['clear_text_blacklist']['novost'])
+        clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['novost']) + '|'
         sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
                                 '', sample['text'],
                                 0, flags=re.MULTILINE + re.IGNORECASE)
@@ -57,7 +57,7 @@ def parser():
             del sample['attachments']
         if 'attachments' not in sample:
             # Жесткая чистка текста для постов из рекламных групп
-            clear_text_blacklist = '|'.join(session['clear_text_blacklist']['reklama'])
+            clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['reklama']) + '|'
             for i in range(3):
                 sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
                                         '', sample['text'],
