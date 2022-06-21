@@ -1,7 +1,8 @@
 from PIL import Image
 # from instabot import Bot
+import config
 from bin.utils.change_lp import change_lp
-from bin.utils.driver import save_table, load_table
+from bin.utils.driver_tables import save_table, load_table
 from bin.rw.get_image import image_get
 from bin.rw.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history
@@ -10,12 +11,15 @@ from bin.utils.draw_text import draw_text
 from bin.utils.resize_img import resize_img
 from bin.utils.white_board import white_board
 
+session = config.session
 
-def instagram_mi(vkapp, session):
-    session = load_table(session, session['name_session'])
+
+def instagram_mi():
+    global session
+
     list_dir_for_clear = ('config', session['insta_photo_path'])
     clear_dir(list_dir_for_clear)
-    new_posts = get_msg(session, vkapp, session['post_group']['key'], 0, 30)
+    new_posts = get_msg(session['post_group']['key'], 0, 30)
     sample_template = ''
     sample_clear = {}
     for sample in new_posts:
@@ -31,8 +35,7 @@ def instagram_mi(vkapp, session):
         sample_template = ''
     if sample_template:
         session[session['name_session']]['lip'].append(sample_template)
-        session['last_posts_counter'] = 20
-        save_table(session, session['name_session'])
+        save_table(session['name_session'])
         height = 0
         url = ''
         for i in sample_clear['attachments'][0]['photo']['sizes']:
@@ -48,7 +51,7 @@ def instagram_mi(vkapp, session):
             img.save(session['insta_photo_path'] + '1.jpeg')
 
             session['name_base'] = 'insta_mi'
-            session = change_lp(session)
+            session = change_lp()
 
             caption = sample_clear['text'][:2000]
 

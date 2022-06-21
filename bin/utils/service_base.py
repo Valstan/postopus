@@ -1,50 +1,74 @@
 from pymongo import MongoClient
 
+import config
+from bin.rw.get_mongo_base import get_mongo_base
+from bin.utils.driver_tables import load_table
+
+session = config.session
+
 
 def service_base():
-    client = MongoClient(
-        "mongodb+srv://valstan:nitro2000@postopus.qjxr9.mongodb.net/postopus?retryWrites=true&w=majority")
-    db = client["postopus"]
-    click = str(input("1-config, 2-mi, 3-dran, 4-test, 000-hook"))
-    if click == "1":
-        service_config(db)
-    elif click == "2":
-        pass
-    elif click == "3":
-        pass
-    elif click == "4":
-        pass
-    elif click == "000":
-        print("Эта функция не написана.")
-        pass  # hook(db)
+    global session
 
 
-def add_group_for_parsing(collection):
+    while True:
+        click = str(
+            input("1-GlobalConfig\n"
+                  "2(mi) - config, 3(dran) - config, 4(test) - config, 000-hook\n"
+                  "S(s) - сохранить базу и выйти\n"
+                  "Q(q) - выйти без сохранения"))
+        if click not in session.keys():
+            load_table('config')
+        if click == "1config":
+            service_config()
+        elif click in "2mi":
+            pass
+        elif click in "3dran":
+            pass
+        elif click in "4test":
+            pass
+        elif click in "Qq":
+            quit()
+        elif click in "Ss":
+            collection = get_mongo_base()['config']
+            collection.update_one({'title': 'config'}, {'$set': session}, upsert=True)
+        elif click == "000":
+            print("Эта функция не написана.")
+            pass  # hook(db)
+        else:
+            print('Нет такой команды...')
+
+
+
+
+def add_group_for_parsing():
+    global session
+
     base = str(input("Name base (mi, dran, test): "))
-    tema = str(input("Name tematika (reklama, novost, prikol, krugozor, music, art): "))
-    sample = collection.find_one({'title': "config"})["config_bases"][base]["id"][tema]
-    caption = str(input("Caption (Малмыжский музей http://museum.ru): "))
+    tema = str(input(f"Name tematika ({session[base]['id'].keys()}): "))
+    caption = str(input("Caption (Малмыжский музей museum ru): "))
     number_group = str(input("Number group (-89542154): "))
-    sample[caption] = number_group
-    collection["config_bases"][base]["id"].insert_one({tema: sample})
+    session[base]['id'][tema][caption] = number_group
 
 
-def service_config(db):
-    collection = db['config']
+def service_config():
+    global session
+
     click = str(input("1 - config delete_msg_blacklist\n"
                       "2 - add group for parsing\n"
                       "Enter - Exit"))
     if click == "1":
-        del_msg_blacklist(collection)
+        del_msg_blacklist()
     elif click == "2":
-        add_group_for_parsing(collection)
-    print("Скрипт завершил работу.")
+        add_group_for_parsing()
+    print("Возвращаемся в главное меню.")
 
 
-def del_msg_blacklist(collection):
-    delete_msg_blacklist = collection.find_one({'title': "config"})["delete_msg_blacklist"]
+def del_msg_blacklist():
+    global session
+
     new_delete_msg_blacklist = []
-    for i in delete_msg_blacklist:
+    for i in session['delete_msg_blacklist']:
         i = i.lower()
         new_delete_msg_blacklist.append(i)
     new_set = set(new_delete_msg_blacklist)
@@ -56,7 +80,7 @@ def del_msg_blacklist(collection):
             text = text.lower()
             new_set.add(text)
         elif click == "0":
-            collection.update_one({'title': "config"}, {'$set': {"delete_msg_blacklist": list(new_set)}})
+            session['delete_msg_blacklist'] = new_set
             break
 
 

@@ -1,6 +1,6 @@
 from PIL import Image
 # from instabot import Bot
-
+import config
 from bin.rw.get_image import image_get
 from bin.rw.get_msg import get_msg
 from bin.utils.change_lp import change_lp
@@ -10,12 +10,16 @@ from bin.utils.draw_text import draw_text
 from bin.utils.resize_img import resize_img
 from bin.utils.white_board import white_board
 
+session = config.session
 
-def instagram_manual(vkapp, session):
+
+def instagram_manual():
+    global session
+
     group_shablon = -179203620
     list_dir_for_clear = ('config', session['insta_photo_path'])
     clear_dir(list_dir_for_clear)
-    sample = get_msg(session, vkapp, group_shablon, 0, 1)[0]
+    sample = get_msg(group_shablon, 0, 1)[0]
     sample = clear_copy_history(sample)
 
     height = 0
@@ -33,7 +37,7 @@ def instagram_manual(vkapp, session):
     img.save(session['insta_photo_path'] + '1.jpeg')
 
     session['name_base'] = 'insta_mi'
-    session = change_lp(session)
+    session = change_lp()
 
     caption = sample['text'][:2000]
 

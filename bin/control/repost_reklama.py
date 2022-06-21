@@ -1,12 +1,13 @@
 import random
 
-from bin.utils.driver import save_table, load_table
 from bin.rw.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history
+from bin.utils.driver_tables import save_table
+from config import session
 
 
-def repost_reklama(vkapp, session):
-    session = load_table(session, session['name_session'])
+def repost_reklama():
+
     glav = -163580976
     zam = -172650802
     dvorniki = -171276826
@@ -15,7 +16,7 @@ def repost_reklama(vkapp, session):
                dvorniki]
     random.shuffle(ruletka)
     shut = random.choice(ruletka)
-    ruletka = get_msg(session, vkapp, shut, 0, 50)
+    ruletka = get_msg(shut, 0, 50)
     random.shuffle(ruletka)
     for i in range(20):
         shut = random.choice(ruletka)
@@ -26,13 +27,12 @@ def repost_reklama(vkapp, session):
 
     id_group = -session['post_group']['key']
     try:
-        vkapp.wall.repost(object=shut, group_id=id_group)
+        session['vk_app'].wall.repost(object=shut, group_id=id_group)
         session[session['name_session']]['lip'].append(shut)
     except:
         pass
 
-    session['last_posts_counter'] = 10
-    save_table(session, session['name_session'])
+    save_table(session['name_session'])
 
 
 if __name__ == '__main__':

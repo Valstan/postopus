@@ -1,10 +1,9 @@
 import requests
 
-from config import tb_url, tb_params, TELEGA_TOKEN_VALSTANBOT
+from config import tb_url, tb_params, session
 
 
-def send_error(session, text):
-
+def send_error(text):
     method = tb_url + session['TELEGA_TOKEN_VALSTANBOT'] + "/sendMessage"
     tb_params['text'] = str(text) + str(session)
 
@@ -12,5 +11,4 @@ def send_error(session, text):
 
 
 if __name__ == '__main__':
-    sessia = {'TELEGA_TOKEN_VALSTANBOT': TELEGA_TOKEN_VALSTANBOT}
-    send_error(sessia, "Запущен файл send_error вручную.")
+    send_error("Запущен файл send_error вручную.")

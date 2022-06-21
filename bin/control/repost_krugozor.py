@@ -1,14 +1,15 @@
 from bin.rw.get_msg import get_msg
 from bin.rw.posting_post import posting_post
 from bin.utils.clear_copy_history import clear_copy_history
-from bin.utils.driver import save_table, load_table
+from bin.utils.driver_tables import save_table
 from bin.utils.text_framing import text_framing
+from config import session
 
 
-def repost_krugozor(vkapp, session):
-    session = load_table(session, session['name_session'])
+def repost_krugozor():
+
     krugozor_id = -168171570
-    msgs = get_msg(session, vkapp, krugozor_id, 0, 50)
+    msgs = get_msg(krugozor_id, 0, 50)
     msg_list = []
     for sample in msgs:
         sample = clear_copy_history(sample)
@@ -19,8 +20,7 @@ def repost_krugozor(vkapp, session):
                                           session['podpisi']['heshteg']['krugozor'],
                                           session['podpisi']['final'], 1)
             msg_list.append(sample)
-            session = posting_post(session, vkapp, msg_list)
+            posting_post(msg_list)
             break
 
-    session['last_posts_counter'] = 40
-    save_table(session, session['name_session'])
+    save_table(session['name_session'])

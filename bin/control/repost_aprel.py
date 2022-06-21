@@ -1,13 +1,13 @@
-from bin.utils.driver import save_table, load_table
 from bin.rw.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history
+from bin.utils.driver_tables import save_table
+from config import session
 
 
-def repost_aprel(vkapp, session):
-    session = load_table(session, session['name_session'])
+def repost_aprel():
 
     aprel_id = -144647350
-    msgs = get_msg(session, vkapp, aprel_id, 0, 10)
+    msgs = get_msg(aprel_id, 0, 10)
     msg_link = []
 
     for msg in msgs:
@@ -17,15 +17,14 @@ def repost_aprel(vkapp, session):
             break
 
     if msg_link:
-        id_group = -session['post_group']['key']
+        id_group = -session['config']['post_group']['key']
         try:
-            vkapp.wall.repost(object=msg_link, group_id=id_group)
+            session['vk_app'].wall.repost(object=msg_link, group_id=id_group)
             session[session['name_session']]['lip'].append(msg_link)
         except:
             pass
 
-    session['last_posts_counter'] = 3
-    save_table(session, session['name_session'])
+    save_table(session['name_session'])
 
 
 if __name__ == '__main__':
