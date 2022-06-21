@@ -10,8 +10,10 @@ def change_lp():
     global session
 
     try:
-        if session['name_session'] in (session['arg']['public'] + session['arg']['dran']) \
-            and session['name_base'] in 'dran':
+        if (session['name_session'] in (session['arg']['public'] + session['arg']['dran'])
+            and session['name_base'] in 'dran')\
+            or (session['name_session'] in session['arg']['dran']
+                and session['name_base'] in 'mi'):
             session.update({"login": session['VK_LOGIN_DRAN'], "password": session['VK_PASSWORD_DRAN']})
         elif session['name_session'] in (session['arg']['public'] + session['arg']['valstan']) \
             and session['name_base'] in 'mi test':
