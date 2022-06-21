@@ -21,7 +21,7 @@ def start():
         arguments = str(input("\nEnter name session of:"
                               "\n1-config"
                               "\nmi_novost  mi_repost_reklama  mi_addons  mi_repost_krugozor"
-                              "\nmi_repost_aprel  mi_reklama  mi_repost_me  mi_instagram"
+                              "\nmi_repost_aprel  mi_reklama  mi_repost_valstan  mi_instagram"
                               "\nmi_ or dran_ or test_ prefix of base"))
 
     if arguments == "100":

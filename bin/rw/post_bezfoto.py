@@ -7,7 +7,6 @@ from config import session
 
 
 def post_bezfoto():
-
     session['bezfoto'] = load_table('bezfoto')
     if len(session['bezfoto']['lip']) > session['bezfoto']['post_size'] - 1:
         session['all_bezfoto'] = load_table('all_bezfoto')

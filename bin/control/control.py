@@ -5,10 +5,12 @@ from bin.control.repost_aprel import repost_aprel
 from bin.control.repost_krugozor import repost_krugozor
 from bin.control.repost_me import repost_me
 from bin.control.repost_reklama import repost_reklama
+from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.parser import parser
 from bin.rw.post_bezfoto import post_bezfoto
 from bin.rw.posting_post import posting_post
-from bin.utils.driver_tables import load_table, save_table
+from bin.utils.change_lp import change_lp
+from bin.utils.driver_tables import load_table
 
 session = config.session
 
@@ -20,12 +22,15 @@ def control():
         msg_list = parser()
         if msg_list:
             posting_post(msg_list)
-        save_table(session['name_session'])
 
     elif session['name_session'] == 'reklama':
         parser()
+        # реклама собирается не под моим аккаунтом, поэтому для постинга переключаюсь на свой
+        if session['name_base'] in 'mi test':
+            session['name_session'] = 'repost_valstan'
+            change_lp()
+            get_session_vk_api()
         post_bezfoto()
-        save_table(session['name_session'])
 
     elif session['name_session'] == 'addons':
         old_ruletka = ''
@@ -39,7 +44,6 @@ def control():
                 msg_list = parser()
                 if msg_list:
                     posting_post(msg_list)
-                    save_table(session['name_session'])
                     break
             old_ruletka = session['name_session']
 
