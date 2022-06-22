@@ -18,7 +18,7 @@ def sosed():
         if not sort_old_date(sample):
             continue
         sample = clear_copy_history(sample)
-        if 'views' not in sample and 'attachments' not in sample:
+        if 'views' not in sample or 'attachments' not in sample:
             continue
         skleika = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
         if skleika in session[session['name_session']]['lip']:
