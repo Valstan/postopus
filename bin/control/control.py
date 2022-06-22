@@ -5,6 +5,7 @@ from bin.control.repost_aprel import repost_aprel
 from bin.control.repost_krugozor import repost_krugozor
 from bin.control.repost_me import repost_me
 from bin.control.repost_reklama import repost_reklama
+from bin.control.sosed import sosed
 from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.parser import parser
 from bin.rw.post_bezfoto import post_bezfoto
@@ -46,6 +47,10 @@ def control():
                     posting_post(msg_list)
                     break
             old_ruletka = session['name_session']
+
+    elif session['name_session'] == 'sosed':
+        msg_list = sosed()
+        posting_post(msg_list)
 
     elif session['name_session'] in session['repost_accounts']:
         repost_me()
