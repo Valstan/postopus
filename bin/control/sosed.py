@@ -28,11 +28,12 @@ def sosed():
         if sort_black_list(session['delete_msg_blacklist'], sample['text']):
             continue
         # Чистка и исправление текста мягкий и жесткий набор
-        clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['novost']) + '|' \
-                               + '|'.join(session['clear_text_blacklist']['reklama']) + '| '
-        sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
-                                '', sample['text'],
-                                0, flags=re.MULTILINE + re.IGNORECASE)
+        for i in range(3):
+            clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['novost']) + '|' \
+                                   + '|'.join(session['clear_text_blacklist']['reklama']) + '| '
+            sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
+                                    '', sample['text'],
+                                    0, flags=re.MULTILINE + re.IGNORECASE)
 
         clear_posts.append(sample)
 

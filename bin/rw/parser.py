@@ -20,9 +20,7 @@ def parser():
         posts = read_posts(session['id'][session['name_session']], 20)
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
-        posts = get_msg(random.choice(list(session['id'][session['name_session']].values())),
-                        0,
-                        20)
+        posts = get_msg(random.choice(list(session['id'][session['name_session']].values())), 0, 20)
 
     clear_posts = []
     for sample in posts:
@@ -51,9 +49,7 @@ def parser():
         sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
                                 '', sample['text'],
                                 0, flags=re.MULTILINE + re.IGNORECASE)
-        if 'views' not in sample and 'attachments' in sample:
-            del sample['attachments']
-        if session['name_session'] == 'reklama' and 'attachments' in sample:
+        if ('views' not in sample or session['name_session'] == 'reklama') and 'attachments' in sample:
             del sample['attachments']
         if 'attachments' not in sample:
             # Жесткая чистка текста для постов из рекламных групп
