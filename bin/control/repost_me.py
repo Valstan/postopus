@@ -9,7 +9,6 @@ from config import session
 
 
 def repost_me():
-
     link = ''
     new_posts = get_msg(session['post_group']['key'], 0, 15)
 
@@ -19,12 +18,13 @@ def repost_me():
 
         copy_history = clear_copy_history(sample)
 
-        if link in session[session['name_session']]['lip'] or \
-            re.search(session['podpisi']['heshteg']['reklama'][1:], sample['text'], flags=re.MULTILINE) or \
-            re.search(session['podpisi']['heshteg']['music'][1:], sample['text'], flags=re.MULTILINE) or \
-            re.search(session['podpisi']['heshteg']['reklama'][1:], copy_history['text'], flags=re.MULTILINE) or \
-            re.search(session['podpisi']['heshteg']['music'][1:], copy_history['text'], flags=re.MULTILINE) or \
-            copy_history['owner_id'] in (-179037590, -144647350, -162751110, -174650587, -190134660):
+        if link in session[session['name_session']]['lip'] \
+            or re.search(session['podpisi']['heshteg']['reklama'][1:], sample['text'], flags=re.MULTILINE) \
+            or re.search(session['podpisi']['heshteg']['music'][1:], sample['text'], flags=re.MULTILINE) \
+            or re.search(session['podpisi']['heshteg']['reklama'][1:], copy_history['text'], flags=re.MULTILINE) \
+            or re.search(session['podpisi']['heshteg']['music'][1:], copy_history['text'], flags=re.MULTILINE)\
+            or (session['name_session'] == 'repost_valstan'
+                and copy_history['owner_id'] in session[session['name_session']]['not_repost']):
             link = ''
             continue
         break
