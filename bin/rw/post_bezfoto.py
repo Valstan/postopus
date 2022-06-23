@@ -10,11 +10,9 @@ def post_bezfoto():
     session['bezfoto'] = load_table('bezfoto')
     if len(session['bezfoto']['lip']) > session['bezfoto']['post_size'] - 1:
         session['all_bezfoto'] = load_table('all_bezfoto')
-        text = ''
-        for sample in session['bezfoto']['lip'][:session['bezfoto']['post_size']]:
-            text += ''.join(map(str, (sample, '\n')))
+
         text = text_framing(session['podpisi']['zagolovok']['bezfoto'],
-                            text,
+                            ''.join(session['bezfoto']['lip'][:session['bezfoto']['post_size']]),
                             session['podpisi']['heshteg']['reklama'],
                             session['podpisi']['final'])
 
