@@ -12,7 +12,7 @@ def post_bezfoto():
         session['all_bezfoto'] = load_table('all_bezfoto')
 
         text = text_framing(session['podpisi']['zagolovok']['bezfoto'],
-                            ''.join(session['bezfoto']['lip'][:session['bezfoto']['post_size']]),
+                            ''.join(map(str, session['bezfoto']['lip'][:session['bezfoto']['post_size']])),
                             session['podpisi']['heshteg']['reklama'],
                             session['podpisi']['final'])
 
