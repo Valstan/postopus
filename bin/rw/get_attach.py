@@ -5,7 +5,7 @@ def get_attach(msg):
         if type_attach == 'link':
             return sample[type_attach]['url']
         elif type_attach == 'photos_list':
-            continue
+            attach += ''.join(map(str, (type_attach, sample[type_attach], ',')))
         else:
             attach += ''.join(map(str, (type_attach, sample[type_attach]['owner_id'],
                                         '_', sample[type_attach]['id'], ',')))
