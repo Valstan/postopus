@@ -50,7 +50,8 @@ def control():
 
     elif session['name_session'] == 'sosed':
         msg_list = sosed()
-        posting_post(msg_list)
+        if msg_list:
+            posting_post(msg_list)
 
     elif session['name_session'] in session['repost_accounts']:
         repost_me()

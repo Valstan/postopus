@@ -1,6 +1,5 @@
 from sys import argv
 
-import config
 from bin.control.control import control
 from bin.rw.get_mongo_base import get_mongo_base
 from bin.rw.get_session import get_session
@@ -9,12 +8,8 @@ from bin.utils.change_lp import change_lp
 from bin.utils.schedule import schedule
 from bin.utils.service_base import service_base
 
-session = config.session
-
 
 def start():
-    global session
-
     if len(argv) == 2:
         arguments = str(argv[1])
     else:

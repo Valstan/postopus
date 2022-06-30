@@ -66,7 +66,7 @@ def parser():
     save_table('bezfoto')
 
     #  Проверка на повтор картинок, значит картинки уже публиковались, пост игнорируется
-    result_list_msgs = []
+    photo_list_msgs = []
     for sample in posts:
         sample = sort_po_foto(sample)
         if sample:
@@ -78,9 +78,21 @@ def parser():
                                               session['podpisi']['heshteg'][session['name_session']],
                                               session['podpisi']['final'],
                                               1)
-                result_list_msgs.append(sample)
+                photo_list_msgs.append(sample)
                 data_string += sample['text']
+
+    result_list_msgs = []
+    if photo_list_msgs and photo_list_msgs[0]['owner_id'] == -43215063:
+        for sample in photo_list_msgs:
+            for atata in sample['attachments']:
+                if atata['type'] == 'video':
+                    result_list_msgs.append(sample)
+                    break
+
+    if not result_list_msgs:
+        result_list_msgs = photo_list_msgs
 
     if result_list_msgs:
         result_list_msgs.sort(key=lambda x: x['views']['count'], reverse=True)
+
     return result_list_msgs
