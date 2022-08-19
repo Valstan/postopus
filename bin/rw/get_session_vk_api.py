@@ -13,6 +13,8 @@ def get_session_vk_api():
 
     try:
         vk_session = VkApi(session['login'], session['password'])
+        # vk_session = VkApi(token=session['token'])
+        # vk_session.auth(token_only=True)
         vk_session.auth()
         session['vk_app'] = vk_session.get_api()
     except Exception as exc:
