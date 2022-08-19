@@ -11,13 +11,8 @@ def change_lp():
 
     try:
         if (session['name_session'] in (session['arg']['public'] + session['arg']['dran'])
-            and session['name_base'] in 'dran')\
-            or (session['name_session'] in session['arg']['dran']
-                and session['name_base'] in 'mi'):
+            and session['name_base'] in 'dran'):
             session.update({"login": session['VK_LOGIN_DRAN'], "password": session['VK_PASSWORD_DRAN']})
-
-        elif session['name_session'] in session['arg']['brigadir']:
-            session.update({"login": session['VK_LOGIN_BRIGADIR'], "password": session['VK_PASSWORD_BRIGADIR']})
 
         elif session['name_session'] in session['arg']['instagram']:
             session.update({"login": session['INSTA_LOGIN_MI'], "password": session['INSTA_PASSWORD_MI']})
