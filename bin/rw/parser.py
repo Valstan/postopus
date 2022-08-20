@@ -16,7 +16,7 @@ from config import session
 
 def parser():
 
-    if session['name_session'] in 'novost reklama':
+    if session['name_session'] in 'novost novosti reklama':
         posts = read_posts(session['id'][session['name_session']], 20)
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
