@@ -24,6 +24,11 @@ def control():
         if msg_list:
             posting_post(msg_list)
 
+    if session['name_session'] == 'novosti':
+        msg_list = parser()
+        if msg_list:
+            posting_post(msg_list)
+
     elif session['name_session'] == 'reklama':
         parser()
         # реклама собирается не под моим аккаунтом, поэтому для постинга переключаюсь на свой

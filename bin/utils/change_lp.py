@@ -5,6 +5,9 @@ import config
 
 session = config.session
 
+"""\
+            or (session['name_session'] in session['arg']['dran']
+                and session['name_base'] in 'mi')"""
 
 def change_lp():
     global session
