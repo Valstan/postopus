@@ -76,6 +76,8 @@ def parser():
                                           session['podpisi']['heshteg'][session['name_session']],
                                           session['podpisi']['final'],
                                           1)
+            if 'views' not in sample:
+                sample['views']['count'] = 5
             photo_list_msgs.append(sample)
 
     if photo_list_msgs:
