@@ -15,7 +15,6 @@ from config import session
 
 
 def parser():
-
     if session['name_session'] in 'novost novosti reklama':
         posts = read_posts(session['id'][session['name_session']], 20)
     else:
@@ -31,68 +30,65 @@ def parser():
         if skleika in session[session['name_session']]['lip']:
             continue
 
-        # if not ai_sort(sample):
+        # if not ai_sort(sample): подключение нейронки
         #     continue
-        if sort_black_list(session['delete_msg_blacklist'], sample['text']):
-            continue
+        if session['name_session'] not in "novost":
+            if sort_black_list(session['delete_msg_blacklist'], sample['text']):
+                continue
 
         clear_posts.append(sample)
 
-    # Чистка текста от вредных слов и отсортировка текстов в базу БЕЗФОТО
-    session['bezfoto'] = load_table('bezfoto')
-    session['all_bezfoto'] = load_table('all_bezfoto')
-    data_string = " ".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip'])
-    posts = []
-    for sample in clear_posts:
-        # Чистка и исправление текста для всех публичный мягкий набор
-        clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['novost']) + '|'
-        sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
-                                '', sample['text'],
-                                0, flags=re.MULTILINE + re.IGNORECASE)
-        if ('views' not in sample or session['name_session'] == 'reklama') and 'attachments' in sample:
-            del sample['attachments']
-        if 'attachments' not in sample:
-            # Жесткая чистка текста для постов из рекламных групп
-            clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['reklama']) + '|'
-            for i in range(3):
-                sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
-                                        '', sample['text'],
-                                        0, flags=re.MULTILINE + re.IGNORECASE)
-            if len(sample['text']) > 20 and sample['text'] not in data_string:
-                session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample))
-                data_string += sample['text']
-            continue
-        posts.append(sample)
-    save_table('bezfoto')
+    if session['name_session'] not in "novost novosti krugozor":
+        # Чистка текста от вредных слов и отсортировка текстов в базу БЕЗФОТО
+        session['bezfoto'] = load_table('bezfoto')
+        session['all_bezfoto'] = load_table('all_bezfoto')
+        data_string = " ".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip'])
+        posts = []
+        for sample in clear_posts:
+            # Чистка и исправление текста для всех публичный мягкий набор
+            clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['novost']) + '|'
+            sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
+                                    '', sample['text'],
+                                    0, flags=re.MULTILINE + re.IGNORECASE)
+            if ('views' not in sample or session['name_session'] == 'reklama') and 'attachments' in sample:
+                del sample['attachments']
+            if 'attachments' not in sample:
+                # Жесткая чистка текста для постов из рекламных групп
+                clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['reklama']) + '|'
+                for i in range(3):
+                    sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
+                                            '', sample['text'],
+                                            0, flags=re.MULTILINE + re.IGNORECASE)
+                if len(sample['text']) > 20 and sample['text'] not in data_string:
+                    session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample))
+                    data_string += sample['text']
+                continue
+            posts.append(sample)
+        clear_posts = posts
+        save_table('bezfoto')
 
-    #  Проверка на повтор картинок, значит картинки уже публиковались, пост игнорируется
+    #  Проверка на повтор картинок, если картинки уже публиковались, пост игнорируется
     photo_list_msgs = []
-    for sample in posts:
-        sample = sort_po_foto(sample)
-        if sample:
-            # Еще раз проверка текста на дата-стринг мог пройти текст с картинкой,
-            # а текст уже где-то там фигурировал без картинки
-            if sample['text'] not in data_string:
-                sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
-                                              sample,
-                                              session['podpisi']['heshteg'][session['name_session']],
-                                              session['podpisi']['final'],
-                                              1)
-                photo_list_msgs.append(sample)
-                data_string += sample['text']
+    for sample in clear_posts:
+        if sort_po_foto(sample):
+            sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
+                                          sample,
+                                          session['podpisi']['heshteg'][session['name_session']],
+                                          session['podpisi']['final'],
+                                          1)
+            photo_list_msgs.append(sample)
 
-    result_list_msgs = []
-    if photo_list_msgs and photo_list_msgs[0]['owner_id'] == -43215063:
-        for sample in photo_list_msgs:
-            for atata in sample['attachments']:
-                if atata['type'] == 'video':
-                    result_list_msgs.append(sample)
-                    break
+    if photo_list_msgs:
+        result_list_msgs = []
+        # Сортировка Киномании чтобы остались только посты с видео, а то там всякой левой фигни много
+        if photo_list_msgs and photo_list_msgs[0]['owner_id'] == -43215063:
+            for sample in photo_list_msgs:
+                for atata in sample['attachments']:
+                    if atata['type'] == 'video':
+                        result_list_msgs.append(sample)
+                        break
+            if result_list_msgs:
+                photo_list_msgs = result_list_msgs
 
-    if not result_list_msgs:
-        result_list_msgs = photo_list_msgs
-
-    if result_list_msgs:
-        result_list_msgs.sort(key=lambda x: x['views']['count'], reverse=True)
-
-    return result_list_msgs
+        photo_list_msgs.sort(key=lambda x: x['views']['count'], reverse=True)
+        return photo_list_msgs

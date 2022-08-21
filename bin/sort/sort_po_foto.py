@@ -27,7 +27,7 @@ def sort_po_foto(msg):
         #     return session, []
         session[session['name_session']]['hash'].append(histo)
 
-    return msg
+    return True
 
 
 if __name__ == '__main__':

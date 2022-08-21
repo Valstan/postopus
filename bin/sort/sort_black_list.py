@@ -6,7 +6,7 @@ def sort_black_list(delete_msg_blacklist, msg):
         sample = sample.replace('"', '')
         sample = sample.lower()
         if sample in msg:
-            print(f"______!!! АХТУНГ !!!________\nВ черном списке, сообщение не будет опубликовано\n{sample}\n{msg}")
+            # print(f"______!!! АХТУНГ !!!________\nВ черном списке, сообщение не будет опубликовано\n{sample}\n{msg}")
             return True
 
 
