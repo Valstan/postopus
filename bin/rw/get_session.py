@@ -4,7 +4,7 @@ from bin.utils.driver_tables import load_table
 session = config.session
 
 
-def get_session(arguments):
+def get_session(arguments, bags="0"):
     global session
 
     # Собираем сессию, из базы конфиг тянем глобальный конфиг
@@ -14,5 +14,6 @@ def get_session(arguments):
     session['name_base'], session['name_session'] = arguments.split('_', 1)
     # Из базы подтягиваем региональный конфиг
     session.update(load_table('config'))
+    session['bags'] = bags
     # И таблицу для работы, например novost
     session[session['name_session']] = load_table(session['name_session'])

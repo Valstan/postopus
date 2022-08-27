@@ -1,4 +1,7 @@
-def sort_black_list(delete_msg_blacklist, msg):
+from bin.utils.url_of_post import url_of_post
+
+
+def sort_black_list(delete_msg_blacklist, msg, bags="0"):
     msg = msg.replace('"', '')
     msg = msg.replace('\n', '')
     msg = msg.lower()
@@ -6,7 +9,12 @@ def sort_black_list(delete_msg_blacklist, msg):
         sample = sample.replace('"', '')
         sample = sample.lower()
         if sample in msg:
-            # print(f"______!!! АХТУНГ !!!________\nВ черном списке, сообщение не будет опубликовано\n{sample}\n{msg}")
+            if bags == "3":
+                print(f"____!!! Слово в черном списке !!!______\n"
+                      f"{sample}\n"
+                      f"Не будет опубликован пост:\n"
+                      f"{msg}\n"
+                      f"{url_of_post(sample)}")
             return True
 
 

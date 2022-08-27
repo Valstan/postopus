@@ -11,6 +11,7 @@ from bin.utils.avtortut import avtortut
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.driver_tables import load_table, save_table
 from bin.utils.text_framing import text_framing
+from bin.utils.url_of_post import url_of_post
 from config import session
 
 
@@ -24,16 +25,20 @@ def parser():
     clear_posts = []
     for sample in posts:
         if not sort_old_date(sample):
+            if session['bags'] == "1":
+                print(f"\n!!! Слишком старый !!!\n{sample['text']}\n{url_of_post(sample)}")
             continue
         sample = clear_copy_history(sample)
-        skleika = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
-        if skleika in session[session['name_session']]['lip']:
+        url = url_of_post(sample)
+        if url in session[session['name_session']]['lip']:
+            if session['bags'] == "2":
+                print(f"\n!!! Уже публиковался !!!\n{sample['text']}\n{url}")
             continue
 
         # if not ai_sort(sample): подключение нейронки
         #     continue
         if session['name_session'] not in "novost":
-            if sort_black_list(session['delete_msg_blacklist'], sample['text']):
+            if sort_black_list(session['delete_msg_blacklist'], sample['text'], session['bags']):
                 continue
 
         clear_posts.append(sample)
@@ -51,6 +56,10 @@ def parser():
                                     '', sample['text'],
                                     0, flags=re.MULTILINE + re.IGNORECASE)
             if ('views' not in sample or session['name_session'] == 'reklama') and 'attachments' in sample:
+                if session['bags'] == "4":
+                    print(f"\n!!! Есть атачментсы, но их мы удалим, потому что нет views !!!"
+                          f"\n{sample['text']}"
+                          f"\n{url_of_post(sample)}")
                 del sample['attachments']
             if 'attachments' not in sample:
                 # Жесткая чистка текста для постов из рекламных групп
@@ -79,6 +88,11 @@ def parser():
             if 'views' not in sample:
                 sample['views']['count'] = 5
             photo_list_msgs.append(sample)
+        else:
+            if session['bags'] == "5":
+                print(f"\n----- !!! Такая фотка уже была, пост не будет опубликован !!! -----"
+                      f"\n{sample['text']}"
+                      f"\n{url_of_post(sample)}")
 
     if photo_list_msgs:
         result_list_msgs = []
