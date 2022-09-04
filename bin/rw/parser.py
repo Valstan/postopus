@@ -85,11 +85,8 @@ def parser():
                                           session['podpisi']['heshteg'][session['name_session']],
                                           session['podpisi']['final'],
                                           1)
-            try:
-                sample['views']['count']
-            except Exception as exc:
-                print(exc)
-                sample['views']['count'] = 5
+            if 'views' not in sample:
+                sample['views'] = {'count': 5}
             photo_list_msgs.append(sample)
         else:
             if session['bags'] == "5":
