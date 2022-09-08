@@ -14,7 +14,6 @@ def get_session_vk_api():
     if session['token']:
         try:
             vk_session = VkApi(token=session['token'])
-            vk_session.auth(token_only=True)
             session['vk_app'] = vk_session.get_api()
         except Exception as exc:
             send_error(f'Модуль - {get_session_vk_api.__name__}\n'
