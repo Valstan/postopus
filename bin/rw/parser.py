@@ -43,13 +43,15 @@ def parser():
         url = url_of_post(sample)
         if url in session[session['name_session']]['lip']:
             if session['bags'] == "2":
-                print(f"\n!!! Уже публиковался !!!\n{sample['text']}\n{url}")
+                print(f"\n!!! Уже публиковался (по lip)!!!\n{sample['text']}\n{url}")
             continue
 
         copy = sample['text'].replace('\n', ' ')
         copy = copy.replace('"', ' ')
         copy = copy.replace('  ', ' ')
         if copy in malmig_txt:
+            if session['bags'] == "2":
+                print(f"\n!!! Уже публиковался (по тексту) !!!\n{sample['text']}\n{url}")
             continue
 
         # if not ai_sort(sample): подключение нейронки
