@@ -90,7 +90,7 @@ def parser():
                                             '', sample['text'],
                                             0, flags=re.MULTILINE + re.IGNORECASE)
                 if len(sample['text']) > 20 and sample['text'] not in data_string:
-                    session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample))
+                    session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample) + '\n')
                     data_string += sample['text']
                 continue
             posts.append(sample)
@@ -103,8 +103,8 @@ def parser():
         if sort_po_foto(sample):
             sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
                                           sample,
-                                          session['podpisi']['heshteg'][session['name_session']],
-                                          session['podpisi']['final'],
+                                          '\n' + session['podpisi']['heshteg'][session['name_session']],
+                                          ' ',  # '\n' + session['podpisi']['final'],
                                           1)
             if 'views' not in sample:
                 sample['views'] = {'count': 5}
