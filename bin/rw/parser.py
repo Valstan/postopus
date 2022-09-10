@@ -50,6 +50,7 @@ def parser():
         copy = sample['text'].replace('\n', ' ')
         copy = copy.replace('"', ' ')
         copy = copy.replace('  ', ' ')
+        copy = copy.lover()
         if copy in malmig_txt:
             if session['bags'] == "2":
                 print(f"\n!!! Уже публиковался (по тексту) !!!\n{sample['text']}\n{url}")
