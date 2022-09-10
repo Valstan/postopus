@@ -7,6 +7,7 @@ from bin.rw.read_posts import read_posts
 from bin.sort.sort_black_list import sort_black_list
 from bin.sort.sort_old_date import sort_old_date
 from bin.sort.sort_po_foto import sort_po_foto
+from bin.sort.sort_po_video import sort_po_video
 from bin.utils.avtortut import avtortut
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.driver_tables import load_table, save_table
@@ -100,7 +101,7 @@ def parser():
     #  Проверка на повтор картинок, если картинки уже публиковались, пост игнорируется
     photo_list_msgs = []
     for sample in clear_posts:
-        if sort_po_foto(sample):
+        if sort_po_foto(sample) and sort_po_video(sample):
             sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
                                           sample,
                                           '\n' + session['podpisi']['heshteg'][session['name_session']],
