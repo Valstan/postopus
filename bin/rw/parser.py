@@ -18,9 +18,20 @@ from config import session
 def parser():
     if session['name_session'] in 'novost novosti reklama':
         posts = read_posts(session['id'][session['name_session']], 20)
+
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
         posts = get_msg(random.choice(list(session['id'][session['name_session']].values())), 0, 20)
+
+    # Всетаки вернул проверку по тексту на уже опубликованные
+    old = read_posts(session['post_group'], 100)
+    malmig_txt = ''
+    for sample in old:
+        sample = clear_copy_history(sample)
+        sample = sample['text'].replace('\n', ' ')
+        sample = sample.replace('"', ' ')
+        sample = sample.replace('  ', ' ')
+        malmig_txt += sample.lower() + ' '
 
     clear_posts = []
     for sample in posts:
@@ -33,6 +44,12 @@ def parser():
         if url in session[session['name_session']]['lip']:
             if session['bags'] == "2":
                 print(f"\n!!! Уже публиковался !!!\n{sample['text']}\n{url}")
+            continue
+
+        copy = sample['text'].replace('\n', ' ')
+        copy = copy.replace('"', ' ')
+        copy = copy.replace('  ', ' ')
+        if copy in malmig_txt:
             continue
 
         # if not ai_sort(sample): подключение нейронки

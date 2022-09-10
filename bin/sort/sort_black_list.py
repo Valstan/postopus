@@ -3,7 +3,7 @@ from bin.utils.url_of_post import url_of_post
 
 def sort_black_list(delete_msg_blacklist, msg, bags="0"):
     msg = msg.replace('"', '')
-    msg = msg.replace('\n', '')
+    msg = msg.replace('\n', ' ')
     msg = msg.lower()
     for sample in delete_msg_blacklist:
         sample = sample.replace('"', '')
