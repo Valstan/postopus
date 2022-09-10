@@ -31,7 +31,8 @@ def parser():
         sample = sample['text'].replace('\n', ' ')
         sample = sample.replace('"', ' ')
         sample = sample.replace('  ', ' ')
-        malmig_txt += sample.lower() + ' '
+        if session['podpisi']['reklama'] not in sample:
+            malmig_txt += sample.lower() + ' '
 
     clear_posts = []
     for sample in posts:
