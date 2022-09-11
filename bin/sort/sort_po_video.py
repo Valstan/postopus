@@ -13,13 +13,20 @@ def sort_po_video(msg):
 
     if 'attachments' in msg:
         for sample in msg['attachments']:
-            if sample['type'] == 'video' and 'image' in sample['video']:
-                height = 1000
-                url = ''
-                for i in sample['video']['image']:
-                    if i['height'] < height:
-                        height = i['height']
-                        url = i['url']
+            if sample['type'] == 'video' and sample['title'] not in 'Видео недоступно':
+                if 'image' in sample['video']:
+                    height = 1000
+                    url = ''
+                    for i in sample['video']['image']:
+                        if i['height'] < height:
+                            height = i['height']
+                            url = i['url']
+                elif 'photo_130' in sample['video']:
+                    url = sample['video']['photo_130']
+                elif 'photo_130' not in sample['video'] and 'photo_320' in sample['video']:
+                    url = sample['video']['photo_320']
+                else:
+                    continue
                 if image_get(url, 'image'):
                     image = Image.open('image')
                     histo = image.histogram()
