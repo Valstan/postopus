@@ -12,11 +12,11 @@ def sort_po_video(msg):
     global session
 
     if 'attachments' in msg:
-        if 'attachments' in msg:
-            if msg['attachments'][0]['type'] == 'video':
+        for sample in msg['attachments']:
+            if sample['type'] == 'video' and 'image' in sample['video']:
                 height = 1000
                 url = ''
-                for i in msg['attachments'][0]['video']['image']:
+                for i in sample['video']['image']:
                     if i['height'] < height:
                         height = i['height']
                         url = i['url']
