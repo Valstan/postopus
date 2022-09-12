@@ -13,7 +13,7 @@ def sort_po_video(msg):
 
     if 'attachments' in msg:
         for sample in msg['attachments']:
-            if sample['type'] == 'video' and sample['title'] not in 'Видео недоступно':
+            if sample['type'] == 'video' and sample['video']['title'] not in 'Видео недоступно':
                 if 'image' in sample['video']:
                     height = 1000
                     url = ''
