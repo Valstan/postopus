@@ -17,7 +17,8 @@ def repost_krugozor():
             sample['text'] = text_framing(session['podpisi']['zagolovok']['krugozor'],
                                           sample,
                                           session['podpisi']['heshteg']['krugozor'],
-                                          session['podpisi']['final'], 1)
+                                          session['podpisi']['final'],
+                                          1)
             msg_list.append(sample)
             posting_post(msg_list)
             break

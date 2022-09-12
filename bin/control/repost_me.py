@@ -19,10 +19,10 @@ def repost_me():
         copy_history = clear_copy_history(sample)
 
         if link in session[session['name_session']]['lip'] \
-            or re.search(session['podpisi']['heshteg']['reklama'][1:], sample['text'], flags=re.MULTILINE) \
-            or re.search(session['podpisi']['heshteg']['music'][1:], sample['text'], flags=re.MULTILINE) \
-            or re.search(session['podpisi']['heshteg']['reklama'][1:], copy_history['text'], flags=re.MULTILINE) \
-            or re.search(session['podpisi']['heshteg']['music'][1:], copy_history['text'], flags=re.MULTILINE)\
+            or re.search(session['podpisi']['heshteg']['reklama'], sample['text'], flags=re.MULTILINE) \
+            or re.search(session['podpisi']['heshteg']['music'], sample['text'], flags=re.MULTILINE) \
+            or re.search(session['podpisi']['heshteg']['reklama'], copy_history['text'], flags=re.MULTILINE) \
+            or re.search(session['podpisi']['heshteg']['music'], copy_history['text'], flags=re.MULTILINE)\
             or (session['name_session'] == 'repost_valstan'
                 and copy_history['owner_id'] in session[session['name_session']]['not_repost']):
             link = ''

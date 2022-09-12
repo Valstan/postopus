@@ -104,8 +104,8 @@ def parser():
         if sort_po_foto(sample) and sort_po_video(sample):
             sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
                                           sample,
-                                          '\n' + session['podpisi']['heshteg'][session['name_session']],
-                                          ' ',  # '\n' + session['podpisi']['final'],
+                                          session['podpisi']['heshteg'][session['name_session']],
+                                          session['podpisi']['final'],
                                           1)
             if 'views' not in sample:
                 sample['views'] = {'count': 5}
