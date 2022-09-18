@@ -19,7 +19,7 @@ def repost_aprel():
             break
 
     if msg_link:
-        id_group = -session['config']['post_group']['key']
+        id_group = -session['post_group']['key']
         try:
             session['vk_app'].wall.repost(object=msg_link, group_id=id_group)
             session[session['name_session']]['lip'].append(msg_link)
