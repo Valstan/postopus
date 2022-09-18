@@ -42,6 +42,8 @@ def parser():
                 print(f"\n!!! Слишком старый !!!\n{sample['text']}\n{url_of_post(sample)}")
             continue
         sample = clear_copy_history(sample)
+        if 'Запись удалена' in sample:
+            continue
         url = url_of_post(sample)
         if url in session[session['name_session']]['lip']:
             if session['bags'] == "2":
