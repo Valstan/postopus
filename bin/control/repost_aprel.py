@@ -12,6 +12,8 @@ def repost_aprel():
 
     for msg in msgs:
         msg = clear_copy_history(msg)
+        if 'Запись удалена' in msg:
+            continue
         msg_link = ''.join(map(str, ('https://vk.com/wall', msg['owner_id'], '_', msg['id'])))
         if msg_link not in session[session['name_session']]['lip']:
             break
