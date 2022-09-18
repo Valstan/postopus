@@ -119,7 +119,7 @@ def parser():
     if photo_list_msgs:
         result_list_msgs = []
         # Сортировка Киномании чтобы остались только посты с видео, а то там всякой левой фигни много
-        if photo_list_msgs and photo_list_msgs[0]['owner_id'] == -43215063:
+        if session['name_session'] == 'kino':
             for sample in photo_list_msgs:
                 for atata in sample['attachments']:
                     if atata['type'] == 'video':
