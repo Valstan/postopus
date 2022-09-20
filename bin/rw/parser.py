@@ -9,9 +9,11 @@ from bin.sort.sort_old_date import sort_old_date
 from bin.sort.sort_po_foto import sort_po_foto
 from bin.sort.sort_po_video import sort_po_video
 from bin.utils.avtortut import avtortut
+from bin.utils.bags import bags
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.driver_tables import load_table, save_table
 from bin.utils.text_framing import text_framing
+from bin.utils.text_to_mono_text import text_to_mono_text
 from bin.utils.url_of_post import url_of_post
 from config import session
 
@@ -29,40 +31,32 @@ def parser():
     malmig_txt = ''
     for sample in old:
         sample = clear_copy_history(sample)
-        sample = sample['text'].replace('\n', ' ')
-        sample = sample.replace('"', ' ')
-        sample = sample.replace('  ', ' ')
+        sample = text_to_mono_text(sample['text'])
         if session['podpisi']['heshteg']['reklama'] not in sample:
             malmig_txt += sample.lower() + ' '
 
     clear_posts = []
     for sample in posts:
         if not sort_old_date(sample):
-            if session['bags'] == "1":
-                print(f"\n!!! Слишком старый !!!\n{sample['text']}\n{url_of_post(sample)}")
+            bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
         sample = clear_copy_history(sample)
         if 'Запись удалена' in sample:
             continue
         url = url_of_post(sample)
         if url in session[session['name_session']]['lip']:
-            if session['bags'] == "2":
-                print(f"\n!!! Уже публиковался (по lip)!!!\n{sample['text']}\n{url}")
+            bags(sample_text=sample['text'], url=url)
             continue
 
-        copy = sample['text'].replace('\n', ' ')
-        copy = copy.replace('"', ' ')
-        copy = copy.replace('  ', ' ')
-        copy = copy.lower()
+        copy = text_to_mono_text(sample['text'])
         if copy in malmig_txt:
-            if session['bags'] == "2":
-                print(f"\n!!! Уже публиковался (по тексту) !!!\n{sample['text']}\n{url}")
+            bags(sample_text=sample['text'], url=url)
             continue
 
         # if not ai_sort(sample): подключение нейронки
         #     continue
         if session['name_session'] not in "novost":
-            if sort_black_list(session['delete_msg_blacklist'], sample['text'], session['bags']):
+            if sort_black_list(sample):
                 continue
 
         clear_posts.append(sample)
@@ -80,10 +74,7 @@ def parser():
                                     '', sample['text'],
                                     0, flags=re.MULTILINE + re.IGNORECASE)
             if ('views' not in sample or session['name_session'] == 'reklama') and 'attachments' in sample:
-                if session['bags'] == "4":
-                    print(f"\n!!! Есть атачментсы, но их мы удалим, потому что нет views !!!"
-                          f"\n{sample['text']}"
-                          f"\n{url_of_post(sample)}")
+                bags(sample_text=sample['text'], url=url_of_post(sample))
                 del sample['attachments']
             if 'attachments' not in sample:
                 # Жесткая чистка текста для постов из рекламных групп
@@ -113,10 +104,7 @@ def parser():
                 sample['views'] = {'count': 5}
             photo_list_msgs.append(sample)
         else:
-            if session['bags'] == "5":
-                print(f"\n----- !!! Такая фотка уже была, пост не будет опубликован !!! -----"
-                      f"\n{sample['text']}"
-                      f"\n{url_of_post(sample)}")
+            bags(sample_text=sample['text'], url=url_of_post(sample))
 
     if photo_list_msgs:
         result_list_msgs = []

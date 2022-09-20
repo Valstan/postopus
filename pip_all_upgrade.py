@@ -10,7 +10,7 @@ for pkg in pkgs:
 adduser valstan
 usermod -a -G sudo valstan
 reboot
-su - valstan
+su valstan
 sudo apt update
 sudo apt upgrade
 sudo dpkg-reconfigure locales

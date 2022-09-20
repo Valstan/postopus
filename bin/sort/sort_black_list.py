@@ -1,20 +1,16 @@
+from bin.utils.bags import bags
+from bin.utils.text_to_mono_text import text_to_mono_text
 from bin.utils.url_of_post import url_of_post
+from config import session
 
 
-def sort_black_list(delete_msg_blacklist, msg, bags="0"):
-    msg = msg.replace('"', '')
-    msg = msg.replace('\n', ' ')
-    msg = msg.lower()
-    for sample in delete_msg_blacklist:
-        sample = sample.replace('"', '')
-        sample = sample.lower()
-        if sample in msg:
-            if bags == "3":
-                print(f"____!!! Слово в черном списке !!!______\n"
-                      f"{sample}\n"
-                      f"Не будет опубликован пост:\n"
-                      f"{msg}\n"
-                      f"{url_of_post(sample)}")
+def sort_black_list(sample):
+    sample_text = text_to_mono_text(sample['text'])
+    for string in session['delete_msg_blacklist']:
+        string = string.replace('"', '')
+        string = string.lower()
+        if string in sample_text:
+            bags(sample_text=sample['text'], string=string, url=url_of_post(sample))
             return True
 
 
