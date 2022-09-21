@@ -94,7 +94,7 @@ def parser():
     #  Проверка на повтор картинок, если картинки уже публиковались, пост игнорируется
     photo_list_msgs = []
     for sample in clear_posts:
-        if sort_po_foto(sample) and sort_po_video(sample):
+        if not sort_po_foto(sample) and not sort_po_video(sample):
             sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
                                           sample,
                                           session['podpisi']['heshteg'][session['name_session']],

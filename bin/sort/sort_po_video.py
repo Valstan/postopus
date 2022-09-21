@@ -33,13 +33,11 @@ def sort_po_video(msg):
                     hash_object = hashlib.md5(str(histo).encode())
                     histo = hash_object.hexdigest()
                     if histo in session[session['name_session']]['hash']:
-                        return False
+                        return True
                     # if sort_black_list(session['delete_msg_blacklist'], tesseract('image')):
                     #     session[session['name_session']]['hash'].append(histo)
                     #     return session, []
                     session[session['name_session']]['hash'].append(histo)
-
-    return True
 
 
 if __name__ == '__main__':
