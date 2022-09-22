@@ -17,7 +17,5 @@ def get_mongo_base(base='postopus'):
             client = MongoClient(session['MONGO_CLIENT'])
             session['MONGO_BASE'] = client[base]
         except Exception as exc:
-            send_error(f'Модуль - {get_mongo_base.__name__}\n'
-                       f'АШИПКА - {exc}\n'
-                       f'{traceback.print_exc()}')
+            send_error(get_mongo_base.__name__, exc, traceback.print_exc())
             sleep(10)

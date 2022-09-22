@@ -24,9 +24,7 @@ def change_lp():
             session.update({"login": session['VK_LOGIN_VALSTAN'], "password": session['VK_PASSWORD_VALSTAN']})
             session.update({"token": session['VK_TOKEN_VALSTAN']})
     except Exception as exc:
-        send_error(f'Модуль - {change_lp.__name__}\n'
-                   f'АШИПКА - {exc}\n'
-                   f'{traceback.print_exc()}')
+        send_error(change_lp.__name__, exc, traceback.print_exc())
 
 
 if __name__ == '__main__':

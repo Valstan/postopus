@@ -33,9 +33,7 @@ def repost_me():
         try:
             session['vk_app'].wall.repost(object=link)
         except Exception as exc:
-            send_error(f'Модуль - {repost_me.__name__}\n'
-                       f'АШИПКА - {exc}\n'
-                       f'{traceback.print_exc()}')
+            send_error(repost_me.__name__, exc, traceback.print_exc())
 
         session[session['name_session']]['lip'].append(link)
         save_table(session['name_session'])

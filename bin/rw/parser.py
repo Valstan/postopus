@@ -91,20 +91,21 @@ def parser():
         clear_posts = posts
         save_table('bezfoto')
 
-    #  Проверка на повтор картинок, если картинки уже публиковались, пост игнорируется
+    # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
+    # Если проверка прошла, текст обрамляется подписями
     photo_list_msgs = []
     for sample in clear_posts:
-        if not sort_po_foto(sample) and not sort_po_video(sample):
-            sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
-                                          sample,
-                                          session['podpisi']['heshteg'][session['name_session']],
-                                          session['podpisi']['final'],
-                                          1)
-            if 'views' not in sample:
-                sample['views'] = {'count': 5}
-            photo_list_msgs.append(sample)
-        else:
+        if sort_po_foto(sample) and sort_po_video(sample):
             bags(sample_text=sample['text'], url=url_of_post(sample))
+            continue
+        sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
+                                      sample,
+                                      session['podpisi']['heshteg'][session['name_session']],
+                                      session['podpisi']['final'],
+                                      1)
+        if 'views' not in sample:
+            sample['views'] = {'count': 5}
+        photo_list_msgs.append(sample)
 
     if photo_list_msgs:
         result_list_msgs = []

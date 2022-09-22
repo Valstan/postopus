@@ -16,18 +16,14 @@ def get_session_vk_api():
             vk_session = VkApi(token=session['token'])
             session['vk_app'] = vk_session.get_api()
         except Exception as exc:
-            send_error(f'Модуль - {get_session_vk_api.__name__}\n'
-                       f'АШИПКА - {exc}\n'
-                       f'{traceback.print_exc()}')
+            send_error(get_session_vk_api.__name__, exc, traceback.print_exc())
     else:
         try:
             vk_session = VkApi(session['login'], session['password'])
             vk_session.auth()
             session['vk_app'] = vk_session.get_api()
         except Exception as exc:
-            send_error(f'Модуль - {get_session_vk_api.__name__}\n'
-                       f'АШИПКА - {exc}\n'
-                       f'{traceback.print_exc()}')
+            send_error(get_session_vk_api.__name__, exc, traceback.print_exc())
 
 
 if __name__ == '__main__':

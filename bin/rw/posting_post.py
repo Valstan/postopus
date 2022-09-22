@@ -24,9 +24,7 @@ def posting_post(msg_list):
             save_table(session['name_session'])
             break
         except Exception as exc:
-            send_error(f'Модуль - {posting_post.__name__}\n'
-                       f'АШИПКА - {exc}\n'
-                       f'{traceback.print_exc()}')
+            send_error(posting_post.__name__, exc, traceback.print_exc())
 
 
 if __name__ == '__main__':

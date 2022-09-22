@@ -12,9 +12,7 @@ def post_msg(group, text_send, attachments):
                                     message=text_send,
                                     attachments=attachments)
     except Exception as exc:
-        send_error(f'Модуль - {post_msg.__name__}\n'
-                   f'АШИПКА - {exc}\n'
-                   f'{traceback.print_exc()}')
+        send_error(post_msg.__name__, exc, traceback.print_exc())
 
 
 if __name__ == '__main__':

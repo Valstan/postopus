@@ -12,9 +12,7 @@ def read_posts(group_list, count):
         try:
             posts += get_msg(group, 0, count)
         except Exception as exc:
-            send_error(f'Модуль - {read_posts.__name__}\n'
-                       f'АШИПКА - {exc}\n'
-                       f'{traceback.print_exc()}')
+            send_error(read_posts.__name__, exc, traceback.print_exc())
         time.sleep(1)
     return posts
 
