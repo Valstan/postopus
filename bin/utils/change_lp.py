@@ -21,7 +21,7 @@ def change_lp():
             session.update({"login": session['INSTA_LOGIN_MI'], "password": session['INSTA_PASSWORD_MI']})
 
         else:
-            session.update({"login": session['VK_LOGIN_VALSTAN'], "password": session['VK_PASSWORD_VALSTAN']})
+            # session.update({"login": session['VK_LOGIN_VALSTAN'], "password": session['VK_PASSWORD_VALSTAN']})
             session.update({"token": session['VK_TOKEN_VALSTAN']})
     except Exception as exc:
         send_error(change_lp.__name__, exc, traceback.print_exc())
