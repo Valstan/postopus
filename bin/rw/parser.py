@@ -4,7 +4,7 @@ import re
 # from bin.ai.ai_sort import ai_sort
 from bin.rw.get_msg import get_msg
 from bin.rw.read_posts import read_posts
-from bin.sort.sort_black_list import sort_black_list
+from bin.sort.search_words_in_text import search_words_in_text
 from bin.sort.sort_old_date import sort_old_date
 from bin.sort.sort_po_foto import sort_po_foto
 from bin.sort.sort_po_video import sort_po_video
@@ -40,9 +40,16 @@ def parser():
         if not sort_old_date(sample):
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
+        owner_id = sample['owner_id']
         sample = clear_copy_history(sample)
+
+        # Сортировка савальских групп с картинками, если слов Малмыж и Киров нету то игнорируем
+        if (owner_id == -99686065 or owner_id == -141990463) and not search_words_in_text(sample, 'savali'):
+            continue
+
         if 'Запись удалена' in sample:
             continue
+
         url = url_of_post(sample)
         if url in session[session['name_session']]['lip']:
             bags(sample_text=sample['text'], url=url)
@@ -56,7 +63,7 @@ def parser():
         # if not ai_sort(sample): подключение нейронки
         #     continue
         if session['name_session'] not in "novost":
-            if sort_black_list(sample):
+            if search_words_in_text(sample, 'delete_msg_blacklist'):
                 continue
 
         clear_posts.append(sample)

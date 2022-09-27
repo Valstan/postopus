@@ -2,7 +2,7 @@ import random
 import re
 
 from bin.rw.get_msg import get_msg
-from bin.sort.sort_black_list import sort_black_list
+from bin.sort.search_words_in_text import search_words_in_text
 from bin.sort.sort_old_date import sort_old_date
 from bin.sort.sort_po_foto import sort_po_foto
 from bin.sort.sort_po_video import sort_po_video
@@ -28,7 +28,7 @@ def sosed():
             continue
         # if not ai_sort(sample):
         #     continue
-        if sort_black_list(sample):
+        if search_words_in_text(sample, 'delete_msg_blacklist'):
             continue
         # Чистка и исправление текста мягкий и жесткий набор
         for i in range(3):

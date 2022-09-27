@@ -34,7 +34,7 @@ def sort_po_video(msg):
                     histo = hash_object.hexdigest()
                     if histo in session[session['name_session']]['hash']:
                         return True
-                    # if sort_black_list(session['delete_msg_blacklist'], tesseract('image')):
+                    # if search_words_in_text(session['delete_msg_blacklist'], tesseract('image')):
                     #     session[session['name_session']]['hash'].append(histo)
                     #     return session, []
                     session[session['name_session']]['hash'].append(histo)

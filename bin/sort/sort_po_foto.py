@@ -5,7 +5,7 @@ from PIL import Image
 import config
 from bin.rw.get_image import image_get
 
-# from bin.sort.sort_black_list import sort_black_list
+# from bin.sort.search_words_in_text import search_words_in_text
 # from bin.utils.tesseract import tesseract
 
 session = config.session
@@ -30,7 +30,7 @@ def sort_po_foto(msg):
                     histo = hash_object.hexdigest()
                     if histo in session[session['name_session']]['hash']:
                         return True
-                    # if sort_black_list(session['delete_msg_blacklist'], tesseract('image')):
+                    # if search_words_in_text(session['delete_msg_blacklist'], tesseract('image')):
                     #     session[session['name_session']]['hash'].append(histo)
                     #     return session, []
                     session[session['name_session']]['hash'].append(histo)
