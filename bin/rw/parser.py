@@ -40,14 +40,14 @@ def parser():
         if not sort_old_date(sample):
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
-        owner_id = sample['owner_id']
+        group_id = str(sample['owner_id'])
         sample = clear_copy_history(sample)
 
         # Сортировка савальских групп с картинками, если слов Малмыж и Киров нету то игнорируем
-        if (owner_id == -99686065 or owner_id == -141990463) and not search_words_in_text(sample, 'savali'):
+        if group_id in '-99686065 -141990463' and not search_words_in_text(sample, 'savali'):
             continue
-
-        if 'Запись удалена' in sample:
+        # Если это запись из кинотеатра апрель или удалена то пропускаем (апрель мы репостим сами по графику)
+        if sample['owner_id'] == -144647350 or 'Запись удалена' in sample:
             continue
 
         url = url_of_post(sample)
