@@ -12,7 +12,7 @@ def post_msg(group, text_send, attachments):
                                     message=text_send,
                                     attachments=attachments)
     except Exception as exc:
-        send_error(post_msg.__name__, exc, traceback.print_exc())
+        send_error(__name__, exc, traceback.print_exc())
 
 
 if __name__ == '__main__':

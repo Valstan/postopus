@@ -24,7 +24,7 @@ def posting_post(msg_list):
             save_table(session['name_session'])
             break
         except Exception as exc:
-            send_error(posting_post.__name__, exc, traceback.print_exc())
+            send_error(__name__, exc, traceback.print_exc())
 
 
 if __name__ == '__main__':
