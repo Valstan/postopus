@@ -37,6 +37,11 @@ def parser():
 
     clear_posts = []
     for sample in posts:
+
+        # Чистка группы Проблемный Малмыж - МалмыЖ от чужих сообщений
+        if sample['owner_id'] == -9363816 != sample['from_id']:
+            continue
+
         if not sort_old_date(sample):
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue

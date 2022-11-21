@@ -3,7 +3,7 @@ from config import session
 
 def bags(sample_text='', string='', url=''):
     if session['bags'] == "0":
-        pass
+        return
     elif session['bags'] == "1":
         print(f"\n!!! Слишком старый !!!\n{sample_text}\n{url}")
     elif session['bags'] == "2":
