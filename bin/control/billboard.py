@@ -9,8 +9,7 @@ def billboard():
     msg = get_msg(-166980909)[0]
     attach = get_attach(msg)
 
-    id_group = -session['post_group']['key']
-    post_msg(id_group, msg['text'], attach)
+    post_msg(session['post_group']['key'], msg['text'], attach)
 
 
 if __name__ == '__main__':
