@@ -1,7 +1,7 @@
 import random
 
 import config
-from bin.control.repost_aprel import repost_aprel
+from bin.control.billboard import billboard
 from bin.control.repost_krugozor import repost_krugozor
 from bin.control.repost_me import repost_me
 from bin.control.repost_reklama import repost_reklama
@@ -59,8 +59,8 @@ def control():
     elif session['name_session'] == 'repost_reklama':
         repost_reklama()
 
-    elif session['name_session'] == 'repost_aprel':
-        repost_aprel()
+    elif session['name_session'] == 'billboard':
+        billboard()
 
     elif session['name_session'] == 'repost_krugozor':
         repost_krugozor()
