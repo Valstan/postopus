@@ -48,11 +48,9 @@ def parser():
         group_id = str(sample['owner_id'])
         sample = clear_copy_history(sample)
 
-        # Сортировка савальских групп с картинками, если слов Малмыж и Киров нет то игнорируем
-        if group_id in '-99686065 -141990463' and not search_words_in_text(sample, 'savali'):
-            continue
-        # Если это запись из кинотеатра апрель или удалена, то пропускаем (апрель мы репостим сами по графику)
-        if sample['owner_id'] == -144647350 or 'Запись удалена' in sample:
+        # "запись удалена" и Сортировка савальских групп с картинками, если слов Малмыж и Киров нет то игнорируем
+        if group_id in '-99686065 -141990463' and not search_words_in_text(sample, 'savali') \
+            or 'Запись удалена' in sample:
             continue
 
         url = url_of_post(sample)
