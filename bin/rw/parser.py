@@ -68,6 +68,9 @@ def parser():
         if session['name_session'] not in "novost":
             if search_words_in_text(sample, 'delete_msg_blacklist'):
                 continue
+        else:
+            if group_id in '-144647350' and "асписание киносеансов" in sample['text']:
+                continue
 
         clear_posts.append(sample)
 
