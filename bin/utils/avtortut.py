@@ -11,7 +11,7 @@ def avtortut(msg):
                 if name_group[1] == msg['owner_id']:
                     address = name_group[0]
 
-        return msg['text'] + '\n@' + url + ' (Подробнее ' + address + '.)\n'
+        return msg['text'] + '\n@' + url + ' (Подробности ' + address + '.)\n'
     return msg['text']
 
 
