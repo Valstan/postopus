@@ -6,8 +6,8 @@ def avtortut(msg):
     if url not in msg['text']:
         # podpis = random.choice(session["podpisi"]["avtortut"])
         address = "в источнике записи"
-        for name_section in session["id"]:
-            for name_group in name_section.items():
+        for name_section in session["id"].items():
+            for name_group in name_section[1].items():
                 if name_group[1] == msg['owner_id']:
                     address = name_group[0]
 
