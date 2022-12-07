@@ -1,7 +1,7 @@
 from config import session
 
 
-def avtortut(msg):
+def avtortut(msg, divider=""):
     url = 'https://vk.com/wall' + str(msg['owner_id']) + '_' + str(msg['id'])
     if url not in msg['text']:
         # podpis = random.choice(session["podpisi"]["avtortut"])
@@ -11,7 +11,7 @@ def avtortut(msg):
                 if name_group[1] == msg['owner_id']:
                     address = name_group[0]
 
-        return msg['text'] + '\n@' + url + ' (Подробности ' + address + '.)\n'
+        return msg['text'] + divider + '\n@' + url + ' (Подробности ' + address + '.)\n'
     return msg['text']
 
 
