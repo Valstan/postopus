@@ -58,7 +58,7 @@ def parser():
             or 'Запись удалена' in sample:
             continue
         # Чистим Апрель от расписания киносеансов
-        if group_id in '-144647350' and not search_words_in_text(sample, 'aprel') \
+        if group_id in '-144647350' and search_words_in_text(sample, 'aprel') \
             or 'Запись удалена' in sample:
             continue
 
