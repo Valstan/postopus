@@ -47,17 +47,22 @@ def parser():
             continue
         group_id = str(sample['owner_id'])
         sample = clear_copy_history(sample)
+        url = url_of_post(sample)
+
+        if url in session[session['name_session']]['lip']:
+            bags(sample_text=sample['text'], url=url)
+            continue
 
         # "запись удалена" и Сортировка савальских групп с картинками, если слов Малмыж и Киров нет то игнорируем
         if group_id in '-99686065 -141990463' and not search_words_in_text(sample, 'savali') \
             or 'Запись удалена' in sample:
             continue
-
-        url = url_of_post(sample)
-        if url in session[session['name_session']]['lip']:
-            bags(sample_text=sample['text'], url=url)
+        # Чистим Апрель от расписания киносеансов
+        if group_id in '-144647350' and not search_words_in_text(sample, 'aprel') \
+            or 'Запись удалена' in sample:
             continue
 
+        # Проверяем на повторы
         copy = text_to_mono_text(sample['text'])
         if copy in malmig_txt:
             bags(sample_text=sample['text'], url=url)
@@ -65,12 +70,9 @@ def parser():
 
         # if not ai_sort(sample): подключение нейронки
         #     continue
-        if session['name_session'] not in "novost":
-            if search_words_in_text(sample, 'delete_msg_blacklist'):
-                continue
-        else:
-            if group_id in '-144647350' and "асписание киносеансов" in sample['text']:
-                continue
+        # Если не НОВОСТ то проверяем на запрещенку и пропускаем пост если найдена
+        if session['name_session'] not in "novost" and search_words_in_text(sample, 'delete_msg_blacklist'):
+            continue
 
         clear_posts.append(sample)
 
