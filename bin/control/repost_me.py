@@ -10,7 +10,7 @@ from config import session
 
 def repost_me():
     link = ''
-    new_posts = get_msg(session['post_group']['key'], 0, 15)
+    new_posts = get_msg(session['post_group']['key'], 0, 30)
 
     for sample in new_posts:
 
