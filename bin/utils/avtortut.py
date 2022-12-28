@@ -9,7 +9,7 @@ def avtortut(msg, divider=""):
     url = 'https://vk.com/wall' + str(msg['owner_id']) + '_' + str(msg['id'])
     if url not in msg['text']:
         podpis = random.choice(session["podpisi"]["avtortut"])
-        name_source = "Статьи."
+        name_source = "в статье"
         for name_section in session["id"].items():
             for name_group in name_section[1].items():
                 if name_group[1] == msg['owner_id']:
