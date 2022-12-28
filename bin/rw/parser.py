@@ -54,12 +54,7 @@ def parser():
             continue
 
         # "запись удалена" и Сортировка савальских групп с картинками, если слов Малмыж и Киров нет то игнорируем
-        if group_id in '-99686065 -141990463' and not search_words_in_text(sample, 'savali') \
-            or 'Запись удалена' in sample:
-            continue
-        # Чистим Апрель от расписания киносеансов
-        if group_id in '-144647350' and search_words_in_text(sample, 'aprel') \
-            or 'Запись удалена' in sample:
+        if group_id in '-99686065 -141990463' and not search_words_in_text(sample, 'savali'):
             continue
 
         # Проверяем на повторы

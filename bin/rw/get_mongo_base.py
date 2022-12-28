@@ -16,6 +16,7 @@ def get_mongo_base(base='postopus'):
         try:
             client = MongoClient(session['MONGO_CLIENT'])
             session['MONGO_BASE'] = client[base]
+            return
         except Exception as exc:
             send_error(__name__, exc, traceback.print_exc())
             sleep(10)
