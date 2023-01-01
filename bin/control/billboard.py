@@ -14,8 +14,8 @@ def billboard():
 
     msgs = get_msg(session['post_group']['key'], 0, 2)
 
-    session['vk_app'].wall.unpin(owner_id=session['post_group']['key'], post_id=msgs[0]['post_id'])
-    session['vk_app'].wall.pin(owner_id=session['post_group']['key'], post_id=msgs[1]['post_id'])
+    if "- АФИША МАЛМЫЖ -" in msgs[0]['text'] and (msgs[1]['id'] - msgs[0]['id']) > 1:
+        session['vk_app'].wall.pin(owner_id=session['post_group']['key'], post_id=msgs[1]['id'])
 
     send_error(__name__, "Закрепил Афишу", "Малмыж Инфо")
 
