@@ -12,13 +12,10 @@ def billboard():
 
     post_msg(session['post_group']['key'], msg['text'], attach)
 
-    msgs = get_msg(session['post_group']['key'], 0, 5)
-    post_id = 0
-    for msg in msgs:
-        if msg['post_id'] > post_id:
-            post_id = msg['post_id']
+    msgs = get_msg(session['post_group']['key'], 0, 2)
 
-    session['vk_app'].wall.pin(owner_id=session['post_group']['key'], post_id=post_id)
+    session['vk_app'].wall.unpin(owner_id=session['post_group']['key'], post_id=msgs[0]['post_id'])
+    session['vk_app'].wall.pin(owner_id=session['post_group']['key'], post_id=msgs[1]['post_id'])
 
     send_error(__name__, "Закрепил Афишу", "Малмыж Инфо")
 
