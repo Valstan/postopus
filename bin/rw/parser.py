@@ -108,17 +108,16 @@ def parser():
             continue
 
         # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
-        # Если проверка прошла, текст обрамляется подписями
         if sort_po_foto(sample) and sort_po_video(sample):
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
+
+        # Текст обрамляется подписями
         sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
                                       sample,
                                       session['podpisi']['heshteg'][session['name_session']],
                                       session['podpisi']['final'],
                                       1)
-        if 'views' not in sample:
-            sample['views'] = {'count': 5}
 
         result_posts.append(sample)
 
