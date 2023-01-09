@@ -42,13 +42,13 @@ def parser():
     result_posts = []
     for sample in posts:
 
+        # Это единый блок слипшихся строчек, переставлять нельзя, переменные потеряются, и блок должен стоять первым
         if not sort_old_date(sample):
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
         group_id = str(sample['owner_id'])
         sample = clear_copy_history(sample)
         url = url_of_post(sample)
-
         if url in session[session['name_session']]['lip']:
             bags(sample_text=sample['text'], url=url)
             continue
@@ -63,11 +63,15 @@ def parser():
                 continue
 
         # Сортировка савальских групп с картинками, если слов Малмыж и Киров нет то игнорируем
-        if group_id in '-99686065 -141990463' and not search_text([sample['text']], session['savali']):
+        if group_id in '-99686065 -141990463' and not search_text(session['savali'], sample['text']):
             continue
 
         # Чистка группы Проблемный Малмыж - МалмыЖ от чужих сообщений
         if sample['owner_id'] == -9363816 != sample['from_id']:
+            continue
+
+        # Проверяем группы по поиску людей на регион
+        if group_id in '-20895918' and not search_text(session['search_human_region_key'], sample['text']):
             continue
 
         # Проверяем на повторы
