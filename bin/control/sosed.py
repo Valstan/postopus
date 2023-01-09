@@ -26,7 +26,9 @@ def sosed():
         url = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
         if url in session[session['name_session']]['lip']:
             continue
-        if session['podpisi']['zagolovok']['sosed'] in sample['text'] or session['podpisi']['heshteg']['sosed'] in sample['text']:
+
+        if re.search(session['podpisi']['zagolovok']['sosed'], sample['text'], flags=re.MULTILINE) or \
+            re.search(session['podpisi']['heshteg']['sosed'], sample['text'], flags=re.MULTILINE):
             continue
         # if not ai_sort(sample):
         #     continue
