@@ -16,15 +16,17 @@ from config import session
 def sosed():
     posts = get_msg(random.choice(list(session['id'][session['name_session']].values())), 0, 100)
 
-    clear_posts = []
+    result_posts = []
     for sample in posts:
         if not sort_old_date(sample):
             continue
         sample = clear_copy_history(sample)
-        if 'views' not in sample or 'attachments' not in sample:
+        if 'views' not in sample or 'attachments' not in sample or len(sample['attachments'] == 0):
             continue
-        skleika = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
-        if skleika in session[session['name_session']]['lip']:
+        url = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
+        if url in session[session['name_session']]['lip']:
+            continue
+        if session['podpisi']['zagolovok']['sosed'] in sample['text'] or session['podpisi']['heshteg']['sosed'] in sample['text']:
             continue
         # if not ai_sort(sample):
         #     continue
@@ -38,24 +40,20 @@ def sosed():
                                     '', sample['text'],
                                     0, flags=re.MULTILINE + re.IGNORECASE)
 
-        clear_posts.append(sample)
-
-    # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
-    # Если проверка прошла, текст обрамляется подписями
-    photo_list_msgs = []
-    for sample in clear_posts:
+        # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
         if sort_po_foto(sample) and sort_po_video(sample):
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
+
+        # Текст обрамляется подписями
         sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
                                       sample,
                                       session['podpisi']['heshteg'][session['name_session']],
                                       session['podpisi']['final'],
                                       1)
-        if 'views' not in sample:
-            sample['views'] = {'count': 5}
-        photo_list_msgs.append(sample)
 
-    if photo_list_msgs:
-        photo_list_msgs.sort(key=lambda x: x['views']['count'], reverse=True)
-    return photo_list_msgs
+        result_posts.append(sample)
+
+    if result_posts:
+        result_posts.sort(key=lambda x: x['views']['count'], reverse=True)
+        return result_posts
