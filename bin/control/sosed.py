@@ -1,13 +1,13 @@
 import random
-import re
 
 from bin.rw.get_msg import get_msg
-from bin.sort.search_words_in_text import search_words_in_text
 from bin.sort.sort_old_date import sort_old_date
 from bin.sort.sort_po_foto import sort_po_foto
 from bin.sort.sort_po_video import sort_po_video
 from bin.utils.bags import bags
 from bin.utils.clear_copy_history import clear_copy_history
+from bin.utils.clear_text import clear_text
+from bin.utils.search_text import search_text
 from bin.utils.text_framing import text_framing
 from bin.utils.url_of_post import url_of_post
 from config import session
@@ -27,20 +27,19 @@ def sosed():
         if url in session[session['name_session']]['lip']:
             continue
 
-        if re.search(session['podpisi']['zagolovok']['sosed'], sample['text'], flags=re.MULTILINE) or \
-            re.search(session['podpisi']['heshteg']['sosed'], sample['text'], flags=re.MULTILINE):
+        # Ищем в тексте поста заголовки или хэштег что это новость соседей и не берем этот пост
+        if search_text([session['podpisi']['zagolovok']['sosed'], session['podpisi']['heshteg']['sosed']] +
+                       session['delete_msg_blacklist'],
+                       sample['text']):
             continue
+
         # if not ai_sort(sample):
         #     continue
-        if search_words_in_text(sample, 'delete_msg_blacklist'):
-            continue
+
         # Чистка и исправление текста мягкий и жесткий набор
-        for i in range(3):
-            clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['novost']) + '|' \
-                                   + '|'.join(session['clear_text_blacklist']['reklama']) + '| '
-            sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
-                                    '', sample['text'],
-                                    0, flags=re.MULTILINE + re.IGNORECASE)
+        sample['text'] = clear_text(session['clear_text_blacklist']['novost'] +
+                                    session['clear_text_blacklist']['reklama'],
+                                    sample['text'])
 
         # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
         if sort_po_foto(sample) and sort_po_video(sample):

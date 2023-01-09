@@ -1,19 +1,18 @@
 import random
-import re
 
 # from bin.ai.ai_sort import ai_sort
 from bin.rw.get_msg import get_msg
 from bin.rw.read_posts import read_posts
-from bin.sort.search_words_in_text import search_words_in_text
 from bin.sort.sort_old_date import sort_old_date
 from bin.sort.sort_po_foto import sort_po_foto
 from bin.sort.sort_po_video import sort_po_video
 from bin.utils.avtortut import avtortut
 from bin.utils.bags import bags
 from bin.utils.clear_copy_history import clear_copy_history
+from bin.utils.clear_text import clear_text
 from bin.utils.driver_tables import load_table, save_table
+from bin.utils.search_text import search_text
 from bin.utils.text_framing import text_framing
-from bin.utils.text_to_mono_text import text_to_mono_text
 from bin.utils.url_of_post import url_of_post
 from config import session
 
@@ -23,7 +22,7 @@ def parser():
     session['all_bezfoto'] = load_table('all_bezfoto')
     # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
     # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
-    data_string = " ".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip'])
+    data_string = "".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip'])
 
     if session['name_session'] in 'novost novosti reklama':
         posts = read_posts(session['id'][session['name_session']], 20)
@@ -33,13 +32,12 @@ def parser():
         posts = get_msg(random.choice(list(session['id'][session['name_session']].values())), 0, 20)
 
     # Всетаки вернул проверку по тексту на уже опубликованные
-    old = read_posts(session['post_group'], 100)
-    old_txt = ''
-    for sample in old:
+    old_novost = read_posts(session['post_group'], 100)
+    old_novost_txt = ''
+    for sample in old_novost:
         sample = clear_copy_history(sample)
-        sample = text_to_mono_text(sample['text'])
-        if session['podpisi']['heshteg']['reklama'] not in sample:
-            old_txt += sample
+        if not search_text([session['podpisi']['heshteg']['reklama']], sample['text']):
+            old_novost_txt += sample['text']
 
     result_posts = []
     for sample in posts:
@@ -65,7 +63,7 @@ def parser():
                 continue
 
         # Сортировка савальских групп с картинками, если слов Малмыж и Киров нет то игнорируем
-        if group_id in '-99686065 -141990463' and not search_words_in_text(sample, 'savali'):
+        if group_id in '-99686065 -141990463' and not search_text([sample['text']], session['savali']):
             continue
 
         # Чистка группы Проблемный Малмыж - МалмыЖ от чужих сообщений
@@ -73,36 +71,28 @@ def parser():
             continue
 
         # Проверяем на повторы
-        copy = text_to_mono_text(sample['text'])
-        if copy in old_txt:
+        if search_text([sample['text']], old_novost_txt):
             bags(sample_text=sample['text'], url=url)
             continue
         else:
-            old_txt += copy
+            old_novost_txt += sample['text']
 
         # if not ai_sort(sample): подключение нейронки
         #     continue
         # Если не НОВОСТ то проверяем на запрещенку
-        if session['name_session'] not in "novost" and search_words_in_text(sample, 'delete_msg_blacklist'):
+        if session['name_session'] not in "novost" and search_text(session['delete_msg_blacklist'], sample['text']):
             continue
 
         # Чистка и исправление текста для всех публичный мягкий набор
-        clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['novost']) + '|'
-        sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
-                                '', sample['text'],
-                                0, flags=re.MULTILINE + re.IGNORECASE)
+        sample['text'] = clear_text(session['clear_text_blacklist']['novost'], sample['text'])
         if ('views' not in sample or session['name_session'] == 'reklama') and 'attachments' in sample:
             bags(sample_text=sample['text'], url=url_of_post(sample))
             del sample['attachments']
         if 'attachments' not in sample or len(sample['attachments']) == 0:
             # Отправляем пост в блок рекламы с дальнейшими проверками
             # Жесткая чистка текста для постов из рекламных групп
-            clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['reklama']) + '|'
-            for i in range(3):
-                sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
-                                        '', sample['text'],
-                                        0, flags=re.MULTILINE + re.IGNORECASE)
-            if len(sample['text']) > 20 and sample['text'] not in data_string:
+            sample['text'] = clear_text(session['clear_text_blacklist']['reklama'], sample['text'])
+            if len(sample['text']) > 20 and not search_text([sample['text']], data_string):
                 session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample) + '\n')
                 data_string += sample['text']
             continue
