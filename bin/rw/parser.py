@@ -19,6 +19,12 @@ from config import session
 
 
 def parser():
+    session['bezfoto'] = load_table('bezfoto')
+    session['all_bezfoto'] = load_table('all_bezfoto')
+    # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
+    # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
+    data_string = " ".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip'])
+
     if session['name_session'] in 'novost novosti reklama':
         posts = read_posts(session['id'][session['name_session']], 20)
 
@@ -28,19 +34,15 @@ def parser():
 
     # Всетаки вернул проверку по тексту на уже опубликованные
     old = read_posts(session['post_group'], 100)
-    malmig_txt = ''
+    old_txt = ''
     for sample in old:
         sample = clear_copy_history(sample)
         sample = text_to_mono_text(sample['text'])
         if session['podpisi']['heshteg']['reklama'] not in sample:
-            malmig_txt += sample.lower() + ' '
+            old_txt += sample
 
-    clear_posts = []
+    result_posts = []
     for sample in posts:
-
-        # Чистка группы Проблемный Малмыж - МалмыЖ от чужих сообщений
-        if sample['owner_id'] == -9363816 != sample['from_id']:
-            continue
 
         if not sort_old_date(sample):
             bags(sample_text=sample['text'], url=url_of_post(sample))
@@ -53,15 +55,30 @@ def parser():
             bags(sample_text=sample['text'], url=url)
             continue
 
-        # "запись удалена" и Сортировка савальских групп с картинками, если слов Малмыж и Киров нет то игнорируем
+        # Сортировка Киномании чтобы остались только посты с видео, а то там всякой левой фигни много
+        if session['name_session'] == 'kino' and 'attachments' in sample:
+            flag = True
+            for atata in sample['attachments']:
+                if atata['type'] == 'video':
+                    flag = False
+            if flag:
+                continue
+
+        # Сортировка савальских групп с картинками, если слов Малмыж и Киров нет то игнорируем
         if group_id in '-99686065 -141990463' and not search_words_in_text(sample, 'savali'):
+            continue
+
+        # Чистка группы Проблемный Малмыж - МалмыЖ от чужих сообщений
+        if sample['owner_id'] == -9363816 != sample['from_id']:
             continue
 
         # Проверяем на повторы
         copy = text_to_mono_text(sample['text'])
-        if copy in malmig_txt:
+        if copy in old_txt:
             bags(sample_text=sample['text'], url=url)
             continue
+        else:
+            old_txt += copy
 
         # if not ai_sort(sample): подключение нейронки
         #     continue
@@ -69,14 +86,6 @@ def parser():
         if session['name_session'] not in "novost" and search_words_in_text(sample, 'delete_msg_blacklist'):
             continue
 
-        clear_posts.append(sample)
-
-    # Чистка текста от вредных слов и отсортировка текстов в базу БЕЗФОТО
-    session['bezfoto'] = load_table('bezfoto')
-    session['all_bezfoto'] = load_table('all_bezfoto')
-    data_string = " ".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip'])
-    posts = []
-    for sample in clear_posts:
         # Чистка и исправление текста для всех публичный мягкий набор
         clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['novost']) + '|'
         sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
@@ -85,7 +94,8 @@ def parser():
         if ('views' not in sample or session['name_session'] == 'reklama') and 'attachments' in sample:
             bags(sample_text=sample['text'], url=url_of_post(sample))
             del sample['attachments']
-        if 'attachments' not in sample:
+        if 'attachments' not in sample or len(sample['attachments']) == 0:
+            # Отправляем пост в блок рекламы с дальнейшими проверками
             # Жесткая чистка текста для постов из рекламных групп
             clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['reklama']) + '|'
             for i in range(3):
@@ -96,13 +106,9 @@ def parser():
                 session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample) + '\n')
                 data_string += sample['text']
             continue
-        posts.append(sample)
-    save_table('bezfoto')
 
-    # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
-    # Если проверка прошла, текст обрамляется подписями
-    photo_list_msgs = []
-    for sample in posts:
+        # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
+        # Если проверка прошла, текст обрамляется подписями
         if sort_po_foto(sample) and sort_po_video(sample):
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
@@ -113,19 +119,12 @@ def parser():
                                       1)
         if 'views' not in sample:
             sample['views'] = {'count': 5}
-        photo_list_msgs.append(sample)
 
-    if photo_list_msgs:
-        result_list_msgs = []
-        # Сортировка Киномании чтобы остались только посты с видео, а то там всякой левой фигни много
-        if session['name_session'] == 'kino':
-            for sample in photo_list_msgs:
-                for atata in sample['attachments']:
-                    if atata['type'] == 'video':
-                        result_list_msgs.append(sample)
-                        break
-            if result_list_msgs:
-                photo_list_msgs = result_list_msgs
+        result_posts.append(sample)
 
-        photo_list_msgs.sort(key=lambda x: x['views']['count'], reverse=True)
-        return photo_list_msgs
+    save_table('bezfoto')
+
+    if result_posts:
+
+        result_posts.sort(key=lambda x: x['views']['count'], reverse=True)
+        return result_posts
