@@ -65,46 +65,44 @@ def parser():
 
         # if not ai_sort(sample): подключение нейронки
         #     continue
-        # Если не НОВОСТ то проверяем на запрещенку и пропускаем пост если найдена
+        # Если не НОВОСТ то проверяем на запрещенку
         if session['name_session'] not in "novost" and search_words_in_text(sample, 'delete_msg_blacklist'):
             continue
 
         clear_posts.append(sample)
 
-    if session['name_session'] not in "novost novosti krugozor":
-        # Чистка текста от вредных слов и отсортировка текстов в базу БЕЗФОТО
-        session['bezfoto'] = load_table('bezfoto')
-        session['all_bezfoto'] = load_table('all_bezfoto')
-        data_string = " ".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip'])
-        posts = []
-        for sample in clear_posts:
-            # Чистка и исправление текста для всех публичный мягкий набор
-            clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['novost']) + '|'
-            sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
-                                    '', sample['text'],
-                                    0, flags=re.MULTILINE + re.IGNORECASE)
-            if ('views' not in sample or session['name_session'] == 'reklama') and 'attachments' in sample:
-                bags(sample_text=sample['text'], url=url_of_post(sample))
-                del sample['attachments']
-            if 'attachments' not in sample:
-                # Жесткая чистка текста для постов из рекламных групп
-                clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['reklama']) + '|'
-                for i in range(3):
-                    sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
-                                            '', sample['text'],
-                                            0, flags=re.MULTILINE + re.IGNORECASE)
-                if len(sample['text']) > 20 and sample['text'] not in data_string:
-                    session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample) + '\n')
-                    data_string += sample['text']
-                continue
-            posts.append(sample)
-        clear_posts = posts
-        save_table('bezfoto')
+    # Чистка текста от вредных слов и отсортировка текстов в базу БЕЗФОТО
+    session['bezfoto'] = load_table('bezfoto')
+    session['all_bezfoto'] = load_table('all_bezfoto')
+    data_string = " ".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip'])
+    posts = []
+    for sample in clear_posts:
+        # Чистка и исправление текста для всех публичный мягкий набор
+        clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['novost']) + '|'
+        sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
+                                '', sample['text'],
+                                0, flags=re.MULTILINE + re.IGNORECASE)
+        if ('views' not in sample or session['name_session'] == 'reklama') and 'attachments' in sample:
+            bags(sample_text=sample['text'], url=url_of_post(sample))
+            del sample['attachments']
+        if 'attachments' not in sample:
+            # Жесткая чистка текста для постов из рекламных групп
+            clear_text_blacklist = '|' + '|'.join(session['clear_text_blacklist']['reklama']) + '|'
+            for i in range(3):
+                sample['text'] = re.sub(fr"'{clear_text_blacklist}\s'",
+                                        '', sample['text'],
+                                        0, flags=re.MULTILINE + re.IGNORECASE)
+            if len(sample['text']) > 20 and sample['text'] not in data_string:
+                session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample) + '\n')
+                data_string += sample['text']
+            continue
+        posts.append(sample)
+    save_table('bezfoto')
 
     # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
     # Если проверка прошла, текст обрамляется подписями
     photo_list_msgs = []
-    for sample in clear_posts:
+    for sample in posts:
         if sort_po_foto(sample) and sort_po_video(sample):
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
