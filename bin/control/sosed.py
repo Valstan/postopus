@@ -28,7 +28,8 @@ def sosed():
             continue
 
         # Ищем в тексте поста заголовки или хэштег что это новость соседей и не берем этот пост
-        if search_text([session['podpisi']['zagolovok']['sosed'], session['podpisi']['heshteg']['sosed']] +
+        if search_text([session['podpisi']['zagolovok']['sosed'], session['podpisi']['heshteg']['sosed'],
+                        "#Объявления", "#Кино", "#Музыка", "#Кругозор", "#УраПерерывчик", "#КрасотаСпасетМир"] +
                        session['delete_msg_blacklist'],
                        sample['text']):
             continue
