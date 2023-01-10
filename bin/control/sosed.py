@@ -39,8 +39,7 @@ def sosed():
 
         # Чистка и исправление текста мягкий и жесткий набор
         sample['text'] = clear_text(session['clear_text_blacklist']['novost'] +
-                                    session['clear_text_blacklist']['reklama'],
-                                    sample['text'])
+                                    session['clear_text_blacklist']['reklama'], sample['text'])
 
         # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
         if sort_po_foto(sample) and sort_po_video(sample):

@@ -5,12 +5,9 @@ from bin.control.billboard import billboard
 from bin.control.repost_krugozor import repost_krugozor
 from bin.control.repost_me import repost_me
 from bin.control.repost_reklama import repost_reklama
-from bin.control.sosed import sosed
-from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.parser import parser
 from bin.rw.post_bezfoto import post_bezfoto
 from bin.rw.posting_post import posting_post
-from bin.utils.change_lp import change_lp
 from bin.utils.driver_tables import load_table
 
 session = config.session
@@ -19,18 +16,18 @@ session = config.session
 def control():
     global session
 
-    if session['name_session'] in 'novost novosti':
+    if session['name_session'] in 'novost novosti sosed':
         msg_list = parser()
         if msg_list:
             posting_post(msg_list)
 
     elif session['name_session'] == 'reklama':
         parser()
-        # реклама собирается не под моим аккаунтом, поэтому для постинга переключаюсь на свой
-        if session['name_base'] in 'mi test':
-            session['name_session'] = 'repost_valstan'
-            change_lp()
-            get_session_vk_api()
+        # # реклама собирается не под моим аккаунтом, поэтому для постинга переключаюсь на свой
+        # if session['name_base'] in 'mi test':
+        #     session['name_session'] = 'repost_valstan'
+        #     change_lp()
+        #     get_session_vk_api()
         post_bezfoto()
 
     elif session['name_session'] == 'addons':
@@ -47,11 +44,6 @@ def control():
                     posting_post(msg_list)
                     break
             old_ruletka = session['name_session']
-
-    elif session['name_session'] == 'sosed':
-        msg_list = sosed()
-        if msg_list:
-            posting_post(msg_list)
 
     elif session['name_session'] in session['repost_accounts']:
         repost_me()

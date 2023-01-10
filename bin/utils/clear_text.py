@@ -1,11 +1,10 @@
 import re
 
 
+# Список текстов (слов или предложений), которые нужно найти и удалить. И текст, в котором нужно искать
+# Сюда нельзя присылать регулярки, так как строки здесь не сырые - r
 def clear_text(list_texts: list, text: str):
-    clear_text_blacklist = '|' + '|'.join(list_texts) + '| '
+    text = re.sub(rf"{'|'.join(list_texts)}", '', text, 0, re.M | re.I)
+    text = re.sub(r'\s+', ' ', text, 0, re.M)
 
-    for i in range(3):
-        text = re.sub(fr"'{clear_text_blacklist}\s|'",
-                      '', text,
-                      0, re.MULTILINE | re.IGNORECASE)
-    return text
+    return re.sub(r'^\s+|\s+$', '', text, 0, re.M)

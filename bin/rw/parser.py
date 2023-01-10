@@ -13,6 +13,7 @@ from bin.utils.clear_text import clear_text
 from bin.utils.driver_tables import load_table, save_table
 from bin.utils.search_text import search_text
 from bin.utils.text_framing import text_framing
+from bin.utils.text_to_rafinad import text_to_rafinad
 from bin.utils.url_of_post import url_of_post
 from config import session
 
@@ -22,22 +23,24 @@ def parser():
     session['all_bezfoto'] = load_table('all_bezfoto')
     # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
     # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
-    data_string = "".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip'])
+    data_string = text_to_rafinad("".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip']))
 
     if session['name_session'] in 'novost novosti reklama':
         posts = read_posts(session['id'][session['name_session']], 20)
 
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
-        posts = get_msg(random.choice(list(session['id'][session['name_session']].values())), 0, 20)
+        posts = get_msg(random.choice(list(session['id'][session['name_session']].values())), 0, 50)
 
     # Всетаки вернул проверку по тексту на уже опубликованные
-    old_novost = read_posts(session['post_group'], 100)
     old_novost_txt = ''
+    old_novost = read_posts(session['post_group'], 100)
+
     for sample in old_novost:
         sample = clear_copy_history(sample)
         if not search_text([session['podpisi']['heshteg']['reklama']], sample['text']):
             old_novost_txt += sample['text']
+    old_novost_txt = text_to_rafinad(old_novost_txt)
 
     result_posts = []
     for sample in posts:
@@ -51,6 +54,15 @@ def parser():
         url = url_of_post(sample)
         if url in session[session['name_session']]['lip']:
             bags(sample_text=sample['text'], url=url)
+            continue
+
+        # Если режим СОСЕД - Ищем в тексте поста заголовки или хэштег что это новость соседей и не берем этот пост
+        if session['name_session'] in 'sosed' and search_text([session['podpisi']['zagolovok']['sosed'],
+                                                               session['podpisi']['heshteg']['sosed'],
+                                                               "#Объявления", "#Кино", "#Музыка", "#Кругозор",
+                                                               "#УраПерерывчик", "#КрасотаСпасетМир"] +
+                                                              session['delete_msg_blacklist'],
+                                                              sample['text']):
             continue
 
         # Сортировка Киномании чтобы остались только посты с видео, а то там всякой левой фигни много
@@ -75,11 +87,12 @@ def parser():
             continue
 
         # Проверяем на повторы
-        if search_text([sample['text']], old_novost_txt):
+        text_rafinad = text_to_rafinad(sample['text'])
+        if search_text([text_rafinad], old_novost_txt):
             bags(sample_text=sample['text'], url=url)
             continue
         else:
-            old_novost_txt += sample['text']
+            old_novost_txt += text_rafinad
 
         # if not ai_sort(sample): подключение нейронки
         #     continue
@@ -87,18 +100,27 @@ def parser():
         if session['name_session'] not in "novost" and search_text(session['delete_msg_blacklist'], sample['text']):
             continue
 
-        # Чистка и исправление текста для всех публичный мягкий набор
+        # Чистка и исправление текста для всех публичный мягкий набор слов и простых предложений
         sample['text'] = clear_text(session['clear_text_blacklist']['novost'], sample['text'])
         if ('views' not in sample or session['name_session'] == 'reklama') and 'attachments' in sample:
             bags(sample_text=sample['text'], url=url_of_post(sample))
             del sample['attachments']
         if 'attachments' not in sample or len(sample['attachments']) == 0:
             # Отправляем пост в блок рекламы с дальнейшими проверками
-            # Жесткая чистка текста для постов из рекламных групп
+
+            # Если сюда попало сообщение во время работы СОСЕДА, то не берем его:
+            if session['name_session'] in 'sosed kino art music prikol krugozor':
+                continue
+
+            # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
             sample['text'] = clear_text(session['clear_text_blacklist']['reklama'], sample['text'])
-            if len(sample['text']) > 20 and not search_text([sample['text']], data_string):
-                session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample) + '\n')
-                data_string += sample['text']
+
+            if len(sample['text']) > 20:
+                text_rafinad = text_to_rafinad(sample['text'])
+                if not search_text([text_rafinad], data_string):
+                    session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample) + '\n')
+                    data_string += text_rafinad
+
             continue
 
         # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
@@ -118,6 +140,5 @@ def parser():
     save_table('bezfoto')
 
     if result_posts:
-
         result_posts.sort(key=lambda x: x['views']['count'], reverse=True)
         return result_posts

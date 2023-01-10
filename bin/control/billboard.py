@@ -19,7 +19,7 @@ def billboard():
     # Забираем первые два поста из главной группы
     msgs = get_msg(session['post_group']['key'], 0, 2)
 
-    # Если в первых двух постахесть хештег афишы, то закрепляем второй пост
+    # Если в первых двух постах есть хештег афишы, то закрепляем второй пост
     if search_text([session['podpisi']['heshteg']['afisha']], msgs[0]['text']) and \
         search_text([session['podpisi']['heshteg']['afisha']], msgs[1]['text']):
         session['vk_app'].wall.pin(owner_id=session['post_group']['key'], post_id=msgs[1]['id'])
