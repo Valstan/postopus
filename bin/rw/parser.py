@@ -1,4 +1,5 @@
 import random
+import re
 
 # from bin.ai.ai_sort import ai_sort
 from bin.rw.get_msg import get_msg
@@ -64,6 +65,8 @@ def parser():
                                                               session['delete_msg_blacklist'],
                                                               sample['text']):
             continue
+        if session['name_session'] in 'sosed' and search_text(["#Новости"], sample['text']):
+            sample['text'] = re.sub(r'\n+.+$', '', sample['text'], 4, re.M)
 
         # Сортировка Киномании чтобы остались только посты с видео, а то там всякой левой фигни много
         if session['name_session'] == 'kino' and 'attachments' in sample:
