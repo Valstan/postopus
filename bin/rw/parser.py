@@ -99,8 +99,9 @@ def parser():
 
         # if not ai_sort(sample): подключение нейронки
         #     continue
-        # Если не НОВОСТ то проверяем на запрещенку
-        if session['name_session'] not in "novost" and search_text(session['delete_msg_blacklist'], sample['text']):
+
+        # проверяем на запрещенку
+        if search_text(session['delete_msg_blacklist'], sample['text']):
             continue
 
         # Чистка и исправление текста для всех публичный мягкий набор слов и простых предложений
