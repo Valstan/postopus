@@ -12,8 +12,9 @@ vk_session = VkApi(token=session['VK_TOKEN_DRAN'])
 vk = vk_session.get_api()
 
 # МалмыжИнфо - 158787639, Драндулет - 187462239, ПервыйМалмыжский - 86517261, ОбоВсемМалмыж - 89083141
-group_name = "ПервыйМалмыжский"
-group_id = 86517261
+# Подслушано Уржум, Уржумский район - 64312155
+group_name = "Подслушано Уржум"
+group_id = 64312155
 current_date = datetime.now().date()
 current_time = datetime.now().time()
 
@@ -32,7 +33,7 @@ print(f"Получил количество id - {len(members)}")
 persons = []
 offset_all = 0
 while offset_all < count_all:
-    mem = ",".join(map(str, members[offset_all:]))
+    mem = ",".join(map(str, members[offset_all:offset_all + 1000]))
     persons.extend(vk.users.get(user_ids=mem, fields="deactivated,city"))
     offset_all += 1000
 
