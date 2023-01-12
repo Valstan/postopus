@@ -6,26 +6,25 @@ from bin.utils.send_error import send_error
 from config import session
 
 
-def billboard():
-    # Забираем из группы "Напоминашки" 50 первых афиш
+def vacans():
+    # Забираем из группы "Напоминашки" 50 постов
     msgs = get_msg(group=session['afisha_group'], count=50)
 
     # Перебираем все посты и если там есть хештег текущего региона формируем аттачи и публикуем пост
     for sample in msgs:
-        if search_text([session['podpisi']['heshteg']['afisha']], sample['text']):
+        if search_text([session['podpisi']['heshteg']['vacans']], sample['text']):
             attach = get_attach(sample)
             post_msg(session['post_group']['key'], sample['text'], attach)
 
     # Забираем первые два поста из главной группы
     msgs = get_msg(session['post_group']['key'], 0, 2)
 
-    # Если в первых двух постах есть хештег афишы или вакансии, то закрепляем второй пост
-    if search_text([session['podpisi']['heshteg']['afisha'],
-                    session['podpisi']['heshteg']['vacans']], msgs[0]['text']) and \
-        search_text([session['podpisi']['heshteg']['afisha']], msgs[1]['text']):
+    # Если в первых двух постах есть хештег афишы, то закрепляем второй пост
+    if search_text([session['podpisi']['heshteg']['afisha']], msgs[0]['text']) and \
+        search_text([session['podpisi']['heshteg']['vacans']], msgs[1]['text']):
         session['vk_app'].wall.pin(owner_id=session['post_group']['key'], post_id=msgs[1]['id'])
 
-    send_error(__name__, "Закрепил Афишу", "Малмыж Инфо")
+    send_error(__name__, "Закрепил Вакансию", "Малмыж Инфо")
 
 
 if __name__ == '__main__':
