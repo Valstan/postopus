@@ -68,11 +68,11 @@ def parser():
         if session['name_session'] in 'sosed' and search_text(["#Новости"], sample['text']):
             sample['text'] = re.sub(r'\n+.+$', '', sample['text'], 4, re.M)
 
-        # Сортировка Киномании чтобы остались только посты с видео, а то там всякой левой фигни много
-        if session['name_session'] == 'kino' and 'attachments' in sample:
+        # Сортировка Кино и Музыки, берем только с видео и музыкой
+        if session['name_session'] in 'kino music' and 'attachments' in sample:
             flag = True
             for atata in sample['attachments']:
-                if atata['type'] == 'video':
+                if atata['type'] in 'video audio':
                     flag = False
             if flag:
                 continue
@@ -112,8 +112,8 @@ def parser():
         if 'attachments' not in sample or len(sample['attachments']) == 0:
             # Отправляем пост в блок рекламы с дальнейшими проверками
 
-            # Если сюда попало сообщение во время работы СОСЕДА, то не берем его:
-            if session['name_session'] in 'sosed kino art music prikol krugozor':
+            # Если сюда попало сообщение не из Новостей и Рекламы, то не берем его:
+            if session['name_session'] not in 'novost novosti reklama':
                 continue
 
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
