@@ -1,11 +1,12 @@
 from config import session
 
-collection = session['MONGO_BASE'][session['name_base']]
-
 
 def load_table(name_table):
-
-    table = collection.find_one({'title': name_table})
+    collection = session['MONGO_BASE'][session['name_base']]
+    if name_table in 'novost novosti':
+        table = collection.find_one({'title': 'novost'})
+    else:
+        table = collection.find_one({'title': name_table})
 
     # Пытаемся исправить структуру таблицы, если конструктор загружен
     # если конструктора еще нет, то ошибка, но скрипт не вылетает
@@ -26,6 +27,7 @@ def load_table(name_table):
 
 
 def save_table(name_table):
+    collection = session['MONGO_BASE'][session['name_base']]
     # Изменяем размеры таблиц содержащих только списки,
     # если попадается число или объект, то ошибка, но она обрабатывается и процесс продолжается
     for n in session['constructor_table']:
