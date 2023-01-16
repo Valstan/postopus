@@ -16,4 +16,7 @@ def get_session(arguments, bags="0"):
     session.update(load_table('config'))
     session['bags'] = bags
     # И таблицу для работы, например novost
-    session[session['name_session']] = load_table(session['name_session'])
+    if session['name_session'] in 'novost novosti':
+        session[session['name_session']] = load_table('novost')
+    else:
+        session[session['name_session']] = load_table(session['name_session'])

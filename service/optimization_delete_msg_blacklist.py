@@ -3,6 +3,7 @@ from bin.rw.get_mongo_base import get_mongo_base
 
 session = config.session
 
+
 # Изменять текст Блеклиста из базы нельзя, тоесть в монотекст превращать
 def optimization_delete_msg_blacklist():
     get_mongo_base('postopus')
