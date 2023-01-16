@@ -38,9 +38,13 @@ for key, value in key_words.items():
     key_words[key] = len(new_grops)
     list_groups.extend(new_grops)
 
-all_found_groups = 0
+list_groups = list(set(list_groups))
+
+all_found_groups = len(list_groups)
+
+all_found_groups_from_words = 0
 for i in key_words:
-    all_found_groups += i
+    all_found_groups_from_words += i
 
 shuffle(list_groups)
 
@@ -86,7 +90,8 @@ result = f"""<html>
 <body>
 <h2>Список ключевых слов поиска и количество найденных по ним групп:</h2>
 <p>{key_words}</p>
-<p>Всего найдено {all_found_groups} групп.</p>
+<p>Всего найдено по словам - {all_found_groups_from_words} групп.</p>
+<p>Всего найдено реально - {all_found_groups} групп.</p>
 <p>Успешно размещено {count_up} объявлений.</p>
 <p>Отказано в размещении {count_down} объявлений.</p>
 <p></p>
