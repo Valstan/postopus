@@ -10,6 +10,7 @@ from bin.control.parser import parser
 from bin.rw.post_bezfoto import post_bezfoto
 from bin.rw.posting_post import posting_post
 from bin.utils.driver_tables import load_table
+from bin.control.parsing import parsing
 
 session = config.session
 
@@ -60,6 +61,9 @@ def control():
 
     elif session['name_session'] == 'repost_krugozor':
         repost_krugozor()
+
+    elif session['name_session'] == 'parsing':
+        parsing()
 
     # elif session['name_session'] == 'instagram':
     #     instagram_mi()
