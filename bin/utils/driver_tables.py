@@ -1,8 +1,10 @@
 from config import session
 
+collection = session['MONGO_BASE'][session['name_base']]
+
 
 def load_table(name_table):
-    collection = session['MONGO_BASE'][session['name_base']]
+
     table = collection.find_one({'title': name_table})
 
     # Пытаемся исправить структуру таблицы, если конструктор загружен
@@ -32,8 +34,10 @@ def save_table(name_table):
                 del session[name_table][n][0]
         except Exception as exc:
             print(exc)
-    collection = session['MONGO_BASE'][session['name_base']]
-    collection.update_one({'title': name_table}, {'$set': session[name_table]}, upsert=True)
+    if name_table in 'novost novosti':
+        collection.update_one({'title': 'novost'}, {'$set': session[name_table]}, upsert=True)
+    else:
+        collection.update_one({'title': name_table}, {'$set': session[name_table]}, upsert=True)
 
 
 if __name__ == '__main__':
