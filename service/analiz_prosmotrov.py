@@ -68,21 +68,24 @@ def analiz_prosmotrov(name_base):
               f"Сортировка по частоте сообщений:\n" \
               f"Имя группы * Постов в день * Разница дней * Просмотров всего * Репосты"
     for sample in data:
-        result += f"{sample['name_group']} - {sample['len_posts'] % (sample['difference_second'] % 86400)} - {sample['time']} - {sample['all_views']} - {sample['count_copy_history']}\n"
+        result += f"{sample['name_group']} - {sample['len_posts'] // (sample['difference_second'] // 86400)} - " \
+                  f"{sample['time']} - {sample['all_views']} - {sample['count_copy_history']}\n"
 
     print("Сортировка по всем просмотрам")
     data.sort(key=lambda x: x['all_views'], reverse=True)
     result += f"\nСортировка по всем просмотрам:\n" \
               f"Имя группы * Просмотров всего * Постов в день * Репосты"
     for sample in data:
-        result += f"{sample['name_group']} - {sample['all_views']} - {sample['len_posts'] % (sample['difference_second'] % 86400)} - {sample['count_copy_history']}\n"
+        result += f"{sample['name_group']} - {sample['all_views']} - " \
+                  f"{sample['len_posts'] // (sample['difference_second'] // 86400)} - {sample['count_copy_history']}\n"
 
     print("Сортировка по репостам")
     data.sort(key=lambda x: x['count_copy_history'], reverse=True)
     result += f"\nСортировка по репостам:\n" \
               f"Имя группы * Репостов * Постов в день * Просмотров"
     for sample in data:
-        result += f"{sample['name_group']} - {sample['count_copy_history']} - {sample['len_posts'] % (sample['difference_second'] % 86400)} - {sample['all_views']}\n"
+        result += f"{sample['name_group']} - {sample['count_copy_history']} - " \
+                  f"{sample['len_posts'] // (sample['difference_second'] // 86400)} - {sample['all_views']}\n"
 
     print("Сортировка по максимальным просмотрам")
     data.sort(key=lambda x: x['max_views'], reverse=True)
