@@ -41,7 +41,6 @@ def billboard():
 
     for name_region in session['afisha']:
         sample = {'text': session['afisha'][name_region][title] + '\n\n', 'attach': ""}
-        # session['afisha'][name_region]['list_anons'].sort(key=lambda row: row[0])
         session['afisha'][name_region]['list_anons'].sort()
         count_attach = 0
         for sample_anons in session['afisha'][name_region]['list_anons']:
