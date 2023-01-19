@@ -46,7 +46,7 @@ def control():
                     break
             old_ruletka = session['name_session']
 
-    elif session['name_session'] in session['repost_accounts']:
+    elif session['name_session'] in 'repost_valstan':
         repost_me()
 
     elif session['name_session'] == 'repost_reklama':

@@ -18,5 +18,7 @@ def get_session(arguments, bags="0"):
     # И таблицу для работы, например novost
     if session['name_session'] in 'novost novosti':
         session[session['name_session']] = load_table('novost')
+    elif session['name_session'] in 'billboard':
+        session.update(load_table('billboard'))
     else:
         session[session['name_session']] = load_table(session['name_session'])
