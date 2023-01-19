@@ -40,8 +40,6 @@ def billboard():
                 [time_out, sample_text, get_attach(clear_copy_history(sample))])
 
     for name_region in session['afisha']:
-        if name_region in 'afisha_podpis vacans_podpis':
-            continue
         sample = {'text': session['afisha'][name_region][title] + '\n\n', 'attach': ""}
         # session['afisha'][name_region]['list_anons'].sort(key=lambda row: row[0])
         session['afisha'][name_region]['list_anons'].sort()
@@ -55,7 +53,7 @@ def billboard():
                 if count_attach == 10:
                     break
         sample['attach'] = sample['attach'][:-1]
-        sample['text'] += f"\n{session['afisha'][podpis_global]}\n\n" \
+        sample['text'] += f"\n{session[podpis_global]}\n\n" \
                           f"{session['afisha'][name_region]['podpis']}\n" \
                           f"{session['afisha'][name_region][heshteg_global]}"
 
