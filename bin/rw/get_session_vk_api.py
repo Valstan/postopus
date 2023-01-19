@@ -1,6 +1,6 @@
 import traceback
 
-from vk_api import VkApi
+from vk_api import VkApi, VkTools
 
 import config
 from bin.utils.send_error import send_error
@@ -16,6 +16,7 @@ def get_session_vk_api():
             try:
                 vk_session = VkApi(token=session['token'])
                 session['vk_app'] = vk_session.get_api()
+                session['tools'] = VkTools(vk_session)
                 return
             except Exception as exc:
                 send_error(__name__, exc, traceback.print_exc())

@@ -2,15 +2,14 @@ import random
 
 import config
 from bin.control.billboard import billboard
+from bin.control.parser import parser
+from bin.control.parsing import parsing
 from bin.control.repost_krugozor import repost_krugozor
 from bin.control.repost_me import repost_me
 from bin.control.repost_reklama import repost_reklama
-from bin.control.vacans import vacans
-from bin.control.parser import parser
 from bin.rw.post_bezfoto import post_bezfoto
 from bin.rw.posting_post import posting_post
 from bin.utils.driver_tables import load_table
-from bin.control.parsing import parsing
 
 session = config.session
 
@@ -55,9 +54,6 @@ def control():
 
     elif session['name_session'] == 'billboard':
         billboard()
-
-    elif session['name_session'] == 'vacans':
-        vacans()
 
     elif session['name_session'] == 'repost_krugozor':
         repost_krugozor()
