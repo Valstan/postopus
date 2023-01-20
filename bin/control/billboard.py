@@ -46,11 +46,10 @@ def billboard():
         for sample_anons in session['afisha'][name_region]['list_anons']:
             if sample_anons[1] != '.':
                 sample['text'] += f"{sample_anons[1]}\n"
-            if sample_anons[2]:
+            if sample_anons[2] and count_attach < 11:
                 count_attach += 1
                 sample['attach'] += f"{sample_anons[2]},"
-                if count_attach == 10:
-                    break
+
         sample['attach'] = sample['attach'][:-1]
         sample['text'] += f"\n{session[podpis_global]}\n\n" \
                           f"{session['afisha'][name_region]['podpis']}\n" \
