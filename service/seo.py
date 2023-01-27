@@ -1,7 +1,6 @@
 import os
 import random
 import time
-from datetime import datetime
 from random import shuffle
 
 from vk_api import VkApi
@@ -43,10 +42,10 @@ def save_result():
 
 # Настройки раскрутки
 session = config.session  # Берем сессию из конфига
-session.update({"token": session['TOKEN_VP_INFO']})  # Под каким токеном будем спамить
+session.update({"token": session['VK_TOKEN_VALSTAN']})  # Под каким токеном будем спамить
 black_list_groups = '-141273678'  # Черный список номеров групп в которые нельзя спамить
-name_file = f"Спам-реклама Афиш от {datetime.now().date()}.html"
-token_spamer = session['token']
+name_file = f"Спам-реклама ВП Инфо 20 января.html"
+# token_spamer = session['token']
 # key_words = {"уржум": 0, "вятские поляны": 0, "малмыж": 0,
 #              "кильмезь": 0, "балтаси": 0, "кукмор": 0}  # По какому слову искать сообщества
 key_words = {"малмыж": 0}  # По какому слову искать сообщества

@@ -119,7 +119,7 @@ def parser():
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
             sample['text'] = clear_text(session['clear_text_blacklist']['reklama'], sample['text'])
 
-            if len(sample['text']) > 20:
+            if 300 > len(sample['text']) > 30:
                 text_rafinad = text_to_rafinad(sample['text'])
                 if not search_text([text_rafinad], data_string):
                     session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample) + '\n')

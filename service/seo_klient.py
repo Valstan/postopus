@@ -1,10 +1,7 @@
 import os
 import random
 import time
-from datetime import datetime
 from random import shuffle
-
-from vk_api import VkApi
 
 import config
 from bin.rw.get_attach import get_attach
@@ -44,22 +41,24 @@ def save_result():
 
 # Настройки раскрутки
 session = config.session  # Берем сессию из конфига
-session.update({"token": session['TOKEN_VP_INFO']})  # Под каким токеном будем спамить
-black_list_groups = '-141273678'  # Черный список номеров групп в которые нельзя спамить
-name_file = f"Спам-реклама Афиша ВП от {datetime.now().date()}.html"
-token_spamer = session['token']
+session.update({"token": session['VK_TOKEN_VALSTAN']})  # Под каким токеном будем спамить
+black_list_groups = '-141273678-65070963'  # Черный список номеров групп в которые нельзя спамить
+name_file = f"Спам-реклама Афиша ВП от 23 января 2023.html"  # Имя файла куда сохранять инфу
+# token_spamer = session['token']
 # key_words = {"уржум": 0, "вятские поляны": 0, "малмыж": 0,
 #              "кильмезь": 0, "балтаси": 0, "кукмор": 0}  # По какому слову искать сообщества
-key_words = {"вятские поляны": 0}  # По какому слову искать сообщества
-count = 500  # (максимум 1000) Сколько групп найти по каждому слову поиска
-count_post_up_max = 10  # Количество успешных публикаций после которых программа остановится
+key_words = {"уржум": 0, "вятские поляны": 0, "малмыж": 0,
+             "кильмезь": 0, "балтаси": 0, "кукмор": 0}  # По какому слову искать сообщества
+group_count_max = 1000  # (максимум 1000) Сколько групп найти по каждому слову поиска
+count_post_up_max = 50  # Количество успешных публикаций после которых программа остановится
+count_members_up_max = 5000000  # Максимальное количество подписчиков после которых завершаем работу
 count_members_minimum = 3000  # Сколько минимум должно быть подписчиков в группе для разрешения публикации
 count_members_maximum = 1000000  # Сколько минимум должно быть подписчиков в группе для разрешения публикации
-save_every_time = 10  # Сохраняться каждые n успешных постов
 sleeping_min = 5  # минимальная задержка между публикациями в секундах
 sleeping_max = 15  # максимальная задержка между публикациями в секундах
 
-from_group = -166980909  # Напоминашка Отсюда берем инфу для рекламинга
+url_from_reklama_post = "https://vk.com/wall-168247378_787"
+from_group, post_id = url_from_reklama_post[19:].split('_')  # Разбираем адрес на группу и пост для скачивания
 
 # Подсоединяемся к API VK
 get_session_vk_api()
@@ -75,14 +74,15 @@ reklama_posts = get_msg(from_group, 0, 100)
 # Выбираем один пост, если нужен только один
 sample_spam_post = {}
 for sample_spam_post in reklama_posts:
-    if sample_spam_post['id'] == 76:
+    if sample_spam_post['id'] == int(post_id):
         break
 attachments = get_attach(sample_spam_post)
 
 list_groups = []
 for key in key_words.keys():
     # new_grops = session['vk_app'].groups.search(q=key, type='group', count=count)['items']
-    new_grops = session['tools'].get_all(metod='groups.search', max_count=count, values={'q': key, 'type': 'group'})
+    new_grops = session['tools'].get_all(method='groups.search', max_count=group_count_max, limit=1000,
+                                         values={'q': key, 'type': 'group'})['items']
     key_words[key] = len(new_grops)
     list_groups.extend(new_grops)
 
@@ -121,11 +121,13 @@ for group in list_groups:
             count_down += 1
             continue
     except Exception as ext:
-        print(ext)
+        count_down += 1
+        print(f"Непонятная ситуация с ключами, пропускаем группу. Ошибка вот: {ext}")
+        continue
 
     try:
         if group['id'] < 0:
-            group['id'] = group['id'] * -1
+            group['id'] = -group['id']
         members = session['vk_app'].groups.getMembers(group_id=group['id'])
         count_members = members['count']
         if count_members > count_members_maximum or count_members < count_members_minimum:
@@ -154,15 +156,14 @@ for group in list_groups:
         if count_up == count_post_up_max:
             save_result()
             break
-        if count_up % save_every_time == 0:
+        if count_all_members > count_members_up_max:
             save_result()
+            break
+
+        save_result()
 
         time.sleep(random.randint(sleeping_min, sleeping_max))
     except Exception as ext:
         print(ext)
         count_down += 1
-        if 'Too many recipients' in ext:
-            print("Сохраняюсь и Аварийно завершаю работу")
-            save_result()
-            break
         time.sleep(5)
