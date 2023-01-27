@@ -14,10 +14,10 @@ def repost_krugozor():
         sample = clear_copy_history(sample)
         link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
         if link not in session[session['name_session']]['lip']:
-            sample['text'] = text_framing(session['podpisi']['zagolovok']['krugozor'],
+            sample['text'] = text_framing(session['zagolovok']['krugozor'],
                                           sample,
-                                          session['podpisi']['heshteg']['krugozor'],
-                                          session['podpisi']['final'],
+                                          session['heshteg']['krugozor'],
+                                          session['final'],
                                           1)
             msg_list.append(sample)
             posting_post(msg_list)

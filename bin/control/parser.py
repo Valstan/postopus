@@ -18,26 +18,27 @@ from config import session
 
 
 def parser():
+    theme = session['name_session']
     session['bezfoto'] = load_table('bezfoto')
     session['all_bezfoto'] = load_table('all_bezfoto')
     # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
     # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
     data_string = text_to_rafinad("".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip']))
 
-    if session['name_session'] in 'novost novosti reklama':
-        posts = read_posts(session['id'][session['name_session']], 20)
+    if theme in 'novost novosti reklama':
+        posts = read_posts(session[theme], 20)
 
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
-        posts = get_msg(random.choice(list(session['id'][session['name_session']].values())), 0, 50)
+        posts = get_msg(random.choice(list(session[theme].values())), 0, 50)
 
     # Всетаки вернул проверку по тексту на уже опубликованные
     old_novost_txt = ''
-    old_novost = get_msg(session['post_group']['key'], 0, 100)
+    old_novost = get_msg(session['post_group_vk'], 0, 100)
 
     for sample in old_novost:
         sample = clear_copy_history(sample)
-        if not search_text([session['podpisi']['heshteg']['reklama']], sample['text']):
+        if not search_text([session['heshteg']['reklama']], sample['text']):
             old_novost_txt += sample['text']
     old_novost_txt = text_to_rafinad(old_novost_txt)
 
@@ -51,23 +52,23 @@ def parser():
         group_id = str(sample['owner_id'])
         sample = clear_copy_history(sample)
         url = url_of_post(sample)
-        if url in session[session['name_session']]['lip']:
+        if url in session[theme]['lip']:
             bags(sample_text=sample['text'], url=url)
             continue
 
         # Если режим СОСЕД - Ищем в тексте поста заголовки или хэштег что это новость соседей и не берем этот пост
-        if session['name_session'] in 'sosed' and search_text([session['podpisi']['zagolovok']['sosed'],
-                                                               session['podpisi']['heshteg']['sosed'],
-                                                               "#Объявления", "#Кино", "#Музыка", "#Кругозор",
-                                                               "#УраПерерывчик", "#КрасотаСпасетМир"] +
-                                                              session['delete_msg_blacklist'],
-                                                              sample['text']):
+        if theme in 'sosed' and search_text([session['zagolovok']['sosed'],
+                                             session['heshteg']['sosed'],
+                                             "#Объявления", "#Кино", "#Музыка", "#Кругозор",
+                                             "#УраПерерывчик", "#КрасотаСпасетМир"] +
+                                            session['delete_msg_blacklist'],
+                                            sample['text']):
             continue
-        if session['name_session'] in 'sosed' and search_text(["#Новости"], sample['text']):
+        if theme in 'sosed' and search_text(["#Новости"], sample['text']):
             sample['text'] = re.sub(r'\n+.+$', '', sample['text'], 4, re.M)
 
         # Сортировка Кино и Музыки, берем только с видео и музыкой
-        if session['name_session'] in 'kino music' and 'attachments' in sample:
+        if theme in 'kino music' and 'attachments' in sample:
             flag = True
             for atata in sample['attachments']:
                 if atata['type'] in 'video audio':
@@ -104,14 +105,14 @@ def parser():
 
         # Чистка и исправление текста для всех публичный мягкий набор слов и простых предложений
         sample['text'] = clear_text(session['clear_text_blacklist']['novost'], sample['text'])
-        if ('views' not in sample or session['name_session'] == 'reklama') and 'attachments' in sample:
+        if ('views' not in sample or theme == 'reklama') and 'attachments' in sample:
             bags(sample_text=sample['text'], url=url_of_post(sample))
             del sample['attachments']
         if 'attachments' not in sample or len(sample['attachments']) == 0:
             # Отправляем пост в блок рекламы с дальнейшими проверками
 
             # Если сюда попало сообщение не из Новостей и Рекламы, то не берем его:
-            if session['name_session'] not in 'novost novosti reklama':
+            if theme not in 'novost novosti reklama':
                 continue
 
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
@@ -133,10 +134,10 @@ def parser():
             continue
 
         # Текст обрамляется подписями без ссылки на источник, она будет в копирайте при постинге
-        sample['text'] = ''.join(map(str, [session['podpisi']['zagolovok'][session['name_session']],
+        sample['text'] = ''.join(map(str, [session['zagolovok'][theme],
                                            sample['text'],
                                            '\n\n', '#',
-                                           session['podpisi']['heshteg'][session['name_session']]]))
+                                           session['heshteg'][theme]]))
         result_posts.append(sample)
 
     save_table('bezfoto')

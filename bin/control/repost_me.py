@@ -9,8 +9,9 @@ from config import session
 
 
 def repost_me():
+    theme = session['name_session']
     link = ''
-    new_posts = get_msg(session['post_group']['key'], 0, 50)
+    new_posts = get_msg(session['post_group_vk'], 0, 50)
 
     for sample in new_posts:
 
@@ -18,13 +19,13 @@ def repost_me():
 
         copy_history = clear_copy_history(sample)
 
-        if link in session[session['name_session']]['lip'] \
-            or re.search(session['podpisi']['heshteg']['reklama'], sample['text'], flags=re.MULTILINE) \
-            or re.search(session['podpisi']['heshteg']['music'], sample['text'], flags=re.MULTILINE) \
-            or re.search(session['podpisi']['heshteg']['reklama'], copy_history['text'], flags=re.MULTILINE) \
-            or re.search(session['podpisi']['heshteg']['music'], copy_history['text'], flags=re.MULTILINE)\
-            or (session['name_session'] == 'repost_valstan'
-                and copy_history['owner_id'] in session[session['name_session']]['not_repost']):
+        if link in session[theme]['lip'] \
+            or re.search(session['heshteg']['reklama'], sample['text'], flags=re.MULTILINE) \
+            or re.search(session['heshteg']['music'], sample['text'], flags=re.MULTILINE) \
+            or re.search(session['heshteg']['reklama'], copy_history['text'], flags=re.MULTILINE) \
+            or re.search(session['heshteg']['music'], copy_history['text'], flags=re.MULTILINE)\
+            or (theme == 'repost_valstan'
+                and copy_history['owner_id'] in session[theme]['not_repost']):
             link = ''
             continue
         break
@@ -35,8 +36,8 @@ def repost_me():
         except Exception as exc:
             send_error(__name__, exc, traceback.print_exc())
 
-        session[session['name_session']]['lip'].append(link)
-        save_table(session['name_session'])
+        session[theme]['lip'].append(link)
+        save_table(theme)
 
 
 if __name__ == '__main__':

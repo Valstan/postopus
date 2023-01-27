@@ -11,7 +11,8 @@ from config import session
 
 
 def billboard():
-    # Забираем из группы "Напоминашки" 500 постов
+    # Работа Афишы не привязана ни к одному району, работает сразу на все районы.
+    # Забираем из группы "Напоминашки" 500 постов.
     msgs = session['tools'].get_all(method='wall.get', max_count=100, limit=500,
                                     values={'owner_id': session['afisha_group']})['items']
     current_date = datetime.now().date()

@@ -17,7 +17,7 @@ def posting_post(msg_list):
 
             url_post = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
 
-            post_msg(session['post_group']['key'],
+            post_msg(session['post_group_vk'],
                      sample['text'],
                      attachments,
                      copy_right=url_post)

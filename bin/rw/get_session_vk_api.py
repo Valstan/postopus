@@ -17,7 +17,7 @@ def get_session_vk_api():
                 vk_session = VkApi(token=session['token'])
                 session['vk_app'] = vk_session.get_api()
                 session['tools'] = VkTools(vk_session)
-                return
+                break
             except Exception as exc:
                 send_error(__name__, exc, traceback.print_exc())
         else:
@@ -25,9 +25,10 @@ def get_session_vk_api():
                 vk_session = VkApi(session['login'], session['password'])
                 vk_session.auth()
                 session['vk_app'] = vk_session.get_api()
-                return
+                break
             except Exception as exc:
                 send_error(__name__, exc, traceback.print_exc())
+    return
 
 
 if __name__ == '__main__':

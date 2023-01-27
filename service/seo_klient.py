@@ -81,7 +81,7 @@ attachments = get_attach(sample_spam_post)
 list_groups = []
 for key in key_words.keys():
     # new_grops = session['vk_app'].groups.search(q=key, type='group', count=count)['items']
-    new_grops = session['tools'].get_all(method='groups.search', max_count=group_count_max, limit=1000,
+    new_grops = session['tools'].get_all(method='groups.search', max_count=1000, limit=group_count_max,
                                          values={'q': key, 'type': 'group'})['items']
     key_words[key] = len(new_grops)
     list_groups.extend(new_grops)

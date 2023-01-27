@@ -7,6 +7,7 @@ from config import session
 
 
 def repost_reklama():
+    theme = session['name_session']
 
     glav = -163580976
     zam = -172650802
@@ -22,17 +23,17 @@ def repost_reklama():
         shut = random.choice(ruletka)
         shut = clear_copy_history(shut)
         shut = ''.join(map(str, ('https://vk.com/wall', shut['owner_id'], '_', shut['id'])))
-        if shut not in session[session['name_session']]['lip']:
+        if shut not in session[theme]['lip']:
             break
 
-    id_group = -session['post_group']['key']
+    id_group = -session['post_group_vk']
     try:
         session['vk_app'].wall.repost(object=shut, group_id=id_group)
-        session[session['name_session']]['lip'].append(shut)
+        session[theme]['lip'].append(shut)
     except:
         pass
 
-    save_table(session['name_session'])
+    save_table(theme)
 
 
 if __name__ == '__main__':
