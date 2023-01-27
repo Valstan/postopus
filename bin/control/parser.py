@@ -33,7 +33,7 @@ def parser():
 
     # Всетаки вернул проверку по тексту на уже опубликованные
     old_novost_txt = ''
-    old_novost = read_posts(session['post_group'], 100)
+    old_novost = get_msg(session['post_group']['key'], 0, 100)
 
     for sample in old_novost:
         sample = clear_copy_history(sample)
