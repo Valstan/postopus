@@ -3,10 +3,13 @@ import requests
 from config import session
 
 
-def read_posts(group_list, count):
+def read_posts(group_dict, count):
     group_ids_str = ''
     get_posts = []
     batch = 24
+    group_list = []
+    for i in group_dict.values():
+        group_list.append(i)
     while len(group_list):
         if len(group_list) < batch:
             batch = len(group_list)
