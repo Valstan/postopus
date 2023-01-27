@@ -7,13 +7,11 @@ from bin.rw.read_posts import read_posts
 from bin.sort.sort_old_date import sort_old_date
 from bin.sort.sort_po_foto import sort_po_foto
 from bin.sort.sort_po_video import sort_po_video
-from bin.utils.avtortut import avtortut
 from bin.utils.bags import bags
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.clear_text import clear_text
 from bin.utils.driver_tables import load_table, save_table
 from bin.utils.search_text import search_text
-from bin.utils.text_framing import text_framing
 from bin.utils.text_to_rafinad import text_to_rafinad
 from bin.utils.url_of_post import url_of_post
 from config import session
@@ -122,7 +120,9 @@ def parser():
             if 300 > len(sample['text']) > 30:
                 text_rafinad = text_to_rafinad(sample['text'])
                 if not search_text([text_rafinad], data_string):
-                    session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample) + '\n')
+                    session['bezfoto']['lip'].append(f"&#128073; {sample['text']} @https://vk.com/wall"
+                                                     f"{str(sample['owner_id'])}_"
+                                                     f"{str(sample['id'])} (-->подробнее.)\n\n")
                     data_string += text_rafinad
 
             continue
@@ -132,13 +132,11 @@ def parser():
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
 
-        # Текст обрамляется подписями
-        sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
-                                      sample,
-                                      session['podpisi']['heshteg'][session['name_session']],
-                                      session['podpisi']['final'],
-                                      1)
-
+        # Текст обрамляется подписями без ссылки на источник, она будет в копирайте при постинге
+        sample['text'] = ''.join(map(str, [session['podpisi']['zagolovok'][session['name_session']],
+                                           sample['text'],
+                                           '\n\n', '#',
+                                           session['podpisi']['heshteg'][session['name_session']]]))
         result_posts.append(sample)
 
     save_table('bezfoto')
