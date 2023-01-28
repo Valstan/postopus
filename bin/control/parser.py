@@ -1,5 +1,4 @@
 import random
-import re
 
 # from bin.ai.ai_sort import ai_sort
 from bin.rw.get_msg import get_msg
@@ -19,13 +18,17 @@ from config import session
 
 def parser():
     theme = session['name_session']
-    session['work']['bezfoto'] = load_table('bezfoto')
-    session['work']['all_bezfoto'] = load_table('all_bezfoto')
-    # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
-    # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
-    data_string = text_to_rafinad("".join(session['work']['bezfoto']['lip'] + session['work']['all_bezfoto']['lip']))
+
+    data_string = ''
 
     if theme in 'novost novosti reklama':
+        session['work']['bezfoto'] = load_table('bezfoto')
+        session['work']['all_bezfoto'] = load_table('all_bezfoto')
+        # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
+        # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
+        data_string = text_to_rafinad(
+            "".join(session['work']['bezfoto']['lip'] + session['work']['all_bezfoto']['lip']))
+
         posts = read_posts(session[theme], 20)
 
     else:
@@ -56,16 +59,9 @@ def parser():
             bags(sample_text=sample['text'], url=url)
             continue
 
-        # Если режим СОСЕД - Ищем в тексте поста заголовки или хэштег что это новость соседей и не берем этот пост
-        if theme in 'sosed' and search_text([session['zagolovok']['sosed'],
-                                             session['heshteg']['sosed'],
-                                             "#Объявления", "#Кино", "#Музыка", "#Кругозор",
-                                             "#УраПерерывчик", "#КрасотаСпасетМир"] +
-                                            session['delete_msg_blacklist'],
-                                            sample['text']):
+        # Если режим СОСЕД - Ищем в тексте поста хештег с новостью, если нет, то не берем пост
+        if theme in 'sosed' and not search_text(["#Новости"], sample['text']):
             continue
-        if theme in 'sosed' and search_text(["#Новости"], sample['text']):
-            sample['text'] = re.sub(r'\n+.+$', '', sample['text'], 4, re.M)
 
         # Сортировка Кино и Музыки, берем только с видео и музыкой
         if theme in 'kino music' and 'attachments' in sample:
@@ -140,7 +136,8 @@ def parser():
                                            session['heshteg'][theme]]))
         result_posts.append(sample)
 
-    save_table('bezfoto')
+    if theme in 'novost novosti reklama':
+        save_table('bezfoto')
 
     if result_posts:
         result_posts.sort(key=lambda x: x['views']['count'], reverse=True)

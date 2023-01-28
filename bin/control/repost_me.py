@@ -19,13 +19,13 @@ def repost_me():
 
         copy_history = clear_copy_history(sample)
 
-        if link in session[theme]['lip'] \
+        if link in session['work'][theme]['lip'] \
             or re.search(session['heshteg']['reklama'], sample['text'], flags=re.MULTILINE) \
             or re.search(session['heshteg']['music'], sample['text'], flags=re.MULTILINE) \
             or re.search(session['heshteg']['reklama'], copy_history['text'], flags=re.MULTILINE) \
             or re.search(session['heshteg']['music'], copy_history['text'], flags=re.MULTILINE)\
             or (theme == 'repost_valstan'
-                and copy_history['owner_id'] in session[theme]['not_repost']):
+                and copy_history['owner_id'] in session['work'][theme]['not_repost']):
             link = ''
             continue
         break
@@ -36,7 +36,7 @@ def repost_me():
         except Exception as exc:
             send_error(__name__, exc, traceback.print_exc())
 
-        session[theme]['lip'].append(link)
+        session['work'][theme]['lip'].append(link)
         save_table(theme)
 
 

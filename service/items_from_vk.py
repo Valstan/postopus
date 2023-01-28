@@ -9,7 +9,7 @@ session = config.session
 session.update({"token": session['VK_TOKEN_DRAN']})
 vk_session = VkApi(token=session['token'])
 session['vk_app'] = vk_session.get_api()
-new_posts = get_msg(-207316667, 0, 50)
+new_posts = get_msg(-168170215, 0, 100)
 sample_clear = []
 for sample in new_posts:
     template = clear_copy_history(sample)
