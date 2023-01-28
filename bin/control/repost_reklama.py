@@ -26,9 +26,8 @@ def repost_reklama():
         if shut not in session[theme]['lip']:
             break
 
-    id_group = -session['post_group_vk']
     try:
-        session['vk_app'].wall.repost(object=shut, group_id=id_group)
+        session['vk_app'].wall.repost(object=shut, group_id=-session['post_group_vk'])
         session[theme]['lip'].append(shut)
     except:
         pass
