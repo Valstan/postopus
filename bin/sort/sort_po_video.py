@@ -11,6 +11,11 @@ session = config.session
 def sort_po_video(msg):
     global session
 
+    if session['name_session'] in 'n1 n2 n3':
+        theme = 'novost'
+    else:
+        theme = session['name_session']
+
     if 'attachments' in msg:
         for sample in msg['attachments']:
             if sample['type'] == 'video' and sample['video']['title'] not in 'Видео недоступно':
@@ -32,12 +37,12 @@ def sort_po_video(msg):
                     histo = image.histogram()
                     hash_object = hashlib.md5(str(histo).encode())
                     histo = hash_object.hexdigest()
-                    if histo in session['work'][session['name_session']]['hash']:
+                    if histo in session['work'][theme]['hash']:
                         return True
                     # if search_words_in_text(session['delete_msg_blacklist'], tesseract('image')):
                     #     session[session['name_session']]['hash'].append(histo)
                     #     return session, []
-                    session['work'][session['name_session']]['hash'].append(histo)
+                    session['work'][theme]['hash'].append(histo)
 
 
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ def load_table(name_table):
     # если конструктора еще нет, то ошибка, но скрипт не вылетает
     # это значит что грузится первоначальная сессия
 
-    try:
+    if name_table not in 'config billboard':
         if table:
             for key in session['constructor_table']:
                 if not table.get(key):
@@ -20,8 +20,6 @@ def load_table(name_table):
         else:
             table = session['constructor_table']
             table['title'] = name_table
-    except Exception as exc:
-        print(exc)
 
     return table
 
@@ -31,13 +29,11 @@ def save_table(name_table):
     # Изменяем размеры таблиц содержащих только списки,
     # если попадается число или объект, то ошибка, но она обрабатывается и процесс продолжается
     for n in session['constructor_table']:
-        try:
+        if isinstance(session['work'][name_table][n], list) and session['work'][name_table]['table_size']:
             while len(session['work'][name_table][n]) > session['work'][name_table]['table_size']:
                 del session['work'][name_table][n][0]
-        except Exception as exc:
-            print(exc)
-    else:
-        collection.update_one({'title': name_table}, {'$set': session['work'][name_table]}, upsert=True)
+
+    collection.update_one({'title': name_table}, {'$set': session['work'][name_table]}, upsert=True)
 
 
 if __name__ == '__main__':
