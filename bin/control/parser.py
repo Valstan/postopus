@@ -21,7 +21,7 @@ def parser():
 
     data_string = ''
 
-    if theme in 'novost novosti reklama':
+    if theme in 'n1 n2 n3 reklama':
         session['work']['bezfoto'] = load_table('bezfoto')
         session['work']['all_bezfoto'] = load_table('all_bezfoto')
         # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
