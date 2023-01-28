@@ -4,7 +4,7 @@ from bin.utils.send_error import send_error
 from config import session
 
 
-def post_msg(group, text_send, attachments, from_group=1, copy_right=''):
+def post_msg(group, text_send, attachments='', from_group=1, copy_right=''):
 
     try:
         session['vk_app'].wall.post(owner_id=group,
