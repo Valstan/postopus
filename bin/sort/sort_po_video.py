@@ -32,12 +32,12 @@ def sort_po_video(msg):
                     histo = image.histogram()
                     hash_object = hashlib.md5(str(histo).encode())
                     histo = hash_object.hexdigest()
-                    if histo in session[session['name_session']]['hash']:
+                    if histo in session['work'][session['name_session']]['hash']:
                         return True
                     # if search_words_in_text(session['delete_msg_blacklist'], tesseract('image')):
                     #     session[session['name_session']]['hash'].append(histo)
                     #     return session, []
-                    session[session['name_session']]['hash'].append(histo)
+                    session['work'][session['name_session']]['hash'].append(histo)
 
 
 if __name__ == '__main__':

@@ -24,7 +24,7 @@ def posting_post(msg_list):
 
             # если вернуться к репостам
             # vk_app.wall.repost(object=url_post, group_id=-session['post_group']['key'])
-            session[session['name_session']]['lip'].append(url_post)
+            session['work'][session['name_session']]['lip'].append(url_post)
             save_table(session['name_session'])
             break
         except Exception as exc:

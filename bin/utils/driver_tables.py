@@ -32,14 +32,14 @@ def save_table(name_table):
     # если попадается число или объект, то ошибка, но она обрабатывается и процесс продолжается
     for n in session['constructor_table']:
         try:
-            while len(session[name_table][n]) > session[name_table]['table_size']:
-                del session[name_table][n][0]
+            while len(session['work'][name_table][n]) > session['work'][name_table]['table_size']:
+                del session['work'][name_table][n][0]
         except Exception as exc:
             print(exc)
     if name_table in 'novost novosti':
-        collection.update_one({'title': 'novost'}, {'$set': session[name_table]}, upsert=True)
+        collection.update_one({'title': 'novost'}, {'$set': session['work'][name_table]}, upsert=True)
     else:
-        collection.update_one({'title': name_table}, {'$set': session[name_table]}, upsert=True)
+        collection.update_one({'title': name_table}, {'$set': session['work'][name_table]}, upsert=True)
 
 
 if __name__ == '__main__':

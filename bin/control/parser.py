@@ -19,11 +19,11 @@ from config import session
 
 def parser():
     theme = session['name_session']
-    session['bezfoto'] = load_table('bezfoto')
-    session['all_bezfoto'] = load_table('all_bezfoto')
+    session['work']['bezfoto'] = load_table('bezfoto')
+    session['work']['all_bezfoto'] = load_table('all_bezfoto')
     # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
     # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
-    data_string = text_to_rafinad("".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip']))
+    data_string = text_to_rafinad("".join(session['work']['bezfoto']['lip'] + session['work']['all_bezfoto']['lip']))
 
     if theme in 'novost novosti reklama':
         posts = read_posts(session[theme], 20)
@@ -52,7 +52,7 @@ def parser():
         group_id = str(sample['owner_id'])
         sample = clear_copy_history(sample)
         url = url_of_post(sample)
-        if url in session[theme]['lip']:
+        if url in session['work'][theme]['lip']:
             bags(sample_text=sample['text'], url=url)
             continue
 
@@ -121,9 +121,9 @@ def parser():
             if 300 > len(sample['text']) > 30:
                 text_rafinad = text_to_rafinad(sample['text'])
                 if not search_text([text_rafinad], data_string):
-                    session['bezfoto']['lip'].append(f"&#128073; {sample['text']} @https://vk.com/wall"
-                                                     f"{str(sample['owner_id'])}_"
-                                                     f"{str(sample['id'])} (-->подробнее.)\n\n")
+                    session['work']['bezfoto']['lip'].append(f"&#128073; {sample['text']} @https://vk.com/wall"
+                                                             f"{str(sample['owner_id'])}_"
+                                                             f"{str(sample['id'])} (-->подробнее.)\n\n")
                     data_string += text_rafinad
 
             continue
