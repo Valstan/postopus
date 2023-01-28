@@ -23,12 +23,12 @@ def repost_reklama():
         shut = random.choice(ruletka)
         shut = clear_copy_history(shut)
         shut = ''.join(map(str, ('https://vk.com/wall', shut['owner_id'], '_', shut['id'])))
-        if shut not in session[theme]['lip']:
+        if shut not in session['work'][theme]['lip']:
             break
 
     try:
         session['vk_app'].wall.repost(object=shut, group_id=-session['post_group_vk'])
-        session[theme]['lip'].append(shut)
+        session['work'][theme]['lip'].append(shut)
     except:
         pass
 
