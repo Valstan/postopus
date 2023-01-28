@@ -8,7 +8,10 @@ from config import session
 
 
 def posting_post(msg_list):
-    theme = session['name_session']
+    if session['name_session'] in 'n1 n2 n3':
+        theme = 'novost'
+    else:
+        theme = session['name_session']
 
     for sample in msg_list:
 

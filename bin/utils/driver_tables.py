@@ -36,8 +36,6 @@ def save_table(name_table):
                 del session['work'][name_table][n][0]
         except Exception as exc:
             print(exc)
-    if name_table in 'n1 n2 n3':
-        collection.update_one({'title': 'novost'}, {'$set': session['work'][name_table]}, upsert=True)
     else:
         collection.update_one({'title': name_table}, {'$set': session['work'][name_table]}, upsert=True)
 

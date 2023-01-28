@@ -17,19 +17,22 @@ from config import session
 
 
 def parser():
-    theme = session['name_session']
+    if session['name_session'] in 'n1 n2 n3':
+        theme = 'novost'
+    else:
+        theme = session['name_session']
 
     data_string = ''
 
-    if theme in 'n1 n2 n3 reklama':
+    if theme in 'novost reklama':
         session['work']['bezfoto'] = load_table('bezfoto')
         session['work']['all_bezfoto'] = load_table('all_bezfoto')
         # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
         # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
         data_string = text_to_rafinad(
             "".join(session['work']['bezfoto']['lip'] + session['work']['all_bezfoto']['lip']))
-
-        posts = read_posts(session[theme], 20)
+        # В строке ниже session['name_session'] не менять
+        posts = read_posts(session[session['name_session']], 20)
 
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
@@ -108,7 +111,7 @@ def parser():
             # Отправляем пост в блок рекламы с дальнейшими проверками
 
             # Если сюда попало сообщение не из Новостей и Рекламы, то не берем его:
-            if theme not in 'novost novosti reklama':
+            if theme not in 'novost reklama':
                 continue
 
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
@@ -136,7 +139,7 @@ def parser():
                                            session['heshteg'][theme]]))
         result_posts.append(sample)
 
-    if theme in 'novost novosti reklama':
+    if theme in 'novost reklama':
         save_table('bezfoto')
 
     if result_posts:
