@@ -17,7 +17,7 @@ session = config.session
 def control():
     global session
 
-    if session['name_session'] in 'novost novosti sosed':
+    if session['name_session'] in 'n1 n2 n3 sosed':
         msg_list = parser()
         if msg_list:
             posting_post(msg_list)
