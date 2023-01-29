@@ -21,5 +21,7 @@ def get_session(arguments, bags="0"):
         session['work']['novost'] = load_table('novost')
     elif session['name_session'] in 'billboard':
         session.update(load_table('billboard'))
+    elif session['name_session'] in 'addons':
+        return
     else:
         session['work'][session['name_session']] = load_table(session['name_session'])

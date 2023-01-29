@@ -39,7 +39,7 @@ def control():
             session['name_session'] = random.choice(session['baraban'])
 
             if session['name_session'] != old_ruletka:
-                session[session['work']['name_session']] = load_table(session['name_session'])
+                session['work'][session['name_session']] = load_table(session['name_session'])
                 msg_list = parser()
                 if msg_list:
                     posting_post(msg_list)
