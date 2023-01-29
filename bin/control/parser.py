@@ -133,10 +133,7 @@ def parser():
             continue
 
         # Текст обрамляется подписями без ссылки на источник, она будет в копирайте при постинге
-        sample['text'] = ''.join(map(str, [session['zagolovok'][theme],
-                                           sample['text'],
-                                           '\n\n', '#',
-                                           session['heshteg'][theme]]))
+        sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n\n#{session['heshteg'][theme]}"
         result_posts.append(sample)
 
     if theme in 'novost reklama':
