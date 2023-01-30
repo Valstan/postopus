@@ -13,8 +13,11 @@ def get_session(arguments, bags="0"):
     # Берем аргументы имени базы и таблицы сессии с которой будем работать
     session['name_base'], session['name_session'] = arguments.split('_', 1)
     # Из базы подтягиваем региональный конфиг
-    session.update(load_table('config'))
+    if session['name_base'] not in 'config':
+        session.update(load_table('config'))
+
     session['bags'] = bags
+
     # И таблицу для работы, например novost
     session['work'] = {}
     if session['name_session'] in 'n1 n2 n3':

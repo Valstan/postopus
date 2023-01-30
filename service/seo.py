@@ -8,6 +8,7 @@ from vk_api import VkApi
 import config
 from bin.rw.get_attach import get_attach
 from bin.rw.get_msg import get_msg
+from bin.rw.get_session_vk_api import get_session_vk_api
 
 
 def save_result():
@@ -43,7 +44,7 @@ def save_result():
 # Настройки раскрутки
 session = config.session  # Берем сессию из конфига
 session.update({"token": session['VK_TOKEN_VALSTAN']})  # Под каким токеном будем спамить
-black_list_groups = '-141273678'  # Черный список номеров групп в которые нельзя спамить
+black_list_groups = '-141273678-65070963'  # Черный список номеров групп в которые нельзя спамить
 name_file = f"Спам-реклама ВП Инфо 20 января.html"
 # token_spamer = session['token']
 # key_words = {"уржум": 0, "вятские поляны": 0, "малмыж": 0,
@@ -60,8 +61,7 @@ save_every_time = 10  # Сохраняться каждые n успешных �
 from_group = -166980909  # Напоминашка Отсюда берем инфу для рекламинга
 
 # Подсоединяемся к API VK
-vk_session = VkApi(token=session['token'])
-session['vk_app'] = vk_session.get_api()
+get_session_vk_api()
 
 count_up = 0
 count_down = 0
@@ -70,6 +70,10 @@ save_group_id = []
 
 # Получаем посты, которые будем рекламировать
 reklama_posts = get_msg(from_group, 0, 100)
+
+# Или конкретный пост
+# url_from_reklama_post = "https://vk.com/wall-168247378_787"
+# from_group, post_id = url_from_reklama_post[19:].split('_')  # Разбираем адрес на группу и пост для скачивания
 
 
 list_groups = []
