@@ -10,7 +10,7 @@ from bin.control.repost_reklama import repost_reklama
 from bin.rw.post_bezfoto import post_bezfoto
 from bin.rw.posting_post import posting_post
 from bin.utils.driver_tables import load_table
-from service.rpg import rpg
+from bin.control.rpg import rpg
 
 session = config.session
 
