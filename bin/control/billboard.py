@@ -35,7 +35,7 @@ def billboard():
             serv, sample_text = sample['text'].split("\n", 1)
             serv = serv.strip()
             regim, region, time_out = serv.split(" ")
-            if int(time_out) < int(str(current_date.month) + str(current_date.day)):
+            if int(time_out) < current_date.month * 100 + current_date.day:
                 continue
             session['afisha'][region]['list_anons'].append(
                 [time_out, sample_text, get_attach(clear_copy_history(sample))])

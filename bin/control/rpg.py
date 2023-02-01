@@ -99,9 +99,9 @@ def rpg():
                                         attachments=attachments)
 
             session['list_url'] +=\
-                f"""<a href="https://vk.com/wall{true_group_id}">https://vk.com/wall{true_group_id}</a><br />"""
+                f"""<a href="https://vk.com/public{-true_group_id}">https://vk.com/public{-true_group_id}</a><br />"""
 
-            print(f"https://vk.com/wall{true_group_id} Всего - {session['count_all_members']}")
+            print(f"https://vk.com/public{-true_group_id} Всего - {session['count_all_members']}")
             session['count_up'] += 1
             if session['count_up'] > session['count_post_up_max']:
                 save_result()
