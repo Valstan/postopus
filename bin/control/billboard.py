@@ -18,8 +18,7 @@ def billboard():
     current_date = datetime.now().date()
     current_time = datetime.now().time()
 
-    # if current_time.hour in (9, 10, 11, 12, 13, 14, 15):
-    if current_time.hour == 12:
+    if current_time.hour in (9, 10, 11, 12, 13, 14, 15):
         regim_global = '1'
         title = 'vacans_title'
         heshteg_global = 'vacans_heshteg'
