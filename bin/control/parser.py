@@ -76,16 +76,8 @@ def parser():
             if flag:
                 continue
 
-        # Сортировка савальских групп с картинками, если слов Малмыж и Киров нет то игнорируем
-        if group_id in '-99686065 -141990463' and not search_text(session['savali'], sample['text']):
-            continue
-
-        # Чистка группы Проблемный Малмыж - МалмыЖ от чужих сообщений
-        if sample['owner_id'] == -9363816 != sample['from_id']:
-            continue
-
-        # Проверяем группы по поиску людей на регион
-        if group_id in '-20895918' and not search_text(session['search_human_region_key'], sample['text']):
+        # Сортировка Савальских групп, МалмыЖ и Поиск людей
+        if group_id in '-99686065 -141990463 -20895918 -9363816' and (group_id != sample['from_id'] or not search_text(session['malmig_words'], sample['text'])):
             continue
 
         # Проверяем на повторы
