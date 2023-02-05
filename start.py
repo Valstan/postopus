@@ -44,7 +44,10 @@ def start():
     elif arguments:
         get_mongo_base('postopus')
         get_session(arguments, bags)
-        get_session_vk_api()
+        for i in range(4):
+            change_lp()
+            if get_session_vk_api():
+                break
         # Отправляем на КПП который перенаправит нас в нужный скрипт-сценарий в зависимости от аргументов
         control()
     else:
