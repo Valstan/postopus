@@ -1,3 +1,4 @@
+import random
 import traceback
 
 from bin.utils.send_error import send_error
@@ -11,19 +12,10 @@ def change_lp():
 
     try:
         if session['name_base'] in 'dran':
-            # (session['name_session'] in (session['arg']['public'] + session['arg']['dran'])
-            # and session['name_base'] in 'dran'):
-            # or (session['name_session'] in session['arg']['dran']
-            #     and session['name_base'] in 'mi'):
-            # session.update({"login": session['VK_LOGIN_DRAN'], "password": session['VK_PASSWORD_DRAN']})
             session.update({"token": session['VK_TOKEN_DRAN']})
-
-        elif session['name_session'] in session['arg']['instagram']:
-            session.update({"login": session['INSTA_LOGIN_MI'], "password": session['INSTA_PASSWORD_MI']})
-
         else:
-            # session.update({"login": session['VK_LOGIN_VALSTAN'], "password": session['VK_PASSWORD_VALSTAN']})
-            session.update({"token": session['VK_TOKEN_VALSTAN']})
+            session.update({"token": random.choice([session['VK_TOKEN_OLGA'], session['VK_TOKEN_VITA'],
+                                                    session['VK_TOKEN_ELIS'], session['VK_TOKEN_ALEX']])})
     except Exception as exc:
         send_error(__name__, exc, traceback.print_exc())
 
