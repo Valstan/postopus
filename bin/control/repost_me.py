@@ -1,43 +1,49 @@
-import re
-import traceback
+import time
+from random import shuffle
 
-from bin.rw.get_msg import get_msg
-from bin.utils.clear_copy_history import clear_copy_history
+from bin.rw.get_session_vk_api import get_session_vk_api
+from bin.rw.read_posts import read_posts
 from bin.utils.driver_tables import save_table
-from bin.utils.send_error import send_error
+from bin.utils.search_text import search_text
 from config import session
 
 
 def repost_me():
-    theme = session['name_session']
-    link = ''
-    new_posts = get_msg(session['post_group_vk'], 0, 50)
 
-    for sample in new_posts:
+    # Сбор токенов
+    tokens = {}
+    for key in session:
+        if 'VK_TOKEN_' in key and 'VK_TOKEN_DRAN' not in key:
+            tokens.update({key: session[key]})
 
-        link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
+    posts = read_posts(session['all_my_groups'], 50)
 
-        copy_history = clear_copy_history(sample)
+    shuffle(posts)
 
-        if link in session['work'][theme]['lip'] \
-            or re.search(session['heshteg']['reklama'], sample['text'], flags=re.MULTILINE) \
-            or re.search(session['heshteg']['music'], sample['text'], flags=re.MULTILINE) \
-            or re.search(session['heshteg']['reklama'], copy_history['text'], flags=re.MULTILINE) \
-            or re.search(session['heshteg']['music'], copy_history['text'], flags=re.MULTILINE)\
-            or (theme == 'repost_valstan'
-                and copy_history['owner_id'] in session['work'][theme]['not_repost']):
-            link = ''
+    # Чистим посты от излишеств
+    clear_post = []
+    for sample in posts:
+        if 'copy_history' in sample or search_text(session['repost_words_black_list'], sample['text']):
             continue
-        break
+        clear_post.append(sample)
 
-    if link:
-        try:
-            session['vk_app'].wall.repost(object=link)
-        except Exception as exc:
-            send_error(__name__, exc, traceback.print_exc())
+    shuffle(clear_post)
 
-        session['work'][theme]['lip'].append(link)
-        save_table(theme)
+    for every_time in range(3):
+        for moder in tokens:
+            shuffle(clear_post)
+            for sample in clear_post:
+                link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
+                if link not in session['work'][session['name_session']][moder]:
+                    session['token'] = tokens[moder]
+                    if get_session_vk_api():
+                        session['vk_app'].wall.repost(object=link)
+                        session['work'][session['name_session']][moder].append(link)
+                    time.sleep(5)
+                    break
+        time.sleep(30)
+
+    save_table(session['name_session'])
 
 
 if __name__ == '__main__':

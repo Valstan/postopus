@@ -26,10 +26,9 @@ def load_table(name_table):
 
 def save_table(name_table):
     collection = session['MONGO_BASE'][session['name_base']]
-    # Изменяем размеры таблиц содержащих только списки,
-    # если попадается число или объект, то ошибка, но она обрабатывается и процесс продолжается
-    for n in session['constructor_table']:
-        if isinstance(session['work'][name_table][n], list) and session['work'][name_table]['table_size']:
+    # Изменяем размеры таблиц содержащих только списки
+    for n in session['work'][name_table]:
+        if isinstance(n, list) and session['work'][name_table]['table_size']:
             while len(session['work'][name_table][n]) > session['work'][name_table]['table_size']:
                 del session['work'][name_table][n][0]
 
