@@ -1,3 +1,4 @@
+import random
 import time
 from random import shuffle
 
@@ -39,9 +40,8 @@ def repost_me():
                     if get_session_vk_api():
                         session['vk_app'].wall.repost(object=link)
                         session['work'][session['name_session']][moder].append(link)
-                    time.sleep(5)
                     break
-        time.sleep(30)
+        time.sleep(random.randint(30, 60))
 
     save_table(session['name_session'])
 
