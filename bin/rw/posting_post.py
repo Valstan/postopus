@@ -27,7 +27,6 @@ def posting_post(msg_list):
         if 'attachments' in sample:
             attachments = get_attach(sample)
 
-        url_post = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
         try:
             post_msg(session['post_group_vk'],
                      sample['text'],

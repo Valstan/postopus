@@ -30,7 +30,7 @@ def repost_me():
 
     shuffle(clear_post)
 
-    for every_time in range(3):
+    for every_time in range(4):
         for moder in tokens:
             shuffle(clear_post)
             for sample in clear_post:
@@ -41,7 +41,7 @@ def repost_me():
                         session['vk_app'].wall.repost(object=link)
                         session['work'][session['name_session']][moder].append(link)
                     break
-        time.sleep(random.randint(30, 60))
+        time.sleep(random.randint(30, 120))
 
     save_table(session['name_session'])
 
