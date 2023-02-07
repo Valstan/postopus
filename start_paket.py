@@ -1,39 +1,45 @@
+from random import shuffle, randint
+import time
 from sys import argv
 
-from config import reklama, novost_1, novost_2, novost_3, addons, sosed, afisha, repost_me
+from config import reklama, novost_1, novost_2, novost_3, addons, sosed
 from start import start
 
-argum = str(argv[1])
+argument = str(argv[1])
 
 
-if argum in 'reklama':
+if argument in 'reklama':
+    shuffle(reklama)
     for name in reklama:
         start(name)
+        time.sleep(randint(15, 40))
 
-elif argum in 'novost_1':
+elif argument in 'novost_1':
+    shuffle(novost_1)
     for name in novost_1:
         start(name)
+        time.sleep(randint(60, 180))
 
-elif argum in 'novost_2':
+elif argument in 'novost_2':
+    shuffle(novost_2)
     for name in novost_2:
         start(name)
+        time.sleep(randint(60, 120))
 
-elif argum in 'novost_3':
+elif argument in 'novost_3':
+    shuffle(novost_3)
     for name in novost_3:
         start(name)
+        time.sleep(randint(60, 120))
 
-elif argum in 'addons':
+elif argument in 'addons':
+    shuffle(addons)
     for name in addons:
         start(name)
+        time.sleep(randint(60, 120))
 
-elif argum in 'sosed':
+elif argument in 'sosed':
+    shuffle(sosed)
     for name in sosed:
         start(name)
-
-elif argum in 'afisha':
-    for name in afisha:
-        start(name)
-
-elif argum in 'repost_me':
-    for name in repost_me:
-        start(name)
+        time.sleep(randint(60, 120))
