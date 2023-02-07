@@ -37,8 +37,13 @@ def billboard():
             regim, region, time_out = serv.split(" ")
             if int(time_out) < current_date.month * 100 + current_date.day:
                 continue
-            session['afisha'][region]['list_anons'].append(
-                [time_out, sample_text, get_attach(clear_copy_history(sample))])
+            if region in 'all':
+                for region in session['afisha']:
+                    session['afisha'][region]['list_anons'].append(
+                        [time_out, sample_text, get_attach(clear_copy_history(sample))])
+            else:
+                session['afisha'][region]['list_anons'].append(
+                    [time_out, sample_text, get_attach(clear_copy_history(sample))])
 
     for name_region in session['afisha']:
         sample = {'text': session['afisha'][name_region][title] + '\n\n', 'attach': ""}
