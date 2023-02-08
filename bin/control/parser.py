@@ -1,5 +1,6 @@
 import random
 
+from bin.rw.get_del_msg_blacklist import get_del_msg_blacklist
 # from bin.ai.ai_sort import ai_sort
 from bin.rw.get_msg import get_msg
 from bin.rw.read_posts import read_posts
@@ -24,13 +25,15 @@ def parser():
 
     data_string = ''
 
+    get_del_msg_blacklist()
+
     if theme in 'novost reklama':
         session['work']['bezfoto'] = load_table('bezfoto')
         session['work']['all_bezfoto'] = load_table('all_bezfoto')
         # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
         # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
-        data_string = text_to_rafinad(
-            "".join(session['work']['bezfoto']['lip'] + session['work']['all_bezfoto']['lip']))
+        data_string = "".join(session['work']['bezfoto']['lip']) +\
+                      text_to_rafinad("".join(session['work']['all_bezfoto']['lip']))
         # В строке ниже session['name_session'] не менять
         posts = read_posts(session[session['name_session']], 20)
 
@@ -77,7 +80,8 @@ def parser():
                 continue
 
         # Сортировка Савальских групп, МалмыЖ и Поиск людей
-        if group_id in '-99686065 -141990463 -20895918 -9363816' and (group_id != sample['from_id'] or not search_text(session['malmig_words'], sample['text'])):
+        if group_id in '-99686065 -141990463 -20895918 -9363816' and (
+            group_id != sample['from_id'] or not search_text(session['malmig_words'], sample['text'])):
             continue
 
         # Проверяем на повторы

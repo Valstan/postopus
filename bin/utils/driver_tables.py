@@ -5,6 +5,8 @@ def load_table(name_table):
     collection = session['MONGO_BASE'][session['name_base']]
     if name_table in 'novost novosti':
         table = collection.find_one({'title': 'novost'})
+    elif name_table in 'config' and session['name_base'] in 'config':
+        table = collection.find_one({'title': name_table}, {'delete_msg_blacklist': 0})
     else:
         table = collection.find_one({'title': name_table})
 
