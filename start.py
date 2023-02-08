@@ -22,7 +22,7 @@ def start(arguments: str, bags: str = '0'):
     #     get_session('test_novost')
     #     test()
 
-    elif arguments:
+    elif arguments and arguments not in "100":
         get_mongo_base('postopus')
         get_session(arguments, bags)
 

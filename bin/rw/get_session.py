@@ -7,6 +7,8 @@ session = config.session
 def get_session(arguments, bags="0"):
     global session
 
+    if 'work' in session:
+        del session['work']
     # Собираем сессию, из базы конфиг тянем глобальный конфиг
     session['name_base'] = 'config'
     session.update(load_table('config'))
