@@ -13,7 +13,7 @@ def post_bezfoto():
 
         post_msg(session['post_group_vk'], text)
 
-        # Подгружаем базу со старыми опубликованными уже ALLБезфото
+        # Подгружаем базу со старыми опубликованными уже ALL Безфото
 
         # Эту часть раскоментить через сутки
         # session['work']['all_bezfoto'] = load_table('all_bezfoto')
@@ -22,14 +22,14 @@ def post_bezfoto():
         all_bezfoto = load_table('all_bezfoto')
         session['work']['all_bezfoto'] = {"lip": []}
         for sample in all_bezfoto:
-            session['work']['all_bezfoto']['lip'] + text_to_rafinad(sample.lower())
+            session['work']['all_bezfoto']['lip'].append(text_to_rafinad(sample.lower()))
 
         # Рафинируем новые опубликованные Безфото для сохранения в чулан
         bezfoto = []
         for sample in session['work']['bezfoto']['lip'][:session['work']['bezfoto']['post_size']]:
-            bezfoto + text_to_rafinad(sample.lower())
+            bezfoto.append(text_to_rafinad(sample.lower()))
 
-        session['work']['all_bezfoto']['lip'].extend(bezfoto)
+        session['work']['all_bezfoto']['lip'] += bezfoto
         del session['work']['bezfoto']['lip'][:session['work']['bezfoto']['post_size']]
         save_table('bezfoto')
         save_table('all_bezfoto')

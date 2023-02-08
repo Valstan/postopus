@@ -22,18 +22,18 @@ def get_del_msg_blacklist():
             f.write(json.dumps(session['delete_msg_blacklist'], indent=2, ensure_ascii=False))
 
     # Этот блок нужно удалить через сутки
-    delete_msg_blacklist = []
+    delete_msg_blacklist_raf = []
     for sample in session['delete_msg_blacklist']:
-        delete_msg_blacklist += text_to_rafinad(sample.lower())
-    session['delete_msg_blacklist'] = delete_msg_blacklist
+        delete_msg_blacklist_raf.append(text_to_rafinad(sample.lower()))
+    session['delete_msg_blacklist'] = delete_msg_blacklist_raf
 
     if len(session['fast_del_msg_blacklist']) > 0:
         fast_del_msg_blacklist = []
         for sample in session['fast_del_msg_blacklist']:
-            fast_del_msg_blacklist += text_to_rafinad(sample.lower())
+            fast_del_msg_blacklist.append(text_to_rafinad(sample.lower()))
 
         # Объединяем с быстрым черным списком из базы и удалем дубли
-        session['delete_msg_blacklist'] = list(set(session['delete_msg_blacklist'].extend(fast_del_msg_blacklist)))
+        delete_msg_blacklist = list(set(session['delete_msg_blacklist'] + fast_del_msg_blacklist))
 
         # Сразу сохранем на диск и в облако
         with open(os.path.join("delete_msg_blacklist.json"), 'w', encoding='utf-8') as f:
