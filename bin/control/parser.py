@@ -84,9 +84,9 @@ def parser():
             group_id != sample['from_id'] or not search_text(session['malmig_words'], sample['text'])):
             continue
 
-        # Проверяем на повторы
+        # Проверяем на повторы и запрещенку
         text_rafinad = text_to_rafinad(sample['text'])
-        if search_text([text_rafinad], old_novost_txt):
+        if search_text([text_rafinad], old_novost_txt) and search_text(session['delete_msg_blacklist'], text_rafinad):
             bags(sample_text=sample['text'], url=url)
             continue
         else:
@@ -94,10 +94,6 @@ def parser():
 
         # if not ai_sort(sample): подключение нейронки
         #     continue
-
-        # проверяем на запрещенку
-        if search_text(session['delete_msg_blacklist'], sample['text']):
-            continue
 
         # Чистка и исправление текста для всех публичный мягкий набор слов и простых предложений
         # sample['text'] = clear_text(session['clear_text_blacklist']['novost'], sample['text'])
