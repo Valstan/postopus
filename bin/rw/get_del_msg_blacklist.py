@@ -16,7 +16,8 @@ def get_del_msg_blacklist():
             session['delete_msg_blacklist'] = json.load(f)
     else:
         collection = session['MONGO_BASE']['config']
-        session['delete_msg_blacklist'] = collection.find_one({'title': 'config'}, {'delete_msg_blacklist': 1})
+        session['delete_msg_blacklist'] = collection.find_one({'title': 'config'},
+                                                              {'delete_msg_blacklist': 1})['delete_msg_blacklist']
         with open(os.path.join("delete_msg_blacklist.json"), 'w', encoding='utf-8') as f:
             f.write(json.dumps(session['delete_msg_blacklist'], indent=2, ensure_ascii=False))
 
