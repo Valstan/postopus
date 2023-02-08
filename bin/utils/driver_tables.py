@@ -30,7 +30,7 @@ def save_table(name_table):
     collection = session['MONGO_BASE'][session['name_base']]
     # Изменяем размеры таблиц содержащих только списки
     for n in session['work'][name_table]:
-        if isinstance(n, list) and session['work'][name_table]['table_size']:
+        if isinstance(session['work'][name_table][n], list) and session['work'][name_table]['table_size']:
             while len(session['work'][name_table][n]) > session['work'][name_table]['table_size']:
                 del session['work'][name_table][n][0]
 
