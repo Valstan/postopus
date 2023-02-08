@@ -33,7 +33,7 @@ def get_del_msg_blacklist():
             fast_del_msg_blacklist.append(text_to_rafinad(sample.lower()))
 
         # Объединяем с быстрым черным списком из базы и удалем дубли
-        delete_msg_blacklist = list(set(session['delete_msg_blacklist'] + fast_del_msg_blacklist))
+        session['delete_msg_blacklist'] = list(set(session['delete_msg_blacklist'] + fast_del_msg_blacklist))
 
         # Сразу сохранем на диск и в облако
         with open(os.path.join("delete_msg_blacklist.json"), 'w', encoding='utf-8') as f:
@@ -45,7 +45,7 @@ def get_del_msg_blacklist():
 
         # Чистим Быстрый черный список в базе
         collection = session['MONGO_BASE']['config']
-        collection.update_one({'title': 'config'}, {'$set': {'fast_del_msg_blacklist': ['получите кредит']}},
+        collection.update_one({'title': 'config'}, {'$set': {'fast_del_msg_blacklist': []}},
                               upsert=True)
 
 
