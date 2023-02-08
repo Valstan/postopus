@@ -14,7 +14,11 @@ def post_bezfoto():
         post_msg(session['post_group_vk'], text)
 
         # Подгружаем базу со старыми опубликованными уже ALLБезфото
+
+        # Эту часть раскоментить через сутки
         # session['work']['all_bezfoto'] = load_table('all_bezfoto')
+
+        # Этот блок удалить через сутки
         all_bezfoto = load_table('all_bezfoto')
         session['work']['all_bezfoto'] = {"lip": []}
         for sample in all_bezfoto:
