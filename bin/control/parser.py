@@ -32,8 +32,8 @@ def parser():
         session['work']['all_bezfoto'] = load_table('all_bezfoto')
         # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
         # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
-        data_string = "".join(session['work']['bezfoto']['lip']) +\
-                      text_to_rafinad("".join(session['work']['all_bezfoto']['lip']))
+        data_string = "".join(session['work']['all_bezfoto']['lip']) + text_to_rafinad(
+            "".join(session['work']['bezfoto']['lip']))
         # В строке ниже session['name_session'] не менять
         posts = read_posts(session[session['name_session']], 20)
 
@@ -42,14 +42,13 @@ def parser():
         posts = get_msg(random.choice(list(session[theme].values())), 0, 50)
 
     # Всетаки вернул проверку по тексту на уже опубликованные
-    old_novost_txt = ''
     old_novost = get_msg(session['post_group_vk'], 0, 100)
 
+    old_novost_txt = ''
     for sample in old_novost:
         sample = clear_copy_history(sample)
         if not search_text([session['heshteg']['reklama']], sample['text']):
-            old_novost_txt += sample['text']
-    old_novost_txt = text_to_rafinad(old_novost_txt)
+            old_novost_txt += text_to_rafinad(sample['text'])
 
     result_posts = []
     for sample in posts:
@@ -80,13 +79,15 @@ def parser():
                 continue
 
         # Сортировка Савальских групп, МалмыЖ и Поиск людей
-        if group_id in '-99686065 -141990463 -20895918 -9363816' and (
-            group_id != sample['from_id'] or not search_text(session['malmig_words'], sample['text'])):
+        if group_id in '-99686065-141990463' \
+                       '-20895918-9363816' and (group_id != sample['from_id'] or
+                                                not search_text(session['malmig_words'], sample['text'])):
             continue
 
-        # Проверяем на повторы и запрещенку
+        # Проверяем на повторы или запрещенку
         text_rafinad = text_to_rafinad(sample['text'])
-        if search_text([text_rafinad], old_novost_txt) and search_text(session['delete_msg_blacklist'], text_rafinad):
+        if search_text([text_rafinad[int(len(text_rafinad) * 0.2):int(len(text_rafinad) * 0.7)]],
+                       old_novost_txt) or search_text(session['delete_msg_blacklist'], text_rafinad):
             bags(sample_text=sample['text'], url=url)
             continue
         else:
@@ -110,9 +111,10 @@ def parser():
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
             sample['text'] = clear_text(session['clear_text_blacklist']['reklama'], sample['text'])
 
-            if 300 > len(sample['text']) > 30:
+            if 250 > len(sample['text']) > 30:
                 text_rafinad = text_to_rafinad(sample['text'])
-                if not search_text([text_rafinad], data_string):
+                if not search_text([text_rafinad[int(len(text_rafinad) * 0.2):int(len(text_rafinad) * 0.7)]],
+                                   data_string):
                     session['work']['bezfoto']['lip'].append(f"&#128073; {sample['text']} @https://vk.com/wall"
                                                              f"{str(sample['owner_id'])}_"
                                                              f"{str(sample['id'])} (-->подробнее.)\n\n")

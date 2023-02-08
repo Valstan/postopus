@@ -1,2 +1,6 @@
-sess = {'tokens': {"first": "first_token", "second": "second_token"}}
-print(list(sess['tokens'].items())[0][1])
+perv = [4, 'wer']
+vtor = [1, 2, 3, 'dddf']
+perv.append(vtor)
+
+
+print(perv)
