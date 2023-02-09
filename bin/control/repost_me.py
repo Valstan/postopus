@@ -17,7 +17,7 @@ def repost_me():
         if 'VK_TOKEN_' in key and 'VK_TOKEN_DRAN' not in key:
             tokens.update({key: session[key]})
 
-    posts = read_posts(session['all_my_groups'], 20)
+    posts = read_posts(session['all_my_groups'], 30)
 
     shuffle(posts)
 
@@ -30,7 +30,7 @@ def repost_me():
 
     shuffle(clear_post)
 
-    for every_time in range(5):
+    for every_time in range(random.randint(1, 6)):
         for moder in tokens:
             shuffle(clear_post)
             for sample in clear_post:
