@@ -1,6 +1,4 @@
-perv = [4, 'wer']
-vtor = [1, 2, 3, 'dddf']
-perv.append(vtor)
+import random
 
-
-print(perv)
+for i in range(20):
+    print(random.randint(1, 5))

@@ -30,7 +30,7 @@ def repost_me():
 
     shuffle(clear_post)
 
-    for every_time in range(random.randint(1, 6)):
+    for every_time in range(random.randint(1, 3)):
         for moder in tokens:
             shuffle(clear_post)
             for sample in clear_post:
