@@ -14,7 +14,7 @@ def repost_me():
     for key in session:
         if 'VK_TOKEN_' in key and 'VK_TOKEN_DRAN' not in key:
             tokens.update({key: session[key]})
-    posts = get_msg(random.choice(list(session['all_my_groups'].values())), 0, 50)
+    posts = get_msg(random.choice(list(session['all_my_groups'].values())), 0, 10)
 
     # Убираем ненужные посты
     clear_posts = []
