@@ -83,25 +83,23 @@ def rpg():
     attachments = get_attach(sample_spam_post)
 
     session['work'][session['name_session']]['false_groups_id'].extend(session['rpg_black_ids'])
-    session['work'][session['name_session']]['true_groups_id'].append(-28534711)   # Для страховки от пустого списка
+    session['work'][session['name_session']]['true_groups_id'].append(-28534711)  # Для страховки от пустого списка
     session['work'][session['name_session']]['true_groups_id'] = list(
         set(session['work'][session['name_session']]['true_groups_id']).difference(
             set(session['work'][session['name_session']]['false_groups_id'])))
     shuffle(session['work'][session['name_session']]['true_groups_id'])
 
     for true_group_id in session['work'][session['name_session']]['true_groups_id']:
-        if true_group_id > 0:
-            true_group_id = -true_group_id
         try:
-            session['vk_app'].wall.post(owner_id=true_group_id,
+            session['vk_app'].wall.post(owner_id=-abs(true_group_id),
                                         from_group=0,
                                         message=sample_spam_post['text'],
                                         attachments=attachments)
 
-            session['list_url'] +=\
-                f"""<a href="https://vk.com/public{-true_group_id}">https://vk.com/public{-true_group_id}</a><br />"""
+            session['list_url'].append(f"""<a href="https://vk.com/public{
+            abs(true_group_id)}">https://vk.com/public{abs(true_group_id)}</a><br />""")
 
-            print(f"https://vk.com/public{-true_group_id} Всего - {session['count_all_members']}")
+            print(f"https://vk.com/public{abs(true_group_id)} Всего - {session['count_all_members']}")
             session['count_up'] += 1
             if session['count_up'] > session['count_post_up_max']:
                 save_result()
@@ -118,7 +116,7 @@ def rpg():
                 save_result()
                 save_table(session['name_session'])
                 return
-            session['work'][session['name_session']]['false_groups_id'].append(true_group_id)
+            session['work'][session['name_session']]['false_groups_id'].append(abs(true_group_id))
 
             time.sleep(5)
 
@@ -145,63 +143,53 @@ def rpg():
     for group in session['list_groups']:
 
         # Черный список групп куда постить ненужно
-        if group['id'] in session['work'][session['name_session']]['false_groups_id']:
+        if abs(group['id']) in session['work'][session['name_session']]['false_groups_id']:
             session['count_down'] += 1
             continue
 
-        if group['id'] in session['work'][session['name_session']]['true_groups_id']:
+        if abs(group['id']) in session['work'][session['name_session']]['true_groups_id']:
             continue
 
-        if 'can_post' in group and group['can_post'] == 0:
-            session['work'][session['name_session']]['false_groups_id'].append(group['id'])
-            session['count_down'] += 1
-            continue
-        if 'wall' in group and group['wall'] != 1:
-            session['work'][session['name_session']]['false_groups_id'].append(group['id'])
-            session['count_down'] += 1
-            continue
         try:
-            if group['is_closed'] != 0 or group['is_advertiser'] == 1 or 'deactivated' in group:
-                session['work'][session['name_session']]['false_groups_id'].append(group['id'])
+            if group['can_post'] == 0 or group['wall'] != 1 or group['is_closed'] != 0 or \
+                group['is_advertiser'] == 1 or 'deactivated' in group:
+                session['work'][session['name_session']]['false_groups_id'].append(abs(group['id']))
                 session['count_down'] += 1
                 continue
         except Exception as ext:
-            session['work'][session['name_session']]['false_groups_id'].append(group['id'])
+            session['work'][session['name_session']]['false_groups_id'].append(abs(group['id']))
             session['count_down'] += 1
             print(f"Непонятная ситуация с ключами, пропускаем группу. Ошибка вот: {ext}")
             continue
 
         try:
-            if group['id'] < 0:
-                group['id'] = -group['id']
-            members = session['vk_app'].groups.getMembers(group_id=group['id'])
+            members = session['vk_app'].groups.getMembers(group_id=abs(group['id']))
             session['count_members'] = members['count']
             if session['count_members'] > session['count_members_maximum'] or \
                 session['count_members'] < session['count_members_minimum']:
-                session['work'][session['name_session']]['false_groups_id'].append(-group['id'])
+                session['work'][session['name_session']]['false_groups_id'].append(abs(group['id']))
                 session['count_down'] += 1
                 continue
         except Exception as ext:
             print(ext)
-            session['work'][session['name_session']]['false_groups_id'].append(group['id'])
+            session['work'][session['name_session']]['false_groups_id'].append(abs(group['id']))
             session['count_down'] += 1
             continue
 
-        if group['id'] > 0:
-            group['id'] = -group['id']
-
         try:
-            session['vk_app'].wall.post(owner_id=group['id'],
+            session['vk_app'].wall.post(owner_id=-abs(group['id']),
                                         from_group=0,
                                         message=sample_spam_post['text'],
                                         attachments=attachments)
 
             session['count_all_members'] += session['count_members']
 
-            session['list_url'] += f"""<a href="https://vk.com/{group['screen_name']}">https://vk.com/{group['screen_name']} - {session['count_members']} подписчиков</a><br />"""
+            session[
+                'list_url'] += f"""<a href="https://vk.com/{group['screen_name']}">https://vk.com/{group['screen_name']} - {session['count_members']} подписчиков</a><br />"""
             print(
-                f"{group['screen_name']} - {session['count_members']} подписчиков. Всего - {session['count_all_members']}")
-            session['work'][session['name_session']]['true_groups_id'].append(group['id'])
+                f"{group['screen_name']} - {session['count_members']} "
+                f"подписчиков. Всего - {session['count_all_members']}")
+            session['work'][session['name_session']]['true_groups_id'].append(abs(group['id']))
             session['count_up'] += 1
             if session['count_up'] > session['count_post_up_max']:
                 save_result()
@@ -217,6 +205,6 @@ def rpg():
             time.sleep(random.randint(3, 7))
         except Exception as ext:
             print(ext)
-            session['work'][session['name_session']]['false_groups_id'].append(group['id'])
+            session['work'][session['name_session']]['false_groups_id'].append(abs(group['id']))
             session['count_down'] += 1
             time.sleep(5)

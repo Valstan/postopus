@@ -1,8 +1,10 @@
-import random
+from random import shuffle, choice
 
 from bin.rw.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.driver_tables import save_table
+from bin.utils.lip_of_post import lip_of_post
+from bin.utils.url_of_post import url_of_post
 from config import session
 
 
@@ -15,24 +17,21 @@ def repost_reklama():
     ruletka = [glav, glav, glav, glav, glav, glav, glav, glav,
                zam, zam, zam, zam,
                dvorniki]
-    random.shuffle(ruletka)
-    shut = random.choice(ruletka)
-    ruletka = get_msg(shut, 0, 50)
-    random.shuffle(ruletka)
+    shuffle(ruletka)
+    group_id = choice(ruletka)
+    posts = get_msg(group_id, 0, 50)
+    sample = ''
+    shuffle(posts)
     for i in range(20):
-        shut = random.choice(ruletka)
-        shut = clear_copy_history(shut)
-        shut = ''.join(map(str, ('https://vk.com/wall', shut['owner_id'], '_', shut['id'])))
-        if shut not in session['work'][theme]['lip']:
+        sample = clear_copy_history(choice(ruletka))  # незабудь удалить url_of_post(sample) из строки ниже
+        if (url_of_post(sample) or lip_of_post(sample)) not in session['work'][theme]['lip']:
             break
 
-    try:
-        session['vk_app'].wall.repost(object=shut, group_id=-session['post_group_vk'])
-        session['work'][theme]['lip'].append(shut)
-    except:
-        pass
+    if sample:
+        session['vk_app'].wall.repost(object=url_of_post(sample), group_id=-session['post_group_vk'])
+        session['work'][theme]['lip'].append(lip_of_post(sample))
 
-    save_table(theme)
+        save_table(theme)
 
 
 if __name__ == '__main__':

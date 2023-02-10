@@ -1,6 +1,8 @@
 from bin.rw.get_msg import get_msg
 from bin.rw.posting_post import posting_post
 from bin.utils.clear_copy_history import clear_copy_history
+from bin.utils.lip_of_post import lip_of_post
+from bin.utils.url_of_post import url_of_post
 from config import session
 
 
@@ -9,9 +11,8 @@ def repost_krugozor():
     msgs = get_msg(krugozor_id, 0, 50)
     msg_list = []
     for sample in msgs:
-        sample = clear_copy_history(sample)
-        link = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
-        if link not in session['work'][session['name_session']]['lip']:
+        sample = clear_copy_history(sample)  # Удалить url_of_post(sample) в строке ниже !!!!!!!!!!!!!!
+        if (url_of_post(sample) or lip_of_post(sample)) not in session['work'][session['name_session']]['lip']:
             sample['text'] = ''.join(map(str, [session['zagolovok']['krugozor'],
                                                sample['text'],
                                                '\n\n', '#',

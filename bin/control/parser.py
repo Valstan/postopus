@@ -11,6 +11,7 @@ from bin.utils.bags import bags
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.clear_text import clear_text
 from bin.utils.driver_tables import load_table, save_table
+from bin.utils.lip_of_post import lip_of_post
 from bin.utils.search_text import search_text
 from bin.utils.text_to_rafinad import text_to_rafinad
 from bin.utils.url_of_post import url_of_post
@@ -57,11 +58,11 @@ def parser():
         if not sort_old_date(sample):
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
-        group_id = str(sample['owner_id'])
+        # group_id = abs(sample['owner_id'])
         sample = clear_copy_history(sample)
-        url = url_of_post(sample)
-        if url in session['work'][theme]['lip']:
-            bags(sample_text=sample['text'], url=url)
+        # url = url_of_post(sample) здесь внизу этот фрагмент удалить из строчки через пару дней
+        if (url_of_post(sample) or lip_of_post(sample)) in session['work'][theme]['lip']:
+            bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
 
         # Если режим СОСЕД - Ищем в тексте поста хештег с новостью, если нет, то не берем пост
@@ -79,16 +80,16 @@ def parser():
                 continue
 
         # Сортировка Савальских групп, МалмыЖ и Поиск людей
-        if group_id in '-99686065-141990463' \
-                       '-20895918-9363816' and (group_id != sample['from_id'] or
-                                                not search_text(session['malmig_words'], sample['text'])):
+        if abs(sample['owner_id']) in (99686065, 141990463, 20895918, 9363816) and \
+            (abs(sample['owner_id']) != abs(sample['from_id']) or not search_text(session['malmig_words'],
+                                                                                  sample['text'])):
             continue
 
         # Проверяем на повторы или запрещенку
         text_rafinad = text_to_rafinad(sample['text'])
         if search_text([text_rafinad[int(len(text_rafinad) * 0.2):int(len(text_rafinad) * 0.7)]],
                        old_novost_txt) or search_text(session['delete_msg_blacklist'], text_rafinad):
-            bags(sample_text=sample['text'], url=url)
+            bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
         else:
             old_novost_txt += text_rafinad
@@ -115,9 +116,8 @@ def parser():
                 text_rafinad = text_to_rafinad(sample['text'])
                 if not search_text([text_rafinad[int(len(text_rafinad) * 0.2):int(len(text_rafinad) * 0.7)]],
                                    data_string):
-                    session['work']['bezfoto']['lip'].append(f"&#128073; {sample['text']} @https://vk.com/wall"
-                                                             f"{str(sample['owner_id'])}_"
-                                                             f"{str(sample['id'])} (-->подробнее.)\n\n")
+                    session['work']['bezfoto']['lip'].\
+                        append(f"&#128073; {sample['text']} @{url_of_post(sample)} (-->подробнее.)\n\n")
                     data_string += text_rafinad
 
             continue

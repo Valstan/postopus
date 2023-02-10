@@ -3,7 +3,9 @@ import traceback
 from bin.rw.get_attach import get_attach
 from bin.rw.post_msg import post_msg
 from bin.utils.driver_tables import save_table
+from bin.utils.lip_of_post import lip_of_post
 from bin.utils.send_error import send_error
+from bin.utils.url_of_post import url_of_post
 from config import session
 
 
@@ -15,11 +17,9 @@ def posting_post(msg_list):
 
     for sample in msg_list:
 
-        url_post = ''.join(map(str, ('https://vk.com/wall', sample['owner_id'], '_', sample['id'])))
-
         if theme in 'sosed':
-            session['vk_app'].wall.repost(object=url_post, group_id=-session['post_group_vk'])
-            session['work'][theme]['lip'].append(url_post)
+            session['vk_app'].wall.repost(object=url_of_post(sample), group_id=-session['post_group_vk'])
+            session['work'][theme]['lip'].append(lip_of_post(sample))
             save_table(theme)
             break
 
@@ -31,9 +31,9 @@ def posting_post(msg_list):
             post_msg(session['post_group_vk'],
                      sample['text'],
                      attachments,
-                     copy_right=url_post)
+                     copy_right=url_of_post(sample))
 
-            session['work'][theme]['lip'].append(url_post)
+            session['work'][theme]['lip'].append(lip_of_post(sample))
             save_table(theme)
 
             break
