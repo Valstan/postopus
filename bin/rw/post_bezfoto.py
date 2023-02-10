@@ -16,12 +16,6 @@ def post_bezfoto():
         # Подгружаем базу со старыми опубликованными уже ALL Безфото
         session['work']['all_bezfoto'] = load_table('all_bezfoto')
 
-        # Этот блок удалить через сутки
-        all_bezfoto = []
-        for sample in session['work']['all_bezfoto']['lip']:
-            all_bezfoto.append(text_to_rafinad(sample.lower()))  # lower здесь я делаю для удобства просмотра в Атласе
-        session['work']['all_bezfoto']['lip'] = all_bezfoto
-
         # Обрезаем лишнее, делаем прописными и рафинируем новые опубликованные Безфото для сохранения в чулан
         bezfoto = []
         for sample in session['work']['bezfoto']['lip'][:session['work']['bezfoto']['post_size']]:
