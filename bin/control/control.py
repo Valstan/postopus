@@ -59,7 +59,7 @@ def control():
     elif session['name_session'] == 'repost_krugozor':
         repost_krugozor()
 
-    if session['name_session'] in 'rpg':
+    elif session['name_session'] in 'rpg':
         rpg()
 
     elif session['name_session'] == 'parsing':
