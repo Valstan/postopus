@@ -66,11 +66,7 @@ def parser():
             continue
 
         # Если режим СОСЕД - Ищем в тексте поста хештег с новостью, если нет, то не берем пост
-        if theme in 'sosed':
-            if search_text([session['zagolovok']['sosed']],
-                           sample['text']) or not search_text(["#Новости"], sample['text']):
-                continue
-            result_posts.append(sample)
+        if theme in 'sosed' and not search_text(["#Новости"], sample['text']):
             continue
 
         # Сортировка Кино и Музыки, берем только с видео и музыкой
