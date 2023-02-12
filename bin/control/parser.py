@@ -60,8 +60,8 @@ def parser():
             continue
         # group_id = abs(sample['owner_id'])
         sample = clear_copy_history(sample)
-        # url = url_of_post(sample) здесь внизу этот фрагмент удалить из строчки через пару дней
-        if (url_of_post(sample) or lip_of_post(sample)) in session['work'][theme]['lip']:
+        # url = url_of_post(sample) здесь внизу этот фрагмент удалить из строчки через пару дней !!!!!!!!!!!!!!!
+        if url_of_post(sample) in session['work'][theme]['lip'] or lip_of_post(sample) in session['work'][theme]['lip']:
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
 
