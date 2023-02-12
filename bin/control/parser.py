@@ -132,6 +132,8 @@ def parser():
 
     if theme in 'novost reklama':
         save_table('bezfoto')
+        if theme in 'reklama':
+            save_table('reklama')
 
     if result_posts:
         result_posts.sort(key=lambda x: x['views']['count'], reverse=True)
