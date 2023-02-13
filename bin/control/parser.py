@@ -84,6 +84,13 @@ def parser():
                                                                                   sample['text'])):
             continue
 
+        # Фильтр для БалтасиРу Балтаси Хезмәт на присутствие ссылки на сайт
+        if abs(sample['owner_id']) == 65275507 and \
+            'attachments' in sample and \
+            'link' in sample['attachments'][0] and \
+            'baltaci.ru' in sample['attachments'][0]['link']['url']:
+            continue
+
         # Проверяем на повторы или запрещенку
         text_rafinad = text_to_rafinad(sample['text'])
         if search_text([text_rafinad[int(len(text_rafinad) * 0.2):int(len(text_rafinad) * 0.7)]],
