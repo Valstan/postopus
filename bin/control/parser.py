@@ -118,7 +118,7 @@ def parser():
                     session['work']['bezfoto']['lip']. \
                         append(f"&#128073; {sample['text']} @{url_of_post(sample)} (-->подробнее.)\n\n")
                     data_string += text_rafinad
-
+            session['work']['reklama']['lip'].append(lip_of_post(sample))
             continue
 
         # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
