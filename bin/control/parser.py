@@ -54,11 +54,17 @@ def parser():
     result_posts = []
     for sample in posts:
 
-        # Это единый блок слипшихся строчек, переставлять нельзя, переменные потеряются, и блок должен стоять первым
-        if not sort_old_date(sample):
+        # url = url_of_post(sample) здесь внизу этот фрагмент удалить из строчки через пару дней !!!!!!!!!!!!!!!
+        if url_of_post(sample) in session['work'][theme]['lip'] or lip_of_post(sample) in session['work'][theme]['lip']:
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
-        # group_id = abs(sample['owner_id'])
+
+        # Проверяем пост на "старость"
+        if not sort_old_date(sample):
+            bags(sample_text=sample['text'], url=url_of_post(sample))
+            session['work'][theme]['lip'].append(lip_of_post(sample))
+            continue
+
         sample = clear_copy_history(sample)
         # url = url_of_post(sample) здесь внизу этот фрагмент удалить из строчки через пару дней !!!!!!!!!!!!!!!
         if url_of_post(sample) in session['work'][theme]['lip'] or lip_of_post(sample) in session['work'][theme]['lip']:
@@ -67,6 +73,7 @@ def parser():
 
         # Если режим СОСЕД - Ищем в тексте поста хештег с новостью, если нет, то не берем пост
         if theme in 'sosed' and not search_text(["#Новости"], sample['text']):
+            session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
 
         # Сортировка Кино и Музыки, берем только с видео и музыкой
@@ -76,12 +83,14 @@ def parser():
                 if atata['type'] in 'video audio':
                     flag = False
             if flag:
+                session['work'][theme]['lip'].append(lip_of_post(sample))
                 continue
 
         # Сортировка Савальских групп, МалмыЖ и Поиск людей
         if abs(sample['owner_id']) in (99686065, 141990463, 20895918, 9363816) and \
             (abs(sample['owner_id']) != abs(sample['from_id']) or not search_text(session['malmig_words'],
                                                                                   sample['text'])):
+            session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
 
         # Фильтр для БалтасиРу Балтаси Хезмәт на присутствие ссылки на сайт
@@ -89,6 +98,7 @@ def parser():
             'attachments' in sample and \
             'link' in sample['attachments'][0] and \
             'baltaci.ru' in sample['attachments'][0]['link']['url']:
+            session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
 
         # Проверяем на повторы или запрещенку
@@ -96,6 +106,7 @@ def parser():
         if search_text([text_rafinad[int(len(text_rafinad) * 0.2):int(len(text_rafinad) * 0.7)]],
                        old_novost_txt) or search_text(session['delete_msg_blacklist'], text_rafinad):
             bags(sample_text=sample['text'], url=url_of_post(sample))
+            session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
         else:
             old_novost_txt += text_rafinad
@@ -113,6 +124,7 @@ def parser():
 
             # Если сюда попало сообщение не из Новостей и Рекламы, то не берем его:
             if theme not in 'novost reklama':
+                session['work'][theme]['lip'].append(lip_of_post(sample))
                 continue
 
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
@@ -125,12 +137,12 @@ def parser():
                     session['work']['bezfoto']['lip']. \
                         append(f"&#128073; {sample['text']} @{url_of_post(sample)} (-->подробнее.)\n\n")
                     data_string += text_rafinad
-            if theme in 'reklama':
-                session['work']['reklama']['lip'].append(lip_of_post(sample))
+            session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
 
         # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
         if sort_po_foto(sample) and sort_po_video(sample):
+            session['work'][theme]['lip'].append(lip_of_post(sample))
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
 
