@@ -11,8 +11,12 @@ def change_lp():
     if session['name_base'] in 'dran':
         session.update({"token": session['VK_TOKEN_DRAN']})
     else:
-        session.update({"token": random.choice([session['VK_TOKEN_OLGA'], session['VK_TOKEN_VITA'],
-                                                session['VK_TOKEN_ELIS'], session['VK_TOKEN_ALEX']])})
+        # Сбор токенов
+        tokens = []
+        for key in session:
+            if 'VK_TOKEN_' in key and ('DRAN' or 'VALSTAN') not in key and session[key]:
+                tokens.append(session[key])
+        session.update({"token": random.choice(tokens)})
 
 
 if __name__ == '__main__':
