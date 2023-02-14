@@ -150,10 +150,10 @@ def parser():
         sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n\n#{session['heshteg'][theme]}"
         result_posts.append(sample)
 
-    if theme in 'novost reklama':
+    if theme in 'novost':
         save_table('bezfoto')
-        if theme in 'reklama':
-            save_table('reklama')
+    if theme in 'reklama':
+        save_table('reklama')
 
     if result_posts:
         result_posts.sort(key=lambda x: x['views']['count'], reverse=True)

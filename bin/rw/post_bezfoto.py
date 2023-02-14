@@ -5,16 +5,12 @@ from config import session
 
 
 def post_bezfoto():
-    session['work']['bezfoto'] = load_table('bezfoto')
     if len(session['work']['bezfoto']['lip']) > session['work']['bezfoto']['post_size'] - 1:
 
         text = f"#{session['heshteg']['reklama']}\n" \
                f"{''.join(map(str, session['work']['bezfoto']['lip'][:session['work']['bezfoto']['post_size']]))}"
 
         post_msg(session['post_group_vk'], text)
-
-        # Подгружаем базу со старыми опубликованными уже ALL Безфото
-        session['work']['all_bezfoto'] = load_table('all_bezfoto')
 
         # Обрезаем лишнее, делаем прописными и рафинируем новые опубликованные Безфото для сохранения в чулан
         bezfoto = []

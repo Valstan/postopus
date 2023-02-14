@@ -20,7 +20,6 @@ def posting_post(msg_list):
         if theme in 'sosed':
             session['vk_app'].wall.repost(object=url_of_post(sample), group_id=-session['post_group_vk'])
             session['work'][theme]['lip'].append(lip_of_post(sample))
-            save_table(theme)
             break
 
         attachments = ''
@@ -34,11 +33,11 @@ def posting_post(msg_list):
                      copy_right=url_of_post(sample))
 
             session['work'][theme]['lip'].append(lip_of_post(sample))
-            save_table(theme)
-
             break
         except Exception as exc:
             send_error(__name__, exc, traceback.print_exc())
+
+    save_table(theme)
 
 
 if __name__ == '__main__':
