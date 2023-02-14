@@ -19,13 +19,11 @@ def repost_me():
     posts = get_msg(random.choice(list(session['all_my_groups'].values())), 0, 10)
 
     # Убираем ненужные посты
-    # строку url_of_post(sample) in session['work'][session['name_session']]['lip'] or \ удалить !!!!!!!!!!!!!!!!!!!!!!!!!!!
     clear_posts = []
     for sample in posts:
         if 'copy_history' in sample or \
             'views' not in sample or \
             search_text(session['repost_words_black_list'], sample['text']) or \
-            url_of_post(sample) in session['work'][session['name_session']]['lip'] or \
             lip_of_post(sample) in session['work'][session['name_session']]['lip']:
             continue
         clear_posts.append(sample)

@@ -54,8 +54,7 @@ def parser():
     result_posts = []
     for sample in posts:
 
-        # url = url_of_post(sample) здесь внизу этот фрагмент удалить из строчки через пару дней !!!!!!!!!!!!!!!
-        if url_of_post(sample) in session['work'][theme]['lip'] or lip_of_post(sample) in session['work'][theme]['lip']:
+        if lip_of_post(sample) in session['work'][theme]['lip']:
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
 
@@ -66,8 +65,7 @@ def parser():
             continue
 
         sample = clear_copy_history(sample)
-        # url = url_of_post(sample) здесь внизу этот фрагмент удалить из строчки через пару дней !!!!!!!!!!!!!!!
-        if url_of_post(sample) in session['work'][theme]['lip'] or lip_of_post(sample) in session['work'][theme]['lip']:
+        if lip_of_post(sample) in session['work'][theme]['lip']:
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
 
@@ -97,7 +95,7 @@ def parser():
         if abs(sample['owner_id']) == 65275507 and \
             'attachments' in sample and \
             'link' in sample['attachments'][0] and \
-            'baltaci.ru' in sample['attachments'][0]['link']['url']:
+            ('baltaci' or 'shahrikazan') in sample['attachments'][0]['link']['url']:
             session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
 

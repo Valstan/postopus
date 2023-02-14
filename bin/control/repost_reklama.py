@@ -23,8 +23,8 @@ def repost_reklama():
     sample = ''
     shuffle(posts)
     for i in range(20):
-        sample = clear_copy_history(choice(ruletka))  # незабудь удалить url_of_post(sample) из строки ниже
-        if (url_of_post(sample) or lip_of_post(sample)) not in session['work'][theme]['lip']:
+        sample = clear_copy_history(choice(ruletka))
+        if lip_of_post(sample) not in session['work'][theme]['lip']:
             break
 
     if sample:
