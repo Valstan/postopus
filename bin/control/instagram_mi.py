@@ -3,7 +3,7 @@ from PIL import Image
 import config
 from bin.utils.change_lp import change_lp
 from bin.utils.driver_tables import save_table, load_table
-from bin.rw.get_image import image_get
+from bin.rw.get_image import get_image
 from bin.rw.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.clear_dir import clear_dir
@@ -43,7 +43,7 @@ def instagram_mi():
                 height = i['height']
                 url = i['url']
 
-        if image_get(url, session['insta_photo_path'] + '1.jpg'):
+        if get_image(url, session['insta_photo_path'] + '1.jpg'):
             img = Image.open(session['insta_photo_path'] + '1.jpg')
             img = resize_img(img, 1080, 1080)
             img = white_board(img, 1080, 1080)

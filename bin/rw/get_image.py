@@ -4,15 +4,15 @@ import time
 from urllib.request import urlopen
 
 
-def image_get(url, path):
+def get_image(url, file_path):
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
+
     for i in range(3):
         try:
-            with open(os.path.join(path), 'wb') as img:
-                img.write(
-                    urlopen(url, context=ctx).read())
+            with open(os.path.join(file_path), 'wb') as img:
+                img.write(urlopen(url, context=ctx).read())
             return True
         except:
             pass

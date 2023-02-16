@@ -7,7 +7,7 @@ from tensorflow import keras
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 from bin.ai.free_ocr import free_ocr
-from bin.rw.get_image import image_get
+from bin.rw.get_image import get_image
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -47,8 +47,8 @@ def ai_sort(sample):
             if height > x['height'] > height - 100:
                 # height = x['height']
                 url = x['url']
-        if image_get(url, 'image'):
-            a = free_ocr('image')
+        if get_image(url, 'image.jpg'):
+            a = free_ocr('image.jpg')
             if a:
                 if not predict(a):
                     return False
