@@ -34,6 +34,8 @@ async def post_to_telegram():
             lip_of_post(sample) in session['work'][session['name_session']]['lip'] or \
             not search_text(['Новости'], sample['text']):
             continue
+        if search_text(['афиша'], sample['text']):
+            sample['views']['count'] += 20000
         clear_posts.append(sample)
 
     clear_posts.sort(key=lambda x: x['views']['count'], reverse=True)
