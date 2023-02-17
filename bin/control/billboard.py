@@ -1,6 +1,8 @@
 import time
 from datetime import datetime
 
+from pymongo import MongoClient
+
 from bin.rw.get_attach import get_attach
 from bin.rw.get_msg import get_msg
 from bin.rw.post_msg import post_msg
@@ -8,6 +10,20 @@ from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.search_text import search_text
 from bin.utils.send_error import send_error
 from config import session
+
+
+def append_words_in_black_list(black_list):
+    client = MongoClient(session['MONGO_CLIENT'])
+    mongo_base = client['postopus']
+    collection = mongo_base['config']
+    table = collection.find_one({'title': 'config'}, {'fast_del_msg_blacklist': 1, '_id': 0})
+    table['fast_del_msg_blacklist'].extend(black_list)
+    collection.update_one({'title': 'config'}, {'$set': table}, upsert=True)
+    # Добавить удаление постов в которых были эти инструкции
+
+
+def append_group_in_config(text):
+    pass
 
 
 def billboard():
@@ -29,21 +45,36 @@ def billboard():
         heshteg_global = 'afisha_heshteg'
         podpis_global = 'afisha_podpis'
 
+    words_in_black_list = []
+
     # Перебираем все посты
     for sample in msgs:
-        if sample['text'] and sample['text'][0] in regim_global:
-            serv, sample_text = sample['text'].split("\n", 1)
-            serv = serv.strip()
-            regim, region, time_out = serv.split(" ")
-            if int(time_out) < current_date.month * 100 + current_date.day:
-                continue
-            if region in 'all':
-                for region in session['afisha']:
-                    session['afisha'][region]['list_anons'].append(
-                        [time_out, sample_text, get_attach(clear_copy_history(sample))])
-            else:
+        if not sample['text']:
+            continue
+        if sample['text'][0] in '5':
+            words_in_black_list.extend(sample['text'].split("\n")[1:])
+            continue
+        if sample['text'][0] in '6':
+            append_group_in_config(sample['text'])
+            continue
+        if sample['text'][0] not in regim_global:
+            continue
+        serv, sample_text = sample['text'].split("\n", 1)
+        serv = serv.strip()
+        regim, region, time_out = serv.split(" ")
+
+        if int(time_out) < current_date.month * 100 + current_date.day:
+            continue
+        if region in 'all':
+            for region in session['afisha']:
                 session['afisha'][region]['list_anons'].append(
                     [time_out, sample_text, get_attach(clear_copy_history(sample))])
+        else:
+            session['afisha'][region]['list_anons'].append(
+                [time_out, sample_text, get_attach(clear_copy_history(sample))])
+
+    if words_in_black_list:
+        append_words_in_black_list(words_in_black_list)
 
     for name_region in session['afisha']:
         sample = {'text': session['afisha'][name_region][title] + '\n\n', 'attach': ""}

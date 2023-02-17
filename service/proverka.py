@@ -1,4 +1,3 @@
-import random
+tetx = 'rtyry' \
 
-for i in range(20):
-    print(random.randint(1, 5))
+print(tetx.split('\n'))
