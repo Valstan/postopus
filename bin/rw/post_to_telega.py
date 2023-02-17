@@ -32,7 +32,7 @@ async def post_to_telegram():
         if 'copy_history' in sample or \
             'views' not in sample or \
             lip_of_post(sample) in session['work'][session['name_session']]['lip'] or \
-            not search_text(['Новости'], sample['text']):
+            not search_text(['Новости', 'афиша'], sample['text']):
             continue
         if search_text(['афиша'], sample['text']):
             sample['views']['count'] += 20000
