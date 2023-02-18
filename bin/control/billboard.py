@@ -53,6 +53,8 @@ def billboard():
             continue
         if sample['text'][0] in '5':
             words_in_black_list.extend(sample['text'].split("\n")[1:])
+            session['vk_app'].wall.delete(owner_id=sample['owner_id'],
+                                          post_id=sample['id'])
             continue
         if sample['text'][0] in '6':
             append_group_in_config(sample['text'])
