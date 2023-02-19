@@ -9,7 +9,7 @@ from bin.control.repost_krugozor import repost_krugozor
 from bin.control.repost_me import repost_me
 from bin.control.repost_reklama import repost_reklama
 from bin.rw.post_bezfoto import post_bezfoto
-from bin.rw.post_to_telega import post_to_telegram
+from bin.control.post_to_telega import post_to_telegram
 from bin.rw.posting_post import posting_post
 from bin.utils.driver_tables import load_table
 from bin.control.rpg import rpg
