@@ -19,11 +19,19 @@ def append_words_in_black_list(black_list):
     table = collection.find_one({'title': 'config'}, {'fast_del_msg_blacklist': 1, '_id': 0})
     table['fast_del_msg_blacklist'].extend(black_list)
     collection.update_one({'title': 'config'}, {'$set': table}, upsert=True)
-    # Добавить удаление постов в которых были эти инструкции
 
 
-def append_group_in_config(text):
-    pass
+def append_group_in_config(list_dicts):
+    client = MongoClient(session['MONGO_CLIENT'])
+    mongo_base = client['postopus']
+    for group_dict in list_dicts:
+        collection = mongo_base[group_dict['region']]
+        table = collection.find_one({'title': 'config'})
+        list_old_groups_ids = table['n1'].values() + table['n2'].values() + table['n3'].values()
+        if int(group_dict['id']) in list_old_groups_ids:
+            continue
+        table[group_dict['novost']].update({group_dict['name']: int(group_dict['id'])})
+        collection.update_one({'title': 'config'}, {'$set': table}, upsert=True)
 
 
 def billboard():
@@ -46,21 +54,30 @@ def billboard():
         podpis_global = 'afisha_podpis'
 
     words_in_black_list = []
+    list_dicts_groups_for_append = []
 
     # Перебираем все посты
     for sample in msgs:
         if not sample['text']:
             continue
+
         if sample['text'][0] in '5':
             words_in_black_list.extend(sample['text'].split("\n")[1:])
             session['vk_app'].wall.delete(owner_id=sample['owner_id'],
                                           post_id=sample['id'])
             continue
+
         if sample['text'][0] in '6':
-            append_group_in_config(sample['text'])
+            n_group = {}
+            n_group['name'], n_group['id'], n_group['region'], n_group['novost'] = sample['text'].split("\n")[1:]
+            list_dicts_groups_for_append.append(n_group)
+            session['vk_app'].wall.delete(owner_id=sample['owner_id'],
+                                          post_id=sample['id'])
             continue
+
         if sample['text'][0] not in regim_global:
             continue
+
         serv, sample_text = sample['text'].split("\n", 1)
         serv = serv.strip()
         regim, region, time_out = serv.split(" ")
@@ -77,6 +94,9 @@ def billboard():
 
     if words_in_black_list:
         append_words_in_black_list(words_in_black_list)
+
+    if list_dicts_groups_for_append:
+        append_group_in_config(list_dicts_groups_for_append)
 
     for name_region in session['afisha']:
         sample = {'text': session['afisha'][name_region][title] + '\n\n', 'attach': ""}
