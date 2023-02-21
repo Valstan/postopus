@@ -92,12 +92,12 @@ def parser():
             continue
 
         # Фильтр для БалтасиРу Балтаси Хезмәт на присутствие ссылки на сайт
-        if abs(sample['owner_id']) == 65275507 and \
-            'attachments' in sample and \
-            'link' in sample['attachments'][0] and \
-            ('baltaci' or 'shahrikazan') in sample['attachments'][0]['link']['url']:
-            session['work'][theme]['lip'].append(lip_of_post(sample))
-            continue
+        if abs(sample['owner_id']) == 65275507:
+            if 'attachments' in sample and 'link' in sample['attachments'][0] and \
+                'baltaci' in sample['attachments'][0]['link']['url']\
+                or 'shahrikazan' in sample['text']:
+                session['work'][theme]['lip'].append(lip_of_post(sample))
+                continue
 
         # Проверяем на повторы или запрещенку
         text_rafinad = text_to_rafinad(sample['text'])
