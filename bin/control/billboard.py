@@ -27,7 +27,8 @@ def append_group_in_config(list_dicts):
     for group_dict in list_dicts:
         collection = mongo_base[group_dict['region']]
         table = collection.find_one({'title': 'config'})
-        list_old_groups_ids = table['n1'].values() + table['n2'].values() + table['n3'].values()
+        list_old_groups_ids = list(table['n1'].values()) + list(table['n2'].values()) + \
+                              list(table['n3'].values()) + list(table['reklama'].values())
         if int(group_dict['id']) in list_old_groups_ids:
             continue
         table[group_dict['novost']].update({group_dict['name']: int(group_dict['id'])})
