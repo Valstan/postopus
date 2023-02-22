@@ -23,7 +23,7 @@ def repost_reklama():
     sample = ''
     shuffle(posts)
     for i in range(20):
-        sample = clear_copy_history(choice(ruletka))
+        sample = clear_copy_history(choice(posts))
         if lip_of_post(sample) not in session['work'][theme]['lip']:
             break
 
