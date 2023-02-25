@@ -1,6 +1,7 @@
 import traceback
 
 from bin.rw.get_attach import get_attach
+from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.post_msg import post_msg
 from bin.utils.driver_tables import save_table
 from bin.utils.lip_of_post import lip_of_post
@@ -18,6 +19,9 @@ def posting_post(msg_list):
     for sample in msg_list:
 
         if theme in 'sosed':
+            if session['VK_TOKEN_VALSTAN'] not in session['token']:
+                session.update({"token": session['VK_TOKEN_VALSTAN']})
+                get_session_vk_api()
             session['vk_app'].wall.repost(object=url_of_post(sample), group_id=-session['post_group_vk'])
             session['work'][theme]['lip'].append(lip_of_post(sample))
             break
