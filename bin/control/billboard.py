@@ -5,6 +5,7 @@ from pymongo import MongoClient
 
 from bin.rw.get_attach import get_attach
 from bin.rw.get_msg import get_msg
+from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.post_msg import post_msg
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.search_text import search_text
@@ -115,6 +116,9 @@ def billboard():
                           f"{session['afisha'][name_region]['podpis']}\n" \
                           f"{session['afisha'][name_region][heshteg_global]}"
 
+        if name_region in 'mi' and session['VK_TOKEN_VALSTAN'] not in session['token']:
+            session.update({"token": session['VK_TOKEN_VALSTAN']})
+            get_session_vk_api()
         post_msg(session['afisha'][name_region]['group_id'], sample['text'], sample['attach'])
 
         time.sleep(1)

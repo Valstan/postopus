@@ -1,6 +1,7 @@
 from random import shuffle, choice
 
 from bin.rw.get_msg import get_msg
+from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.driver_tables import save_table
 from bin.utils.lip_of_post import lip_of_post
@@ -28,6 +29,9 @@ def repost_reklama():
             break
 
     if sample:
+        if session['VK_TOKEN_VALSTAN'] not in session['token']:
+            session.update({"token": session['VK_TOKEN_VALSTAN']})
+            get_session_vk_api()
         session['vk_app'].wall.repost(object=url_of_post(sample), group_id=-session['post_group_vk'])
         session['work'][theme]['lip'].append(lip_of_post(sample))
 
