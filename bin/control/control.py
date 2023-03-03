@@ -27,11 +27,6 @@ def control():
 
     elif session['name_session'] == 'reklama':
         parser()
-        # # реклама собирается не под моим аккаунтом, поэтому для постинга переключаюсь на свой
-        # if session['name_base'] in 'mi test':
-        #     session['name_session'] = 'repost_valstan'
-        #     change_lp()
-        #     get_session_vk_api()
         post_bezfoto()
 
     elif session['name_session'] == 'addons':

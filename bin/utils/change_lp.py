@@ -1,6 +1,7 @@
 import random
 
 import config
+from bin.rw.get_session_vk_api import get_session_vk_api
 
 session = config.session
 
@@ -10,13 +11,22 @@ def change_lp():
 
     if session['name_base'] in 'dran':
         session.update({"token": session['VK_TOKEN_DRAN']})
+        if get_session_vk_api():
+            return True
+        else:
+            return False
     else:
         # Сбор токенов
-        tokens = []
+        session['tokens'] = []
         for key in session:
             if 'VK_TOKEN_' in key and ('DRAN' or 'VALSTAN') not in key and session[key]:
-                tokens.append(session[key])
-        session.update({"token": random.choice(tokens)})
+                session['tokens'].append(session[key])
+        for i in range(5):
+            session.update({"token": random.choice(session['tokens'])})
+            if get_session_vk_api():
+                return True
+
+    return False
 
 
 if __name__ == '__main__':

@@ -1,9 +1,9 @@
+import time
 from sys import argv
 
 from bin.control.control import control
 from bin.rw.get_mongo_base import get_mongo_base
 from bin.rw.get_session import get_session
-from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.utils.change_lp import change_lp
 from bin.utils.schedule import schedule
 from bin.utils.service_base import service_base
@@ -28,9 +28,9 @@ def start(arguments: str, bags: str = '0'):
 
         # Перебираем токены пока не подключимся к АПИ ВК
         for i in range(4):
-            change_lp()
-            if get_session_vk_api():
+            if change_lp():
                 break
+            time.sleep(1)
         # Отправляем на КПП который перенаправит нас в нужный скрипт-сценарий в зависимости от аргументов
         control()
     else:
