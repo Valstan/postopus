@@ -12,7 +12,7 @@ from config import session
 
 def repost_me():
     # Добавляю токен Valstan в список токенов
-    session['tokens'].append(session['VK_TOKEN_VALSTAN'])
+    # session['tokens'].append(session['VK_TOKEN_VALSTAN'])
 
     for i in range(5):
         posts = get_msg(random.choice(list(session['all_my_groups'].values())), 0, 10)
