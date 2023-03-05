@@ -41,19 +41,21 @@ def billboard():
     # Забираем из группы "Напоминашки" 500 постов.
     msgs = session['tools'].get_all(method='wall.get', max_count=100, limit=500,
                                     values={'owner_id': session['afisha_group']})['items']
-    current_date = datetime.now().date()
-    current_time = datetime.now().time()
 
-    if current_time.hour in (9, 10, 11, 12, 13, 14, 15):
-        regim_global = '1'
-        title = 'vacans_title'
-        heshteg_global = 'vacans_heshteg'
-        podpis_global = 'vacans_podpis'
-    else:
-        regim_global = '0'
-        title = 'afisha_title'
-        heshteg_global = 'afisha_heshteg'
-        podpis_global = 'afisha_podpis'
+    regim_global = '0'  # Это вместо закоменченого блока ниже
+    # current_date = datetime.now().date()
+    # current_time = datetime.now().time()
+    #
+    # if current_time.hour in (9, 10, 11, 12, 13, 14, 15):
+    #     regim_global = '1'
+    #     title = 'vacans_title'
+    #     heshteg_global = 'vacans_heshteg'
+    #     podpis_global = 'vacans_podpis'
+    # else:
+    #     regim_global = '0'
+    #     title = 'afisha_title'
+    #     heshteg_global = 'afisha_heshteg'
+    #     podpis_global = 'afisha_podpis'
 
     words_in_black_list = []
     list_dicts_groups_for_append = []
