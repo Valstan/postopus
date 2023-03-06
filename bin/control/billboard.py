@@ -42,8 +42,7 @@ def billboard():
     msgs = session['tools'].get_all(method='wall.get', max_count=100, limit=500,
                                     values={'owner_id': session['afisha_group']})['items']
 
-    regim_global = '0'  # Это вместо закоменченого блока ниже
-    # current_date = datetime.now().date()
+    current_date = datetime.now().date()
     # current_time = datetime.now().time()
     #
     # if current_time.hour in (9, 10, 11, 12, 13, 14, 15):
@@ -52,10 +51,10 @@ def billboard():
     #     heshteg_global = 'vacans_heshteg'
     #     podpis_global = 'vacans_podpis'
     # else:
-    #     regim_global = '0'
-    #     title = 'afisha_title'
-    #     heshteg_global = 'afisha_heshteg'
-    #     podpis_global = 'afisha_podpis'
+    regim_global = '0'
+    title = 'afisha_title'
+    heshteg_global = 'afisha_heshteg'
+    podpis_global = 'afisha_podpis'
 
     words_in_black_list = []
     list_dicts_groups_for_append = []
@@ -126,16 +125,16 @@ def billboard():
         time.sleep(1)
 
         # Забираем первые два поста из главной группы
-        msgs = get_msg(session['afisha'][name_region]['group_id'], 0, 2)
+        # msgs = get_msg(session['afisha'][name_region]['group_id'], 0, 2)
 
         # Если в первых двух постах есть хештег афишы или вакансии, то закрепляем второй пост
-        if search_text([session['afisha'][name_region]['afisha_heshteg'],
-                        session['afisha'][name_region]['vacans_heshteg']], msgs[0]['text']) and \
-            search_text([session['afisha'][name_region][heshteg_global]], msgs[1]['text']):
-            session['vk_app'].wall.pin(owner_id=session['afisha'][name_region]['group_id'], post_id=msgs[1]['id'])
-
-        send_error(__name__, "Закрепил Афишу", name_region)
-        time.sleep(1)
+        # if search_text([session['afisha'][name_region]['afisha_heshteg'],
+        #                 session['afisha'][name_region]['vacans_heshteg']], msgs[0]['text']) and \
+        #     search_text([session['afisha'][name_region][heshteg_global]], msgs[1]['text']):
+        #     session['vk_app'].wall.pin(owner_id=session['afisha'][name_region]['group_id'], post_id=msgs[1]['id'])
+        #
+        # send_error(__name__, "Закрепил Афишу", name_region)
+        # time.sleep(1)
 
 
 if __name__ == '__main__':
