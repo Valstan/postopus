@@ -1,4 +1,3 @@
-from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.post_msg import post_msg
 from bin.utils.driver_tables import save_table
 from bin.utils.text_to_rafinad import text_to_rafinad
@@ -11,9 +10,6 @@ def post_bezfoto():
         text = f"#{session['heshteg']['reklama']}\n" \
                f"{''.join(map(str, session['work']['bezfoto']['lip'][:session['work']['bezfoto']['post_size']]))}"
 
-        if session['name_base'] in 'mi' and session['VK_TOKEN_VALSTAN'] not in session['token']:
-            session.update({"token": session['VK_TOKEN_VALSTAN']})
-            get_session_vk_api()
         post_msg(session['post_group_vk'], text)
 
         # Обрезаем лишнее, делаем прописными и рафинируем новые опубликованные Безфото для сохранения в чулан

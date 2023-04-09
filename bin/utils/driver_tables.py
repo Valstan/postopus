@@ -4,11 +4,11 @@ from config import session
 def load_table(name_table):
     collection = session['MONGO_BASE'][session['name_base']]
     if name_table in 'novost novosti':
-        table = collection.find_one({'title': 'novost'})
+        table = collection.find_one({'title': 'novost'}, {'_id': 0, 'title': 0})
     elif name_table in 'config' and session['name_base'] in 'config':
-        table = collection.find_one({'title': name_table}, {'delete_msg_blacklist': 0})
+        table = collection.find_one({'title': name_table}, {'delete_msg_blacklist': 0, '_id': 0, 'title': 0})
     else:
-        table = collection.find_one({'title': name_table})
+        table = collection.find_one({'title': name_table}, {'_id': 0, 'title': 0})
 
     # Пытаемся исправить структуру таблицы, если конструктор загружен
     # если конструктора еще нет, то ошибка, но скрипт не вылетает
