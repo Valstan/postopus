@@ -6,7 +6,7 @@ from bin.control.billboard import billboard
 from bin.control.parser import parser
 from bin.control.parsing import parsing
 from bin.control.public_malm_site import public_malm_site
-from bin.control.repost_krugozor import repost_krugozor
+from bin.control.repost_oleny import repost_oleny
 from bin.control.repost_me import repost_me
 from bin.control.repost_reklama import repost_reklama
 from bin.rw.post_bezfoto import post_bezfoto
@@ -57,8 +57,8 @@ def control():
     elif session['name_session'] == 'billboard':
         billboard()
 
-    elif session['name_session'] == 'repost_krugozor':
-        repost_krugozor()
+    elif session['name_session'] == 'repost_oleny':
+        repost_oleny()
 
     elif session['name_session'] in 'rpg':
         rpg()
