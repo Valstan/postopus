@@ -32,7 +32,8 @@ def posting_post(msg_list):
                      attachments,
                      copy_right=url_of_post(sample))
 
-            session['work'][theme]['lip'].append(lip_of_post(sample))
+            if lip_of_post(sample) not in session['work'][theme]['lip']:
+                session['work'][theme]['lip'].append(lip_of_post(sample))
             break
         except Exception as exc:
             send_error(__name__, exc, traceback.print_exc())
