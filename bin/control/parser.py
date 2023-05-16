@@ -95,6 +95,7 @@ def parser():
         if abs(sample['owner_id']) in (65275507, 33406351):
             if 'shahrikazan' in sample['text'] or\
                 'kukmor-rt.ru' in sample['text'] or\
+                'kazved.ru' in sample['text'] or\
                 'attachments' in sample and 'link' in sample['attachments'][0] and \
                 'baltaci' in sample['attachments'][0]['link']['url']:
                 session['work'][theme]['lip'].append(lip_of_post(sample))
