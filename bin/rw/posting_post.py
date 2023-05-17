@@ -22,6 +22,11 @@ def posting_post(msg_list):
             session['work'][theme]['lip'].append(lip_of_post(sample))
             break
 
+        if 'copyright' in sample and sample['copyright']['link']:
+            copy_right = sample['copyright']['link']
+        else:
+            copy_right = url_of_post(sample)
+
         attachments = ''
         if 'attachments' in sample:
             attachments = get_attach(sample)
@@ -30,7 +35,7 @@ def posting_post(msg_list):
             post_msg(session['post_group_vk'],
                      sample['text'],
                      attachments,
-                     copy_right=url_of_post(sample))
+                     copy_right=copy_right)
 
             if lip_of_post(sample) not in session['work'][theme]['lip']:
                 session['work'][theme]['lip'].append(lip_of_post(sample))
