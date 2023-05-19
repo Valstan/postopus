@@ -91,6 +91,17 @@ def parser():
             session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
 
+        # Фильтр для Позитивных Полян на Поляны и Кукмор:
+        if abs(sample['owner_id']) in 17771956:
+            if session['name_base'] in 'vp':
+                if not search_text(session['vp_words'], sample['text']):
+                    session['work'][theme]['lip'].append(lip_of_post(sample))
+                    continue
+            if session['name_base'] in 'kukmor':
+                if not search_text(session['kukmor_words'], sample['text']):
+                    session['work'][theme]['lip'].append(lip_of_post(sample))
+                    continue
+
         # Фильтр для БалтасиРу Балтаси Хезмәт и Кукмор-РТ на присутствие ссылки на сайт
         if abs(sample['owner_id']) in (65275507, 33406351):
             if ('shahrikazan' or 'kukmor-rt.ru' or 'kazved.ru') in sample['text'] or\
