@@ -4,6 +4,7 @@ from bin.rw.get_attach import get_attach
 from bin.rw.post_msg import post_msg
 from bin.utils.driver_tables import save_table
 from bin.utils.lip_of_post import lip_of_post
+from bin.utils.search_text import search_text
 from bin.utils.send_error import send_error
 from bin.utils.url_of_post import url_of_post
 from config import session
@@ -22,7 +23,8 @@ def posting_post(msg_list):
             session['work'][theme]['lip'].append(lip_of_post(sample))
             break
 
-        if 'copyright' in sample and sample['copyright']['link'] and 'https://vk.com/wall' in sample['copyright']['link']:
+        if 'copyright' in sample and sample['copyright']['link'] and \
+            search_text(['https://vk.com/wall'], sample['copyright']['link']):
             copy_right = sample['copyright']['link']
         else:
             copy_right = url_of_post(sample)

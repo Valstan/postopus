@@ -5,7 +5,8 @@ from sys import argv
 from config import reklama, novost_1, novost_2, novost_3, addons, sosed, billboard
 from start import start
 
-argument = str(argv[1])
+# argument = str(argv[1])
+argument = 'novost_1'
 
 
 if argument in 'reklama':

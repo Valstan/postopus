@@ -92,7 +92,7 @@ def parser():
             continue
 
         # Фильтр для Позитивных Полян на Поляны и Кукмор:
-        if abs(sample['owner_id']) in 17771956:
+        if abs(sample['owner_id']) in [17771956]:
             if session['name_base'] in 'vp':
                 if not search_text(session['kirov_words'], sample['text']):
                     session['work'][theme]['lip'].append(lip_of_post(sample))
