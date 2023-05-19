@@ -104,7 +104,7 @@ def parser():
 
         # Фильтр для БалтасиРу Балтаси Хезмәт и Кукмор-РТ на присутствие ссылки на сайт
         if abs(sample['owner_id']) in (65275507, 33406351):
-            if ('shahrikazan' or 'kukmor-rt.ru' or 'kazved.ru') in sample['text'] or\
+            if search_text(['shahrikazan', 'kukmor-rt.ru', 'kazved.ru'], sample['text']) or\
                 'attachments' in sample and 'link' in sample['attachments'][0] and \
                 'baltaci' in sample['attachments'][0]['link']['url']:
                 session['work'][theme]['lip'].append(lip_of_post(sample))
