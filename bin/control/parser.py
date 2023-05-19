@@ -98,7 +98,7 @@ def parser():
                     session['work'][theme]['lip'].append(lip_of_post(sample))
                     continue
             if session['name_base'] in 'kukmor':
-                if not search_text(session['kukmor_words'], sample['text']):
+                if not search_text(session['tatar_words'], sample['text']):
                     session['work'][theme]['lip'].append(lip_of_post(sample))
                     continue
 
