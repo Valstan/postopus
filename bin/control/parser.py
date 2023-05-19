@@ -86,7 +86,7 @@ def parser():
 
         # Сортировка Савальских групп, МалмыЖ и Поиск людей
         if abs(sample['owner_id']) in (99686065, 141990463, 20895918, 9363816) and \
-            (abs(sample['owner_id']) != abs(sample['from_id']) or not search_text(session['malmig_words'],
+            (abs(sample['owner_id']) != abs(sample['from_id']) or not search_text(session['kirov_words'],
                                                                                   sample['text'])):
             session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
@@ -94,7 +94,7 @@ def parser():
         # Фильтр для Позитивных Полян на Поляны и Кукмор:
         if abs(sample['owner_id']) in 17771956:
             if session['name_base'] in 'vp':
-                if not search_text(session['vp_words'], sample['text']):
+                if not search_text(session['kirov_words'], sample['text']):
                     session['work'][theme]['lip'].append(lip_of_post(sample))
                     continue
             if session['name_base'] in 'kukmor':
