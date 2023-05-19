@@ -22,7 +22,7 @@ def posting_post(msg_list):
             session['work'][theme]['lip'].append(lip_of_post(sample))
             break
 
-        if 'copyright' in sample and sample['copyright']['link']:
+        if 'copyright' in sample and sample['copyright']['link'] and 'https://vk.com/wall':
             copy_right = sample['copyright']['link']
         else:
             copy_right = url_of_post(sample)
