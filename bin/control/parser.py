@@ -84,14 +84,19 @@ def parser():
                 session['work'][theme]['lip'].append(lip_of_post(sample))
                 continue
 
-        # Сортировка Савальских групп, МалмыЖ и Поиск людей
-        if abs(sample['owner_id']) in (99686065, 141990463, 20895918, 9363816) and \
-            (abs(sample['owner_id']) != abs(sample['from_id']) or not search_text(session['kirov_words'],
-                                                                                  sample['text'])):
+        # Фильтр ЧУЖОЙ ЖУРНАЛИСТ для открытых групп в которые пишет кто попало
+        if abs(sample['owner_id']) in (74344300, 99686065, 141990463, 20895918, 9363816) and\
+            abs(sample['owner_id']) != abs(sample['from_id']):
             session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
 
-        # Фильтр для Позитивных Полян на Поляны и Кукмор:
+        # Фильтр ЧУЖИЕ СЛОВА для Савальских групп, МалмыЖ и Поиск людей по тексту
+        if abs(sample['owner_id']) in (99686065, 141990463, 20895918, 9363816) and\
+            not search_text(session['kirov_words'], sample['text']):
+            session['work'][theme]['lip'].append(lip_of_post(sample))
+            continue
+
+        # Фильтр для Позитивных Полян на Поляны и Кукмор по тексту:
         if abs(sample['owner_id']) in [17771956]:
             if session['name_base'] in 'vp':
                 if not search_text(session['kirov_words'], sample['text']):
@@ -104,7 +109,7 @@ def parser():
 
         # Фильтр для БалтасиРу Балтаси Хезмәт и Кукмор-РТ на присутствие ссылки на сайт
         if abs(sample['owner_id']) in (65275507, 33406351):
-            if search_text(['shahrikazan', 'kukmor-rt.ru', 'kazved.ru'], sample['text']) or\
+            if search_text(['shahrikazan', 'kukmor-rt.ru', 'kazved.ru'], sample['text']) or \
                 'attachments' in sample and 'link' in sample['attachments'][0] and \
                 'baltaci' in sample['attachments'][0]['link']['url']:
                 session['work'][theme]['lip'].append(lip_of_post(sample))
