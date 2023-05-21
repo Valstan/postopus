@@ -90,9 +90,9 @@ def parser():
             session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
 
-        # Фильтр ЧУЖИЕ СЛОВА для Савальских групп,
+        # Фильтр ЧУЖИЕ СЛОВА для Савальских групп, ПодслушУржумИуржРайон
         # МалмыЖ и Поиск людей Первый Малмыжский и ОбоВсеМалмыж ВП Дозор по тексту
-        if abs(sample['owner_id']) in (45799806, 89083141, 86517261, 99686065, 141990463, 20895918, 9363816) and\
+        if abs(sample['owner_id']) in (64312155, 45799806, 89083141, 86517261, 99686065, 141990463, 20895918, 9363816) and\
             not search_text(session['kirov_words'], sample['text']):
             session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
