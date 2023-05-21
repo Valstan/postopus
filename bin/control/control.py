@@ -14,6 +14,7 @@ from bin.control.post_to_telega import post_to_telegram
 from bin.rw.posting_post import posting_post
 from bin.utils.driver_tables import load_table
 from bin.control.rpg import rpg
+from stata import stata
 
 session = config.session
 
@@ -23,6 +24,7 @@ def control():
 
     if session['name_session'] in 'n1 n2 n3 sosed':
         msg_list = parser()
+        stata(msg_list)
         if msg_list:
             posting_post(msg_list)
 
