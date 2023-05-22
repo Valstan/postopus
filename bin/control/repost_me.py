@@ -28,7 +28,7 @@ def repost_me():
                     if get_session_vk_api():
                         session['vk_app'].wall.repost(
                             object=''.join(map(str, (url_of_post(sample)))))
-                        time.sleep(random.randint(10, 60))
+                        time.sleep(120)
 
                 session['work'][session['name_session']]['lip'].append(lip_of_post(sample))
                 save_table(session['name_session'])
