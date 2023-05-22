@@ -14,7 +14,6 @@ from bin.control.post_to_telega import post_to_telegram
 from bin.rw.posting_post import posting_post
 from bin.utils.driver_tables import load_table
 from bin.control.rpg import rpg
-from stata import stata
 
 session = config.session
 

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import config
 from bin.utils.driver_tables import load_table
 
@@ -12,6 +14,9 @@ def get_session(arguments, bags="0"):
     # Собираем сессию, из базы конфиг тянем глобальный конфиг
     session['name_base'] = 'config'
     session.update(load_table('config'))
+
+    # Выставляем текущее время в секундах timestamp_now
+    session['timestamp_now'] = int(datetime.now().timestamp())
 
     # Берем аргументы имени базы и таблицы сессии с которой будем работать
     session['name_base'], session['name_session'] = arguments.split('_', 1)

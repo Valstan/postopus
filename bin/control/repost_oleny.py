@@ -17,15 +17,11 @@ def repost_oleny():
     msg_list = []
     for sample in msgs:
         sample = clear_copy_history(sample)
-        if lip_of_post(sample) not in session['work'][session['name_session']]['lip'] \
-            and (abs(sample['owner_id']) == abs(oleny_id)):
+        if lip_of_post(sample) in session['work'][session['name_session']]['lip'] or \
+            abs(sample['owner_id']) != abs(oleny_id) or '#домобразцовогопорядка' in sample['text']:
+            continue
 
-            # sample['text'] = ''.join(map(str, [session['zagolovok']['krugozor'],
-            #                                    sample['text'],
-            #                                    '\n\n', '#',
-            #                                    session['heshteg']['krugozor']]))
-
-            msg_list.append(sample)
-            for session['post_group_vk'] in session['all_my_groups'].values():
-                posting_post(msg_list)
-            break
+        msg_list.append(sample)
+        for session['post_group_vk'] in session['all_my_groups'].values():
+            posting_post(msg_list)
+        break
