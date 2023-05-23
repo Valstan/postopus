@@ -14,6 +14,7 @@ from bin.control.post_to_telega import post_to_telegram
 from bin.rw.posting_post import posting_post
 from bin.utils.driver_tables import load_table
 from bin.control.rpg import rpg
+from bin.utils.send_error import send_error
 from bin.utils.stata import stata
 
 session = config.session
@@ -29,8 +30,9 @@ def control():
             if session['name_session'] in 'n1 n2 n3':
                 try:
                     stata(msg_list)
-                except:
-                    pass
+                    send_error("Стата отработала")
+                except Exception as ext:
+                    send_error("Стата НЕ отработала", ext)
 
     elif session['name_session'] == 'reklama':
         parser()
