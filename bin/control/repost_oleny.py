@@ -1,10 +1,8 @@
-import random
-
+import config
 from bin.rw.get_msg import get_msg
 from bin.rw.posting_post import posting_post
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.lip_of_post import lip_of_post
-import config
 
 session = config.session
 

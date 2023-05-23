@@ -27,7 +27,7 @@ def repost_me():
         else:
             time.sleep(random.randint(5, 10))
 
-        posts = get_msg(random.choice(session['all_my_groups'].values()), 0, 10)
+        posts = get_msg(random.choice(list(session['all_my_groups'].values())), 0, 10)
         if posts:
             # Убираем ненужные посты
             for sample in posts:
