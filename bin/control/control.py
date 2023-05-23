@@ -25,9 +25,12 @@ def control():
     if session['name_session'] in 'n1 n2 n3 sosed':
         msg_list = parser()
         if msg_list:
-            if session['name_session'] in 'n1 n2 n3':
-                stata(msg_list)
             posting_post(msg_list)
+            if session['name_session'] in 'n1 n2 n3':
+                try:
+                    stata(msg_list)
+                except:
+                    pass
 
     elif session['name_session'] == 'reklama':
         parser()
