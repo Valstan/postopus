@@ -11,13 +11,23 @@ from config import session
 
 
 def repost_me():
+    # Так как крон запускает репосты по строгому графику, то здесь делаем вариации задержки от 5 секунд до 17 минут
+    # Репостим по одноиу репосту на аккаунт из одной рандомно выбранной группы, если в группе нет доступных постов
+    # для репоста, то повторяем рандомный выбор групп 15 раз пока не переберем все возможные варианты
+    time.sleep(random.randint(5, 1000))
 
-    for i in session['all_my_groups'].values():
+    flag = False
 
-        # Пауза между репостами не менее 90 секунд
-        time.sleep(random.randint(100, 150))
+    for count in range(15):
 
-        posts = get_msg(i, 0, 10)
+        # Паузы между попытками, чтобы не разбудить охрану ВК
+        # После 10-го круга ждем еще около 10 минут пока опубликуются новые посты в лентах
+        if count == 10:
+            time.sleep(random.randint(600, 800))
+        else:
+            time.sleep(random.randint(5, 10))
+
+        posts = get_msg(random.choice(session['all_my_groups'].values()), 0, 10)
         if posts:
             # Убираем ненужные посты
             for sample in posts:
@@ -34,7 +44,11 @@ def repost_me():
 
                 session['work'][session['name_session']]['lip'].append(lip_of_post(sample))
                 save_table(session['name_session'])
+                flag = True
                 break
+
+        if flag:
+            break
 
 
 if __name__ == '__main__':
