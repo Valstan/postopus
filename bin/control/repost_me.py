@@ -1,4 +1,3 @@
-import random
 import time
 
 from bin.rw.get_msg import get_msg
@@ -11,10 +10,12 @@ from config import session
 
 
 def repost_me():
-    # Делаем паузу по Станиславскому, так как возможно мы только что до этого опубликовали свежий пост
-    time.sleep(120)
 
     for i in session['all_my_groups'].values():
+
+        # Пауза между репостами не менее 90 секунд
+        time.sleep(120)
+
         posts = get_msg(i, 0, 10)
         if posts:
             # Убираем ненужные посты
@@ -28,7 +29,6 @@ def repost_me():
                     if get_session_vk_api():
                         session['vk_app'].wall.repost(
                             object=''.join(map(str, (url_of_post(sample)))))
-                        time.sleep(120)
 
                 session['work'][session['name_session']]['lip'].append(lip_of_post(sample))
                 save_table(session['name_session'])
