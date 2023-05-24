@@ -2,19 +2,14 @@ import asyncio
 import random
 
 import config
-from bin.control.billboard import billboard
 from bin.control.parser import parser
-from bin.control.parsing import parsing
-from bin.control.public_malm_site import public_malm_site
-from bin.control.repost_oleny import repost_oleny
+from bin.control.post_to_telega import post_to_telegram
 from bin.control.repost_me import repost_me
+from bin.control.repost_oleny import repost_oleny
 from bin.control.repost_reklama import repost_reklama
 from bin.rw.post_bezfoto import post_bezfoto
-from bin.control.post_to_telega import post_to_telegram
 from bin.rw.posting_post import posting_post
 from bin.utils.driver_tables import load_table
-from bin.control.rpg import rpg
-from bin.utils.send_error import send_error
 from bin.utils.stata import stata
 
 session = config.session
