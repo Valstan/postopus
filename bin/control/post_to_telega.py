@@ -14,87 +14,89 @@ from config import session
 bot = Bot(token=session['TELEGA_TOKEN_VALSTANBOT'])
 
 
-async def send_text_post(text):
-    await bot.send_message(session['post_group_telega'], text)
+async def send_text_post(text, post_group_telega):
+    await bot.send_message(post_group_telega, text)
 
 
-async def send_media_post(media):
-    await bot.send_media_group(session['post_group_telega'], media)
+async def send_media_post(media, post_group_telega):
+    await bot.send_media_group(post_group_telega, media)
     await bot.session.close()
 
 
 async def post_to_telegram():
-    posts = get_msg(session['post_group_vk'], 0, 20)
 
-    # Убираем ненужные посты
-    clear_posts = []
-    for sample in posts:
-        if 'copy_history' in sample or \
-            'views' not in sample or \
-            lip_of_post(sample) in session['work'][session['name_session']]['lip'] or \
-            not search_text(['Новости', 'афиша'], sample['text']) or \
-            search_text(['АФИША ВАКАНСИЙ'], sample['text']):
-            continue
-        if search_text(['афиша'], sample['text']):
-            sample['views']['count'] += 20000
-        clear_posts.append(sample)
+    for twins in list(session['all_telega_group'].items()):
+        posts = get_msg(twins[0], 0, 20)
 
-    clear_posts.sort(key=lambda x: x['views']['count'], reverse=True)
+        # Убираем ненужные посты
+        clear_posts = []
+        for sample in posts:
+            if 'malmyzh_info' in twins[1]:
+                if not search_text(['Новости', 'афиша'], sample['text']) or search_text(['АФИША ВАКАНСИЙ'], sample['text']):
+                    continue
+                if search_text(['афиша'], sample['text']):
+                    sample['views']['count'] += 20000
+            if 'copy_history' in sample or 'views' not in sample or lip_of_post(sample) in session['work'][session['name_session']]['lip']:
+                continue
+            clear_posts.append(sample)
 
-    caption_text = True
-    for sample in clear_posts:
-        media = []
-        media_files = []
-        count_attach = 0
+        if len(clear_posts) > 1:
+            clear_posts.sort(key=lambda x: x['views']['count'], reverse=True)
 
-        if 'attachments' not in sample or len(sample['attachments']) < 1:
-            if len(sample['text']) > 4096:
-                await send_text_post(sample['text'][:4096])
-                await send_text_post(sample['text'][4096:])
-            else:
-                await send_text_post(sample['text'])
-            session['work'][session['name_session']]['lip'].append(lip_of_post(sample))
-            break
+        caption_text = True
+        for sample in clear_posts:
+            media = []
+            media_files = []
+            count_attach = 0
 
-        # Если текст длинный, то публикуем его сразу или обрезаем и публикуем сразу
-        if len(sample['text']) > 1024:
-            if len(sample['text']) > 4096:
-                await send_text_post(sample['text'][:4096])
-                await send_text_post(sample['text'][4096:])
-            else:
-                await send_text_post(sample['text'])
-            caption_text = False
-
-        # Смотрим, есть ли в посте фото, и если есть то публикуем, если текст не был опубликован (flag=True),
-        # то прикрепляем его к первому фото
-        for attach in sample['attachments']:
-            if count_attach == 10:
+            if 'attachments' not in sample or len(sample['attachments']) < 1:
+                if len(sample['text']) > 4096:
+                    await send_text_post(sample['text'][:4096], twins[1])
+                    await send_text_post(sample['text'][4096:], twins[1])
+                else:
+                    await send_text_post(sample['text'], twins[1])
+                session['work'][session['name_session']]['lip'].append(lip_of_post(sample))
                 break
-            if 'photo' in attach:
-                url_photo = get_link_image_select_size(attach['photo']['sizes'], 300, 1281)
-                if get_image(url_photo, f'telega_image_{count_attach}.jpg'):
-                    if caption_text:
-                        media.append(InputMediaPhoto(media=FSInputFile(f'telega_image_{count_attach}.jpg'), caption=sample['text']))
-                        media_files.append(f'telega_image_{count_attach}.jpg')
-                        count_attach += 1
-                        caption_text = False
-                    else:
-                        if get_image(url_photo, f'telega_image_{count_attach}.jpg'):
-                            media.append(InputMediaPhoto(media=FSInputFile(f'telega_image_{count_attach}.jpg')))
+
+            # Если текст длинный, то публикуем его сразу или обрезаем и публикуем сразу
+            if len(sample['text']) > 1024:
+                if len(sample['text']) > 4096:
+                    await send_text_post(sample['text'][:4096], twins[1])
+                    await send_text_post(sample['text'][4096:], twins[1])
+                else:
+                    await send_text_post(sample['text'], twins[1])
+                caption_text = False
+
+            # Смотрим, есть ли в посте фото, и если есть то публикуем, если текст не был опубликован (flag=True),
+            # то прикрепляем его к первому фото
+            for attach in sample['attachments']:
+                if count_attach == 10:
+                    break
+                if 'photo' in attach:
+                    url_photo = get_link_image_select_size(attach['photo']['sizes'], 300, 1281)
+                    if get_image(url_photo, f'telega_image_{count_attach}.jpg'):
+                        if caption_text:
+                            media.append(InputMediaPhoto(media=FSInputFile(f'telega_image_{count_attach}.jpg'), caption=sample['text']))
                             media_files.append(f'telega_image_{count_attach}.jpg')
                             count_attach += 1
+                            caption_text = False
+                        else:
+                            if get_image(url_photo, f'telega_image_{count_attach}.jpg'):
+                                media.append(InputMediaPhoto(media=FSInputFile(f'telega_image_{count_attach}.jpg')))
+                                media_files.append(f'telega_image_{count_attach}.jpg')
+                                count_attach += 1
 
-        session['work'][session['name_session']]['lip'].append(lip_of_post(sample))
+            session['work'][session['name_session']]['lip'].append(lip_of_post(sample))
 
-        if media:
-            await send_media_post(media)
-            for i in media_files:
-                os.remove(i)
-            break
+            if media:
+                await send_media_post(media, twins[1])
+                for i in media_files:
+                    os.remove(i)
+                break
 
-        # Если caption_text нет, значит какой-то текст был распечатан, выходим, даже если фотки не прошли.
-        if not caption_text:
-            break
+            # Если caption_text нет, значит какой-то текст был распечатан, выходим, даже если фотки не прошли.
+            if not caption_text:
+                break
 
     save_table(session['name_session'])
 
