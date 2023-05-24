@@ -25,7 +25,7 @@ async def send_media_post(media, post_group_telega):
 
 async def post_to_telegram():
 
-    for twins in list(session['all_telega_group'].items()):
+    for twins in session['all_telega_group']:
         posts = get_msg(twins[0], 0, 20)
 
         # Убираем ненужные посты
