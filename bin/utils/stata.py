@@ -12,6 +12,12 @@ def stata(msg_list):
 
     old_10_day_time = session['timestamp_now'] - 864000
 
+    # Составляем словарь названий имен
+    name_groups = {}
+    for i in ('n1', 'n2', 'n3'):
+        for name, number in session[i].items():
+            name_groups[str(abs(number))] = name
+
     # Закидываем новые посты в базу
     for new_post in msg_list:
 
@@ -27,6 +33,8 @@ def stata(msg_list):
                     pattern_post.append(new_post[i])
                 else:
                     pattern_post.append(new_post[i]['count'])
+            else:
+                pattern_post.append(0)
 
         flag = True
         if session['work']['base_stata']['base'][owner_id]:
@@ -57,8 +65,12 @@ def stata(msg_list):
             comments += post[6]
             count_message += 1
 
+        name = group
+        if group in name_groups:
+            name = name_groups[group]
+
         # подсчитываю статистику
-        summa_stata.append([group, count_message, views, likes, reposts, comments])
+        summa_stata.append([name, [count_message, views, likes, reposts, comments]])
 
         # удаляю посты у которых вышло время
         for i in index_list:
@@ -69,28 +81,30 @@ def stata(msg_list):
 
     # Загружаем старую статистику для страховки работы Драйвера
     session['work']['summa_stata'] = load_table('summa_stata')
-    # Выстраиваю статистику по полю "количество постов"
-    session['work']['summa_stata']['count_message'] = sorted(summa_stata, key=lambda item: item[1], reverse=True)
-    # Выстраиваю статистику по полю "просмотры"
-    session['work']['summa_stata']['views'] = sorted(summa_stata, key=lambda item: item[2], reverse=True)
-    # Выстраиваю статистику по полю "лайки"
-    session['work']['summa_stata']['likes'] = sorted(summa_stata, key=lambda item: item[3], reverse=True)
-    # Выстраиваю статистику по полю "репосты"
-    session['work']['summa_stata']['reposts'] = sorted(summa_stata, key=lambda item: item[4], reverse=True)
-    # Выстраиваю статистику по полю "коменты"
-    session['work']['summa_stata']['comments'] = sorted(summa_stata, key=lambda item: item[5], reverse=True)
 
+    # Выстраиваю статистику по полям и общий рейтинг
     all_stata = {}
-    for i in ('count_message', 'views', 'likes', 'reposts', 'comments'):
-        for index, ii in enumerate(session['work']['summa_stata'][i]):
-            if ii[0] not in all_stata:
-                all_stata[ii[0]] = index
+    for index, i in enumerate(('count_message', 'views', 'likes', 'reposts', 'comments')):
+        if i in session['work']['summa_stata']:
+            del session['work']['summa_stata'][i]
+            session['work']['summa_stata'][i] = {}
+        sorted_summa_stata = sorted(summa_stata, key=lambda item: item[1][index], reverse=True)
+        for ind, sss in enumerate(sorted_summa_stata):
+            stata_to_txt = ''
+            for cifra in sss[1]:
+                stata_to_txt += str(cifra) + ','
+
+            session['work']['summa_stata'][i][sss[0]] = stata_to_txt[:-1]
+
+            name_stata_txt = f"{sss[0]} {stata_to_txt[:-1]}"
+            if name_stata_txt not in all_stata:
+                all_stata[name_stata_txt] = ind
             else:
-                all_stata[ii[0]] += index
+                all_stata[name_stata_txt] += ind
 
-    all_stata = list(all_stata.items())
-
-    session['work']['summa_stata']['all_stata'] = sorted(all_stata, key=lambda item: item[1])
+    if 'all_stata' in session['work']['summa_stata']:
+        del session['work']['summa_stata']['all_stata']
+        session['work']['summa_stata']['all_stata'] = dict(sorted(list(all_stata.items()), key=lambda item: item[1]))
 
     save_table('summa_stata')
 

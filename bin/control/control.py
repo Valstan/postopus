@@ -28,11 +28,7 @@ def control():
         if msg_list:
             posting_post(msg_list)
             if session['name_session'] in 'n1 n2 n3':
-                try:
-                    stata(msg_list)
-                    send_error("Стата отработала")
-                except Exception as ext:
-                    send_error("Стата НЕ отработала", ext)
+                stata(msg_list)
 
     elif session['name_session'] == 'reklama':
         parser()
@@ -56,23 +52,23 @@ def control():
     elif session['name_session'] in 'repost_me':
         repost_me()
 
-    elif session['name_session'] in 'malmigrus':
-        public_malm_site()
+    # elif session['name_session'] in 'malmigrus':
+    #     public_malm_site()
 
     elif session['name_session'] == 'repost_reklama':
         repost_reklama()
 
-    elif session['name_session'] == 'billboard':
-        billboard()
+    # elif session['name_session'] == 'billboard':
+    #     billboard()
 
     elif session['name_session'] == 'repost_oleny':
         repost_oleny()
 
-    elif session['name_session'] in 'rpg':
-        rpg()
+    # elif session['name_session'] in 'rpg':
+    #     rpg()
 
-    elif session['name_session'] == 'parsing':
-        parsing()
+    # elif session['name_session'] == 'parsing':
+    #     parsing()
 
     elif session['name_session'] in 'telegram':
         asyncio.run(post_to_telegram())
