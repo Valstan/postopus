@@ -28,7 +28,7 @@ async def post_to_telegram():
     for twins in session['all_telega_group']:
         posts = get_msg(twins[0], 0, 20)
 
-        # Убираем ненужные посты
+        # Набираем правильные посты
         clear_posts = []
         for sample in posts:
             if 'malmyzh_info' in twins[1]:
