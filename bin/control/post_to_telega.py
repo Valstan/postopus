@@ -11,14 +11,12 @@ from bin.utils.lip_of_post import lip_of_post
 from bin.utils.search_text import search_text
 from config import session
 
-bot = Bot(token=session['TELEGA_TOKEN_VALSTANBOT'])
 
-
-async def send_text_post(text, post_group_telega):
+async def send_text_post(text, post_group_telega, bot):
     await bot.send_message(post_group_telega, text)
 
 
-async def send_media_post(media, post_group_telega):
+async def send_media_post(media, post_group_telega, bot):
     await bot.send_media_group(post_group_telega, media)
     await bot.session.close()
 
@@ -26,6 +24,12 @@ async def send_media_post(media, post_group_telega):
 async def post_to_telegram():
 
     for twins in session['all_telega_group']:
+
+        if 'malmyzh_info' in twins[1]:
+            bot = Bot(token=session['TELEGA_TOKEN_AFONYA'])
+        else:
+            bot = Bot(token=session['TELEGA_TOKEN_VALSTANBOT'])
+
         posts = get_msg(twins[0], 0, 20)
 
         # Набираем правильные посты
@@ -51,20 +55,20 @@ async def post_to_telegram():
 
             if 'attachments' not in sample or len(sample['attachments']) < 1:
                 if len(sample['text']) > 4096:
-                    await send_text_post(sample['text'][:4096], twins[1])
-                    await send_text_post(sample['text'][4096:], twins[1])
+                    await send_text_post(sample['text'][:4096], twins[1], bot)
+                    await send_text_post(sample['text'][4096:], twins[1], bot)
                 else:
-                    await send_text_post(sample['text'], twins[1])
+                    await send_text_post(sample['text'], twins[1], bot)
                 session['work'][session['name_session']]['lip'].append(lip_of_post(sample))
                 break
 
             # Если текст длинный, то публикуем его сразу или обрезаем и публикуем сразу
             if len(sample['text']) > 1024:
                 if len(sample['text']) > 4096:
-                    await send_text_post(sample['text'][:4096], twins[1])
-                    await send_text_post(sample['text'][4096:], twins[1])
+                    await send_text_post(sample['text'][:4096], twins[1], bot)
+                    await send_text_post(sample['text'][4096:], twins[1], bot)
                 else:
-                    await send_text_post(sample['text'], twins[1])
+                    await send_text_post(sample['text'], twins[1], bot)
                 caption_text = False
 
             # Смотрим, есть ли в посте фото, и если есть то публикуем, если текст не был опубликован (flag=True),
@@ -89,7 +93,7 @@ async def post_to_telegram():
             session['work'][session['name_session']]['lip'].append(lip_of_post(sample))
 
             if media:
-                await send_media_post(media, twins[1])
+                await send_media_post(media, twins[1], bot)
                 for i in media_files:
                     os.remove(i)
                 break
