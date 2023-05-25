@@ -84,37 +84,41 @@ def parser():
                 session['work'][theme]['lip'].append(lip_of_post(sample))
                 continue
 
-        # Фильтр ЧУЖОЙ ЖУРНАЛИСТ для открытых групп в которые пишет кто попало
-        if abs(sample['owner_id']) in (74344300, 99686065, 141990463, 20895918, 9363816) and\
-            abs(sample['owner_id']) != abs(sample['from_id']):
-            session['work'][theme]['lip'].append(lip_of_post(sample))
-            continue
+        # Фильтры для новостей
+        if theme in 'novost':
 
-        # Фильтр ЧУЖИЕ СЛОВА для Савальских групп, ПодслушУржумИуржРайон
-        # МалмыЖ и Поиск людей Первый Малмыжский и ОбоВсеМалмыж ВП Дозор по тексту
-        if abs(sample['owner_id']) in (64312155, 45799806, 89083141, 86517261, 99686065, 141990463, 20895918, 9363816) and\
-            not search_text(session['kirov_words'], sample['text']):
-            session['work'][theme]['lip'].append(lip_of_post(sample))
-            continue
-
-        # Фильтр для Позитивных Полян на Поляны и Кукмор по тексту:
-        if abs(sample['owner_id']) in [17771956]:
-            if session['name_base'] in 'vp':
-                if not search_text(session['kirov_words'], sample['text']):
-                    session['work'][theme]['lip'].append(lip_of_post(sample))
-                    continue
-            if session['name_base'] in 'kukmor':
-                if not search_text(session['tatar_words'], sample['text']):
-                    session['work'][theme]['lip'].append(lip_of_post(sample))
-                    continue
-
-        # Фильтр для БалтасиРу Балтаси Хезмәт и Кукмор-РТ на присутствие ссылки на сайт
-        if abs(sample['owner_id']) in (65275507, 33406351):
-            if search_text(['shahrikazan', 'kukmor-rt.ru', 'kazved.ru'], sample['text']) or \
-                'attachments' in sample and 'link' in sample['attachments'][0] and \
-                'baltaci' in sample['attachments'][0]['link']['url']:
+            # Фильтр ЧУЖОЙ ЖУРНАЛИСТ для открытых групп в которые пишет кто попало
+            if abs(sample['owner_id']) in (74344300, 99686065, 141990463, 20895918, 9363816) and \
+                abs(sample['owner_id']) != abs(sample['from_id']):
                 session['work'][theme]['lip'].append(lip_of_post(sample))
                 continue
+
+            # Фильтр ЧУЖИЕ СЛОВА для Савальских групп, ПодслушУржумИуржРайон
+            # МалмыЖ и Поиск людей Первый Малмыжский и ОбоВсеМалмыж ВП Дозор по тексту
+            if abs(sample['owner_id']) in (64312155, 45799806, 89083141, 86517261,
+                                           99686065, 141990463, 20895918, 9363816) and \
+                not search_text(session['kirov_words'], sample['text']):
+                session['work'][theme]['lip'].append(lip_of_post(sample))
+                continue
+
+            # Фильтр для Позитивных Полян на Поляны и Кукмор по тексту:
+            if abs(sample['owner_id']) in [17771956]:
+                if session['name_base'] in 'vp':
+                    if not search_text(session['kirov_words'], sample['text']):
+                        session['work'][theme]['lip'].append(lip_of_post(sample))
+                        continue
+                if session['name_base'] in 'kukmor':
+                    if not search_text(session['tatar_words'], sample['text']):
+                        session['work'][theme]['lip'].append(lip_of_post(sample))
+                        continue
+
+            # Фильтр для БалтасиРу Балтаси Хезмәт и Кукмор-РТ на присутствие ссылки на сайт
+            if abs(sample['owner_id']) in (65275507, 33406351):
+                if search_text(['shahrikazan', 'kukmor-rt.ru', 'kazved.ru'], sample['text']) or \
+                    'attachments' in sample and 'link' in sample['attachments'][0] and \
+                    'baltaci' in sample['attachments'][0]['link']['url']:
+                    session['work'][theme]['lip'].append(lip_of_post(sample))
+                    continue
 
         # Проверяем на повторы или запрещенку
         text_rafinad = text_to_rafinad(sample['text'])
