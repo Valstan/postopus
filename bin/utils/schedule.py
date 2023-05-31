@@ -5,7 +5,6 @@ from bin.control.control import control
 from bin.rw.get_mongo_base import get_mongo_base
 from bin.rw.get_session import get_session
 from bin.rw.get_session_vk_api import get_session_vk_api
-from bin.utils.change_lp import change_lp
 from config import cron_schedule
 
 
@@ -48,7 +47,6 @@ def schedule():
                 if now_interval < interval:
                     get_mongo_base('postopus')
                     get_session(arguments)
-                    change_lp()
                     get_session_vk_api()
                     # Отправляем на КПП который перенаправит нас в нужный скрипт-сценарий в зависимости от аргументов
                     control()

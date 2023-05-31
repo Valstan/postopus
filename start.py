@@ -1,18 +1,24 @@
+import random
 import time
 from sys import argv
 
 from bin.control.control import control
 from bin.rw.get_mongo_base import get_mongo_base
 from bin.rw.get_session import get_session
-from bin.utils.change_lp import change_lp
+from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.utils.schedule import schedule
 from bin.utils.service_base import service_base
+import config
+
+session = config.session
 
 
 def start(arguments: str, bags: str = '0'):
+    global session
+
     if arguments == "100":
         print('Постопус запущен в автоматическом режиме.')
-        schedule()
+        # schedule()
 
     elif arguments == '1':
         service_base()
@@ -27,8 +33,11 @@ def start(arguments: str, bags: str = '0'):
         get_session(arguments, bags)
 
         # Перебираем токены пока не подключимся к АПИ ВК
-        for i in range(4):
-            if change_lp():
+
+        random.shuffle(session['names_tokens_read_vk'])
+        for name_token in session['names_tokens_read_vk']:
+            session['token'] = session[name_token]
+            if get_session_vk_api():
                 break
             time.sleep(1)
         # Отправляем на КПП который перенаправит нас в нужный скрипт-сценарий в зависимости от аргументов

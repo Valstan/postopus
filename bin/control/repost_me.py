@@ -7,14 +7,18 @@ from bin.utils.driver_tables import save_table
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.search_text import search_text
 from bin.utils.url_of_post import url_of_post
-from config import session
+import config
+
+session = config.session
 
 
 def repost_me():
+    global session
+
     # Так как крон запускает репосты по строгому графику, то здесь делаем вариации задержки от 5 секунд до 17 минут
     # Репостим по одноиу репосту на аккаунт из одной рандомно выбранной группы, если в группе нет доступных постов
     # для репоста, то повторяем рандомный выбор групп 15 раз пока не переберем все возможные варианты
-    time.sleep(random.randint(5, 1000))
+    time.sleep(random.randint(5, 10))
 
     flag = False
 
@@ -36,7 +40,8 @@ def repost_me():
                     lip_of_post(sample) in session['work'][session['name_session']]['lip']:
                     continue
 
-                for session['token'] in session['tokens']:
+                for name_token in session['names_tokens_repost_vk']:
+                    session['token'] = session[name_token]
                     if get_session_vk_api():
                         session['vk_app'].wall.repost(
                             object=''.join(map(str, (url_of_post(sample)))))
