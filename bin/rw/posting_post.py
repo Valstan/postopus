@@ -37,7 +37,7 @@ def posting_post(msg_list):
 
     for sample in msg_list:
 
-        if theme in 'sosed repost_oleny' and session['setka_regim_repost']:
+        if theme in 'sosed repost_oleny repost_reklama' and session['setka_regim_repost']:
             session['vk_app'].wall.repost(object=url_of_post(sample), group_id=abs(session['post_group_vk']))
             if lip_of_post(sample) in session['work'][theme]['lip']:
                 flag_save = False
