@@ -11,7 +11,7 @@ def get_session_vk_api():
     try:
         vk_session = VkApi(token=session['token'])
         session['vk_app'] = vk_session.get_api()
-        session['tools'] = VkTools(vk_session)
+        # session['tools'] = VkTools(vk_session)
     except:
         return False
 

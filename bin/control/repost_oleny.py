@@ -2,7 +2,6 @@ import time
 
 import config
 from bin.rw.get_msg import get_msg
-from bin.rw.posting_post import posting_post
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.url_of_post import url_of_post
@@ -19,7 +18,7 @@ def repost_oleny():
     for sample in msgs:
         sample = clear_copy_history(sample)
         if lip_of_post(sample) in session['work'][session['name_session']]['lip'] or \
-            abs(sample['owner_id']) != abs(oleny_id) or '#домобразцовогопорядка' in sample['text']:
+            abs(sample['owner_id']) != abs(oleny_id) or ('#домобразцовогопорядка' or 'сетканет') in sample['text']:
             continue
 
         # msg_list.append(sample)
