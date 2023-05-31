@@ -18,9 +18,9 @@ def change_lp():
     else:
         # Сбор токенов
         session['tokens'] = []
-        for key in session:
-            if 'VK_TOKEN_' in key and ('DRAN' or 'VALSTAN') not in key and session[key]:
-                session['tokens'].append(session[key])
+        for key, values in session.items():
+            if 'VK_TOKEN_' in key and ('DRAN' or 'VALSTAN') not in key and values:
+                session['tokens'].append(values)
         for i in range(5):
             session.update({"token": random.choice(session['tokens'])})
             if get_session_vk_api():

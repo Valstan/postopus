@@ -1,4 +1,4 @@
-from vk_api import VkApi, VkTools
+from vk_api import VkApi
 
 import config
 
