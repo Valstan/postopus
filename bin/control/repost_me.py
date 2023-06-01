@@ -18,7 +18,7 @@ def repost_me():
     # Так как крон запускает репосты по строгому графику, то здесь делаем вариации задержки от 5 секунд до 17 минут
     # Репостим по одноиу репосту на аккаунт из одной рандомно выбранной группы, если в группе нет доступных постов
     # для репоста, то повторяем рандомный выбор групп 15 раз пока не переберем все возможные варианты
-    time.sleep(random.randint(5, 10))
+    time.sleep(random.randint(5, 1000))
 
     flag = False
 
@@ -29,7 +29,7 @@ def repost_me():
         if count == 10:
             time.sleep(random.randint(600, 800))
         else:
-            time.sleep(random.randint(5, 1000))
+            time.sleep(random.randint(5, 10))
 
         posts = get_msg(random.choice(list(session['all_my_groups'].values())), 0, 10)
         if posts:
