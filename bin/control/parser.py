@@ -64,8 +64,11 @@ def parser():
             session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
 
+        # Выравниваем репосты
         sample = clear_copy_history(sample)
-        if lip_of_post(sample) in session['work'][theme]['lip']:
+
+        # Фильтр на ПОВТОРЫ и ЗАПРЕЩЕННЫЕ ГРУППЫ И АККАУНТЫ
+        if lip_of_post(sample) in session['work'][theme]['lip'] or abs(sample['owner_id']) in session['black_id']:
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
 
