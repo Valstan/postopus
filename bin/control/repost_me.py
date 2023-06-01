@@ -29,7 +29,7 @@ def repost_me():
         if count == 10:
             time.sleep(random.randint(600, 800))
         else:
-            time.sleep(random.randint(5, 10))
+            time.sleep(random.randint(5, 1000))
 
         posts = get_msg(random.choice(list(session['all_my_groups'].values())), 0, 10)
         if posts:
