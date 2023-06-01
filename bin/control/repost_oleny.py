@@ -26,6 +26,8 @@ def repost_oleny():
 
         msg_list.append(sample)
         for session['post_group_vk'] in session['all_my_groups'].values():
+            if session['post_group_vk'] == oleny_id:
+                continue
             posting_post(msg_list)
             time.sleep(15)
         break
