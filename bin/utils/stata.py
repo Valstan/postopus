@@ -14,7 +14,7 @@ def stata(msg_list):
 
     # Составляем словарь названий имен
     name_groups = {}
-    for i in ('n1', 'n2', 'n3'):
+    for i in session['zagolovki'].keys():
         for name, number in session[i].items():
             name_groups[str(abs(number))] = name
 

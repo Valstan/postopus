@@ -6,7 +6,8 @@ def load_table(name_table):
     if name_table in 'novost novosti':
         table = collection.find_one({'title': 'novost'}, {'_id': 0, 'title': 0})
     elif name_table in 'config' and session['name_base'] in 'config':
-        table = collection.find_one({'title': name_table}, {'delete_msg_blacklist': 0, '_id': 0, 'title': 0})
+        # 'delete_msg_blacklist' подгружается с локального диска
+        table = collection.find_one({'title': 'config'}, {'delete_msg_blacklist': 0, '_id': 0, 'title': 0})
     else:
         table = collection.find_one({'title': name_table}, {'_id': 0, 'title': 0})
 

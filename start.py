@@ -2,13 +2,12 @@ import random
 import time
 from sys import argv
 
+import config
 from bin.control.control import control
 from bin.rw.get_mongo_base import get_mongo_base
 from bin.rw.get_session import get_session
 from bin.rw.get_session_vk_api import get_session_vk_api
-from bin.utils.schedule import schedule
 from bin.utils.service_base import service_base
-import config
 
 session = config.session
 

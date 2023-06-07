@@ -99,7 +99,7 @@ shuffle(list_groups)
 for sample in list_groups:
     # Эти две строки для рандомного постинга материалов из ленты Напоминашки
     number_spampost = random.randint(0, len(reklama_posts) - 1)
-    attachments = get_attach(reklama_posts[number_spampost])
+    attachments, count_att = get_attach(reklama_posts[number_spampost])
 
     # Черный список групп куда постить ненужно
     if str(sample['id']) in black_list_groups:

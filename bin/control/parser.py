@@ -19,7 +19,7 @@ from config import session
 
 
 def parser():
-    if session['name_session'] in 'n1 n2 n3':
+    if session['name_session'] in session['zagolovki'].keys():
         theme = 'novost'
     else:
         theme = session['name_session']
@@ -169,7 +169,11 @@ def parser():
             continue
 
         # Текст обрамляется подписями без ссылки на источник, она будет в копирайте при постинге
-        sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n\n#{session['heshteg'][theme]}"
+        if sample['owner_id'] < 0:
+            url = '@public' + sample['owner_id']
+        else:
+            url = '@id' + sample['owner_id']
+        sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n{url}"
         result_posts.append(sample)
 
     if theme in 'novost':

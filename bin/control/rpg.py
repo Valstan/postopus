@@ -80,7 +80,7 @@ def rpg():
     sample_spam_post['text'] += f"\n\nПодпишись " \
                                 f"на @https://vk.com/public{-session['post_group_vk']} ({session['name_group']}), " \
                                 f"чтобы ничего не пропустить."
-    attachments = get_attach(sample_spam_post)
+    attachments, count_att = get_attach(sample_spam_post)
 
     session['work'][session['name_session']]['false_groups_id'].extend(session['rpg_black_ids'])
     session['work'][session['name_session']]['true_groups_id'].append(-28534711)  # Для страховки от пустого списка
