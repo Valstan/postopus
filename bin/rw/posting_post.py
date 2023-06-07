@@ -16,8 +16,6 @@ session = config.session
 def posting_post(msg_list):
     global session
 
-    flag_save = True
-
     if session['name_base'] == "dran":
         session['token'] = session[random.choice(session['names_tokens_dran_vk'])]
         if not get_session_vk_api():
@@ -67,10 +65,7 @@ def posting_post(msg_list):
             text_post += f"\n{sample['text']}\n"
             attachments += attach + ','
             count_attach += count_att
-            if lip_of_post(sample) in session['work'][theme]['lip']:
-                flag_save = False
-            else:
-                session['work'][theme]['lip'].append(lip_of_post(sample))
+            session['work'][theme]['lip'].append(lip_of_post(sample))
         if attachments:
             attachments = attachments[:-1]
 
@@ -79,10 +74,7 @@ def posting_post(msg_list):
             if 'attachments' in sample:
                 attachments, count_att = get_attach(sample)
             text_post = sample['text']
-            if lip_of_post(sample) in session['work'][theme]['lip']:
-                flag_save = False
-            else:
-                session['work'][theme]['lip'].append(lip_of_post(sample))
+            session['work'][theme]['lip'].append(lip_of_post(sample))
             break
 
     text_post = text_post + '\n#' + session['heshteg'][theme]
@@ -91,8 +83,7 @@ def posting_post(msg_list):
         post_msg(session['post_group_vk'],
                  text_post,
                  attachments)
-        if flag_save:
-            save_table(theme)
+        save_table(theme)
     except Exception as exc:
         send_error(__name__, exc, traceback.print_exc())
 
