@@ -23,21 +23,21 @@ def post_bezfoto():
             print("Токены ПОСТИНГА в ВК не работают!")
             quit()
 
-    if len(session['work']['bezfoto']['lip']) > session['work']['bezfoto']['post_size'] - 1:
+    if session['work']['bezfoto']['lip']:
 
         text = f"#{session['heshteg']['reklama']}\n" \
-               f"{''.join(map(str, session['work']['bezfoto']['lip'][:session['work']['bezfoto']['post_size']]))}"
+               f"{''.join(map(str, session['work']['bezfoto']['lip'][:15]))}"
 
         post_msg(session['post_group_vk'], text)
 
         # Обрезаем лишнее, делаем прописными и рафинируем новые опубликованные Безфото для сохранения в чулан
         bezfoto = []
-        for sample in session['work']['bezfoto']['lip'][:session['work']['bezfoto']['post_size']]:
-            sample = sample.split("@")[0]
-            bezfoto.append(text_to_rafinad(sample[10:].lower()))  # lower здесь я делаю для удобства просмотра в Атласе
+        for sample in session['work']['bezfoto']['lip'][:15]:
+            sample = sample.split("@")[0]  # Отрезаю ссылку
+            bezfoto.append(text_to_rafinad(sample[10:].lower()))  # отрезаю Эмодзи и lower для просмотра в Атласе
 
         session['work']['all_bezfoto']['lip'].extend(bezfoto)
-        del session['work']['bezfoto']['lip'][:session['work']['bezfoto']['post_size']]
+        del session['work']['bezfoto']['lip'][:15]
         save_table('bezfoto')
         save_table('all_bezfoto')
 
