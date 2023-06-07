@@ -63,8 +63,6 @@ def posting_post(msg_list):
                 attach, count_att = get_attach(sample)
 
             if len(text_post) + len(sample['text']) > 500 and text_post or count_attach + count_att > 10:
-                if attachments:
-                    attachments = attachments[:-1]
                 break
             text_post += f"\n{sample['text']}\n"
             attachments += attach + ','
@@ -73,6 +71,8 @@ def posting_post(msg_list):
                 flag_save = False
             else:
                 session['work'][theme]['lip'].append(lip_of_post(sample))
+        if attachments:
+            attachments = attachments[:-1]
 
     else:
         for sample in msg_list:
