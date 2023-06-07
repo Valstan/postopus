@@ -1,10 +1,13 @@
-from random import shuffle, randint
 import time
+from random import shuffle
 from sys import argv
 
 from start import start
 
-argument = str(argv[1])
+if len(argv) == 2:
+    argument = str(argv[1])
+else:
+    argument = input(" Нужно ввести аргумент типа detsad или novost и т.д. - ")
 
 names_regions = ['dran', 'mi', 'klz', 'vp', 'ur', 'kukmor', 'bal']
 shuffle(names_regions)

@@ -170,9 +170,9 @@ def parser():
 
         # Текст обрамляется подписями без ссылки на источник, она будет в копирайте при постинге
         if sample['owner_id'] < 0:
-            url = '@public' + sample['owner_id']
+            url = f"@public{abs(sample['owner_id'])}"
         else:
-            url = '@id' + sample['owner_id']
+            url = f"@id{sample['owner_id']}"
         sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n{url}"
         result_posts.append(sample)
 

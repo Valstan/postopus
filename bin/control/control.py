@@ -10,7 +10,6 @@ from bin.control.repost_reklama import repost_reklama
 from bin.rw.post_bezfoto import post_bezfoto
 from bin.rw.posting_post import posting_post
 from bin.utils.driver_tables import load_table
-from bin.utils.stata import stata
 
 session = config.session
 
@@ -18,7 +17,7 @@ session = config.session
 def control():
     global session
 
-    if session['name_session'] in 'n1 n2 n3 sosed':
+    if session['name_session'] in "detsad kultura admin novost union sport sosed":
         msg_list = parser()
         if msg_list:
             posting_post(msg_list)
