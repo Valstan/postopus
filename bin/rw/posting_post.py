@@ -31,7 +31,7 @@ def posting_post(msg_list):
 
     if session['name_session'] in session['zagolovki'].keys():
         theme = 'novost'
-        text_post = session['zagolovki'][session['name_session']] + '\n'
+        text_post = session['zagolovki'][session['name_session']]
     else:
         theme = session['name_session']
         text_post = ''
