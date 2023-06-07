@@ -66,7 +66,7 @@ def posting_post(msg_list):
                 if attachments:
                     attachments = attachments[:-1]
                 break
-            text_post += '\n\n' + sample['text']
+            text_post += f"\n{sample['text']}\n"
             attachments += attach + ','
             count_attach += count_att
             if lip_of_post(sample) in session['work'][theme]['lip']:
@@ -85,7 +85,7 @@ def posting_post(msg_list):
                 session['work'][theme]['lip'].append(lip_of_post(sample))
             break
 
-    text_post = text_post + '\n\n#' + session['heshteg'][theme]
+    text_post = text_post + '\n#' + session['heshteg'][theme]
 
     try:
         post_msg(session['post_group_vk'],
