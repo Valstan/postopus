@@ -29,11 +29,10 @@ def posting_post(msg_list):
 
     if session['name_session'] in session['zagolovki'].keys():
         theme = 'novost'
-        text_post = session['zagolovki'][session['name_session']]
     else:
         theme = session['name_session']
-        text_post = ''
 
+    text_post = ''
     count_attach = 0
     attachments = ''
 
@@ -46,7 +45,18 @@ def posting_post(msg_list):
 
     elif theme in 'novost':
 
-        for sample in msg_list:
+        # Получаем первое сообщение
+        attach = ''
+        count_att = 0
+        if 'attachments' in msg_list[0]:
+            attach, count_att = get_attach(msg_list[0])
+        attachments += attach + ','
+        count_attach += count_att
+        text_post += f"{session['zagolovki'][session['name_session']]}\n{msg_list[0]['text']}"
+        session['work'][theme]['lip'].append(lip_of_post(msg_list[0]))
+
+        # Добавляем следующие сообщения, если есть место
+        for sample in msg_list[1:]:
 
             # Создание копирайта в записи
             # if 'copyright' in sample and sample['copyright']['link'] and \
@@ -62,10 +72,11 @@ def posting_post(msg_list):
 
             if len(text_post) + len(sample['text']) > 1000 and text_post or count_attach + count_att > 10:
                 break
-            text_post += f"\n{sample['text']}\n"
+            text_post += f"\n\n{sample['text']}"
             attachments += attach + ','
             count_attach += count_att
             session['work'][theme]['lip'].append(lip_of_post(sample))
+
         if attachments:
             attachments = attachments[:-1]
 
@@ -77,15 +88,16 @@ def posting_post(msg_list):
             session['work'][theme]['lip'].append(lip_of_post(sample))
             break
 
-    text_post = text_post + '\n#' + session['heshteg'][theme]
+    if text_post:
+        text_post += '\n#' + session['heshteg'][theme]
 
-    try:
-        post_msg(session['post_group_vk'],
-                 text_post,
-                 attachments)
-        save_table(theme)
-    except Exception as exc:
-        send_error(__name__, exc, traceback.print_exc())
+        try:
+            post_msg(session['post_group_vk'],
+                     text_post,
+                     attachments)
+            save_table(theme)
+        except Exception as exc:
+            send_error(__name__, exc, traceback.print_exc())
 
 
 if __name__ == '__main__':

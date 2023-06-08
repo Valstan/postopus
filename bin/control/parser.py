@@ -91,18 +91,18 @@ def parser():
         if theme in 'novost':
 
             # Фильтр ЧУЖОЙ ЖУРНАЛИСТ для открытых групп в которые пишет кто попало
-            if abs(sample['owner_id']) in (74344300, 99686065, 141990463, 20895918, 9363816) and \
-                abs(sample['owner_id']) != abs(sample['from_id']):
-                session['work'][theme]['lip'].append(lip_of_post(sample))
-                continue
+            if abs(sample['owner_id']) in (74344300, 99686065, 141990463, 20895918, 9363816):
+                if abs(sample['owner_id']) != abs(sample['from_id']):
+                    session['work'][theme]['lip'].append(lip_of_post(sample))
+                    continue
 
             # Фильтр ЧУЖИЕ СЛОВА для Савальских групп, ПодслушУржумИуржРайон
             # МалмыЖ и Поиск людей Первый Малмыжский и ОбоВсеМалмыж ВП Дозор по тексту
             if abs(sample['owner_id']) in (64312155, 45799806, 89083141, 86517261,
-                                           99686065, 141990463, 20895918, 9363816) and \
-                not search_text(session['kirov_words'], sample['text']):
-                session['work'][theme]['lip'].append(lip_of_post(sample))
-                continue
+                                           99686065, 141990463, 20895918, 9363816):
+                if not search_text(session['kirov_words'], sample['text']):
+                    session['work'][theme]['lip'].append(lip_of_post(sample))
+                    continue
 
             # Фильтр для Позитивных Полян на Поляны и Кукмор по тексту:
             if abs(sample['owner_id']) in [17771956]:
@@ -169,11 +169,8 @@ def parser():
             continue
 
         # Текст обрамляется подписями без ссылки на источник, она будет в копирайте при постинге
-        if sample['owner_id'] < 0:
-            url = f"@public{abs(sample['owner_id'])}"
-        else:
-            url = f"@id{sample['owner_id']}"
-        sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n{url}"
+        sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n" \
+                         f"@{url_of_post(sample)} (Рассказали нам здесь.)"
         result_posts.append(sample)
 
     if theme in 'novost':
