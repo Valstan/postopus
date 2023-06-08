@@ -157,7 +157,7 @@ def parser():
                 if not search_text([text_rafinad[int(len(text_rafinad) * 0.2):int(len(text_rafinad) * 0.7)]],
                                    data_string):
                     session['work']['bezfoto']['lip']. \
-                        append(f"&#128073; {sample['text']} @{url_of_post(sample)} (-->подробнее.)\n\n")
+                        append(f"&#128073; {sample['text']} @{url_of_post(sample)} (>ответить<.)\n\n")
                     data_string += text_rafinad
             session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
