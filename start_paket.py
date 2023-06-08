@@ -19,9 +19,8 @@ for name in names_regions:
     if command in 'dran_sosed':
         continue
 
-    start(command)
-    # try:
-    #     start(command)
-    # except:
-    #     pass
+    try:
+        start(command)
+    except:
+        pass
     time.sleep(5)
