@@ -17,7 +17,7 @@ session = config.session
 def control():
     global session
 
-    if session['name_session'] in (session['zagolovki'].keys() or "sosed"):
+    if session['name_session'] in session['zagolovki'].keys() or session['name_session'] in "sosed":
         msg_list = parser()
         if msg_list:
             posting_post(msg_list)

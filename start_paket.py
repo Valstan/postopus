@@ -14,8 +14,13 @@ shuffle(names_regions)
 
 
 for name in names_regions:
+
+    command = f"{name}_{argument}"
+    if command in 'dran_sosed':
+        continue
+
     try:
-        start(f"{name}_{argument}")
+        start(command)
     except:
         pass
     time.sleep(5)

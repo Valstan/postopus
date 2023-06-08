@@ -60,7 +60,7 @@ def posting_post(msg_list):
             if 'attachments' in sample:
                 attach, count_att = get_attach(sample)
 
-            if len(text_post) + len(sample['text']) > 500 and text_post or count_attach + count_att > 10:
+            if len(text_post) + len(sample['text']) > 1000 and text_post or count_attach + count_att > 10:
                 break
             text_post += f"\n{sample['text']}\n"
             attachments += attach + ','
