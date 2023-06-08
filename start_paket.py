@@ -15,7 +15,7 @@ shuffle(names_regions)
 
 for name in names_regions:
     try:
-        start(f"{names_regions}_{argument}")
+        start(f"{name}_{argument}")
     except:
         pass
     time.sleep(5)
