@@ -36,71 +36,74 @@ async def post_to_telegram():
         clear_posts = []
         for sample in posts:
             if 'malmyzh_info' in twins[1]:
-                if not search_text(['Новости', 'афиша'], sample['text']) or search_text(['АФИША ВАКАНСИЙ'], sample['text']):
+                if not search_text(['Новости', 'афиша'], sample['text']) or search_text(['АФИША ВАКАНСИЙ'],
+                                                                                        sample['text']):
                     continue
                 if search_text(['афиша'], sample['text']):
                     sample['views']['count'] += 20000
-            if 'copy_history' in sample or 'views' not in sample or lip_of_post(sample) in session['work'][session['name_session']]['lip']:
+            if 'copy_history' in sample or 'views' not in sample or lip_of_post(sample) in \
+                session['work'][session['name_session']]['lip']:
                 continue
             clear_posts.append(sample)
+
+        if not clear_posts:
+            continue
 
         if len(clear_posts) > 1:
             clear_posts.sort(key=lambda x: x['views']['count'], reverse=True)
 
-        caption_text = True
-        for sample in clear_posts:
-            media = []
+        # Публикуем тупо самый первый верхний пост.
+        # Вырезаю из поста ссылки на источник
+        text_list = clear_posts[0]['text'].split(sep="\n", maxsplit=-1)
+        clear_posts[0]['text'] = ''
+        for i in text_list:
+            if ("[http" and 'Рассказали нам здесь') not in i:
+                clear_posts[0]['text'] += i + "\n"
+        clear_posts[0]['text'] = clear_posts[0]['text'][:-1]
+
+        # Если текст слишком длинный, то публикуем его сразу или режем на части и публикуем сразу
+        if len(clear_posts[0]['text']) > 1024:
+            if len(clear_posts[0]['text']) > 4096:
+                while clear_posts[0]['text']:
+                    await send_text_post(clear_posts[0]['text'][:4096], twins[1], bot)
+                    clear_posts[0]['text'] = clear_posts[0]['text'][4096:]
+            else:
+                await send_text_post(clear_posts[0]['text'], twins[1], bot)
+            clear_posts[0]['text'] = ''
+
+        # Если есть фотки
+        if 'attachments' in clear_posts[0] and len(clear_posts[0]['attachments']) > 0:
+
             media_files = []
+            media = []
             count_attach = 0
 
-            if 'attachments' not in sample or len(sample['attachments']) < 1:
-                if len(sample['text']) > 4096:
-                    await send_text_post(sample['text'][:4096], twins[1], bot)
-                    await send_text_post(sample['text'][4096:], twins[1], bot)
-                else:
-                    await send_text_post(sample['text'], twins[1], bot)
-                session['work'][session['name_session']]['lip'].append(lip_of_post(sample))
-                break
-
-            # Если текст длинный, то публикуем его сразу или обрезаем и публикуем сразу
-            if len(sample['text']) > 1024:
-                if len(sample['text']) > 4096:
-                    await send_text_post(sample['text'][:4096], twins[1], bot)
-                    await send_text_post(sample['text'][4096:], twins[1], bot)
-                else:
-                    await send_text_post(sample['text'], twins[1], bot)
-                caption_text = False
-
-            # Смотрим, есть ли в посте фото, и если есть то публикуем, если текст не был опубликован (flag=True),
-            # то прикрепляем его к первому фото
-            for attach in sample['attachments']:
+            for attach in clear_posts[0]['attachments']:
                 if count_attach == 10:
                     break
                 if 'photo' in attach:
                     url_photo = get_link_image_select_size(attach['photo']['sizes'], 300, 1281)
                     if get_image(url_photo, f'telega_image_{count_attach}.jpg'):
-                        if caption_text:
-                            media.append(InputMediaPhoto(media=FSInputFile(f'telega_image_{count_attach}.jpg'), caption=sample['text']))
+                        if clear_posts[0]['text']:  # Если еще остался текст, то прикрепляем к первой фотке
+                            media.append(InputMediaPhoto(media=FSInputFile(f'telega_image_{count_attach}.jpg'),
+                                                         caption=clear_posts[0]['text']))
                             media_files.append(f'telega_image_{count_attach}.jpg')
                             count_attach += 1
-                            caption_text = False
+                            clear_posts[0]['text'] = ''
                         else:
-                            if get_image(url_photo, f'telega_image_{count_attach}.jpg'):
-                                media.append(InputMediaPhoto(media=FSInputFile(f'telega_image_{count_attach}.jpg')))
-                                media_files.append(f'telega_image_{count_attach}.jpg')
-                                count_attach += 1
+                            media.append(InputMediaPhoto(media=FSInputFile(f'telega_image_{count_attach}.jpg')))
+                            media_files.append(f'telega_image_{count_attach}.jpg')
+                            count_attach += 1
 
-            session['work'][session['name_session']]['lip'].append(lip_of_post(sample))
+            await send_media_post(media, twins[1], bot)
+            for i in media_files:
+                os.remove(i)
 
-            if media:
-                await send_media_post(media, twins[1], bot)
-                for i in media_files:
-                    os.remove(i)
-                break
+        # Если текст был короткий и без фоток, то печатаем его
+        if clear_posts[0]['text']:
+            await send_text_post(clear_posts[0]['text'], twins[1], bot)
 
-            # Если caption_text нет, значит какой-то текст был распечатан, выходим, даже если фотки не прошли.
-            if not caption_text:
-                break
+        session['work'][session['name_session']]['lip'].append(lip_of_post(clear_posts[0]))
 
     save_table(session['name_session'])
 
