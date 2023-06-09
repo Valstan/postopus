@@ -13,19 +13,16 @@ def repost_oleny():
     global session
 
     oleny_id = -218688001  # Гоньба - жемчужина Вятки
-    msgs = get_msg(oleny_id, 0, 10)
+    msgs = get_msg(oleny_id, 0, session['work'][session['name_session']]['table_size'])
 
     msg_list = []
     for sample in msgs:
         sample = clear_copy_history(sample)
-        if lip_of_post(sample) in session['work'][session['name_session']]['lip'] \
-            or abs(sample['owner_id']) != abs(oleny_id):
-            continue
-
-        msg_list.append(sample)
-        for session['post_group_vk'] in session['all_my_groups'].values():
-            if session['post_group_vk'] == oleny_id:
-                continue
-            posting_post(msg_list)
-            time.sleep(15)
-        break
+        if lip_of_post(sample) not in session['work'][session['name_session']]['lip'] \
+            and abs(sample['owner_id']) == abs(oleny_id):
+            msg_list.append(sample)
+            for session['post_group_vk'] in session['all_my_groups'].values():
+                if session['post_group_vk'] == oleny_id:
+                    continue
+                posting_post(msg_list)
+                time.sleep(15)
