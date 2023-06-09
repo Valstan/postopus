@@ -13,7 +13,7 @@ def repost_oleny():
     global session
 
     oleny_id = -218688001  # Гоньба - жемчужина Вятки
-    msgs = get_msg(oleny_id, 0, 20)
+    msgs = get_msg(oleny_id, 0, 10)
 
     msg_list = []
     for sample in msgs:
