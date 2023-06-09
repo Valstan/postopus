@@ -15,7 +15,7 @@ session = config.session
 def sort_po_foto(msg):
     global session
 
-    if session['name_session'] in 'n1 n2 n3':
+    if session['name_session'] in session['zagolovki'].keys():
         theme = 'novost'
     else:
         theme = session['name_session']
