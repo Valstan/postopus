@@ -41,7 +41,6 @@ def posting_post(msg_list):
         if lip_of_post(msg_list[0]) not in session['work'][theme]['lip']:
             session['work'][theme]['lip'].append(lip_of_post(msg_list[0]))
             save_table(theme)
-            return
 
     elif theme in 'novost':
 
@@ -81,12 +80,11 @@ def posting_post(msg_list):
             attachments = attachments[:-1]
 
     else:
-        for sample in msg_list:
-            if 'attachments' in sample:
-                attachments, count_att = get_attach(sample)
-            text_post = sample['text']
-            session['work'][theme]['lip'].append(lip_of_post(sample))
-            break
+
+        if 'attachments' in msg_list[0]:
+            attachments, count_att = get_attach(msg_list[0])
+        text_post = msg_list[0]['text']
+        session['work'][theme]['lip'].append(lip_of_post(msg_list[0]))
 
     if text_post:
         text_post += '\n#' + session['heshteg'][theme]
