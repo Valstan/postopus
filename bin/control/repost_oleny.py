@@ -30,3 +30,5 @@ def repost_oleny():
                 if session['post_group_vk'] != oleny_id:
                     posting_post(msg_list)
                     time.sleep(15)
+
+            break
