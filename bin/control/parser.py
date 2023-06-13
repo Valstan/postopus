@@ -105,12 +105,12 @@ def parser():
                     continue
 
             # Фильтр для Позитивных Полян на Поляны и Кукмор по тексту:
-            if abs(sample['owner_id']) in [17771956]:
+            if abs(sample['owner_id']) in [17771956, 1158406]:
                 if session['name_base'] in 'vp':
                     if not search_text(session['kirov_words'], sample['text']):
                         session['work'][theme]['lip'].append(lip_of_post(sample))
                         continue
-                if session['name_base'] in 'kukmor':
+                if session['name_base'] in 'kukmor bal':
                     if not search_text(session['tatar_words'], sample['text']):
                         session['work'][theme]['lip'].append(lip_of_post(sample))
                         continue
