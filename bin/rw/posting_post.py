@@ -87,9 +87,13 @@ def posting_post(msg_list):
         session['work'][theme]['lip'].append(lip_of_post(msg_list[0]))
 
     if text_post:
-        text_post += f"\n#{session['heshteg'][theme]}{session['heshteg']['raion_centr']}" \
-                     f"\n#{session['heshteg'][theme]}" \
-                     f"\n#{session['heshteg']['raion_centr']}"
+        # Добавляем хэштеги
+        if theme in 'novost':
+            text_post += f"\n#{session['heshteg'][theme]}{session['heshteg']['raicentr']}" \
+                         f"\n#{session['heshteg']['raicentr']} #{session['heshteg']['raion']}"
+        else:
+            text_post += f"\n#{session['heshteg'][theme]}{session['heshteg']['raicentr']}"
+
 
         try:
             post_msg(session['post_group_vk'],
