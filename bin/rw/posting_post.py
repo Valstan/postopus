@@ -87,7 +87,9 @@ def posting_post(msg_list):
         session['work'][theme]['lip'].append(lip_of_post(msg_list[0]))
 
     if text_post:
-        text_post += '\n#' + session['heshteg'][theme]
+        text_post += f"\n#{session['heshteg'][theme]}{session['heshteg']['raion_centr']}" \
+                     f"\n#{session['heshteg'][theme]}" \
+                     f"\n#{session['heshteg']['raion_centr']}"
 
         try:
             post_msg(session['post_group_vk'],
