@@ -104,8 +104,8 @@ def parser():
                     session['work'][theme]['lip'].append(lip_of_post(sample))
                     continue
 
-            # Фильтр для Позитивных Полян на Поляны и Кукмор по тексту:
-            if abs(sample['owner_id']) in [17771956, 1158406]:
+            # Фильтр для Позитивных Полян на Поляны и Кукмор по тексту, БалтасиГородПортал и БалтасиНародныеНовости:
+            if abs(sample['owner_id']) in [17771956, 1158406, 113610369]:
                 if session['name_base'] in 'vp':
                     if not search_text(session['kirov_words'], sample['text']):
                         session['work'][theme]['lip'].append(lip_of_post(sample))
