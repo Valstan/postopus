@@ -91,7 +91,8 @@ def parser():
         if theme in 'novost':
 
             # Фильтр ЧУЖОЙ ЖУРНАЛИСТ для открытых групп в которые пишет кто попало
-            if abs(sample['owner_id']) in (74344300, 99686065, 141990463, 20895918, 9363816):
+            # ВолейболвУржуме, СавальскаяВолость, Савали+17, МалмыЖ
+            if abs(sample['owner_id']) in (74344300, 99686065, 141990463, 9363816):
                 if abs(sample['owner_id']) != abs(sample['from_id']):
                     session['work'][theme]['lip'].append(lip_of_post(sample))
                     continue
