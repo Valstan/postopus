@@ -89,10 +89,10 @@ def posting_post(msg_list):
     if text_post:
         # Добавляем хэштеги
         if theme in 'novost':
-            text_post += f"\n#{session['heshteg'][theme]}{session['heshteg']['raicentr']}" \
-                         f"\n#{session['heshteg']['raicentr']} #{session['heshteg']['raion']}"
+            text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}" \
+                         f"\n#{session['heshteg_local']['raicentr']} #{session['heshteg_local']['raion']}"
         else:
-            text_post += f"\n#{session['heshteg'][theme]}{session['heshteg']['raicentr']}"
+            text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}"
 
 
         try:
