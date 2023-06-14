@@ -96,24 +96,12 @@ def parser():
                     session['work'][theme]['lip'].append(lip_of_post(sample))
                     continue
 
-            # Фильтр ЧУЖИЕ СЛОВА для Савальских групп, ПодслушУржумИуржРайон
-            # МалмыЖ и Поиск людей Первый Малмыжский и ОбоВсеМалмыж ВП Дозор по тексту
-            if abs(sample['owner_id']) in (64312155, 45799806, 89083141, 86517261,
-                                           99686065, 141990463, 20895918, 9363816):
-                if not search_text(session['kirov_words'], sample['text']):
+            # Фильтр НУЖНЫЕ слова по ОБЛАСТИ, если их нет, то пост пропускается.
+            # Проверяются только определенные сообщества
+            if abs(sample['owner_id']) in session['filter_group_by_region_words'].values():
+                if not search_text(session[f"{session['filter_region']}_words"], sample['text']):
                     session['work'][theme]['lip'].append(lip_of_post(sample))
                     continue
-
-            # Фильтр для Позитивных Полян на Поляны и Кукмор по тексту, БалтасиГородПортал и БалтасиНародныеНовости:
-            if abs(sample['owner_id']) in [17771956, 1158406, 113610369]:
-                if session['name_base'] in 'vp':
-                    if not search_text(session['kirov_words'], sample['text']):
-                        session['work'][theme]['lip'].append(lip_of_post(sample))
-                        continue
-                if session['name_base'] in 'kukmor bal':
-                    if not search_text(session['tatar_words'], sample['text']):
-                        session['work'][theme]['lip'].append(lip_of_post(sample))
-                        continue
 
             # Фильтр для БалтасиРу Балтаси Хезмәт и Кукмор-РТ на присутствие ссылки на сайт
             if abs(sample['owner_id']) in (65275507, 33406351):
