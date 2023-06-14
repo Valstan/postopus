@@ -168,14 +168,17 @@ def parser():
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
 
-        # Получаем название группы. Текст обрамляется подписями.
-        if abs(sample['owner_id']) in (45799806, 86517261, 89083141, 17771956, 1158406):
-            name_group = 'Прилетело отсюда'
+        # Получаем название группы. Если это группа популярная по сбору новостей, то название ее не указываю.
+        if abs(sample['owner_id']) in (45799806, 86517261, 89083141, 17771956, 1158406, 64312155):
+            name_group = 'Рассказали здесь'
         else:
             name_group = session['vk_app'].groups.getById(group_ids=abs(sample['owner_id']),
                                                           fields='description')[0]['name'][:25]
+
+        # Текст обрамляется подписями.
         sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n" \
                          f"@{url_of_post(sample)} ({name_group}.)"
+
         result_posts.append(sample)
 
     if theme in 'novost':
