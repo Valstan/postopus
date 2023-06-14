@@ -158,7 +158,7 @@ def parser():
             continue
 
         # Получаем название группы. Если это группа популярная по сбору новостей, то название ее не указываю.
-        if abs(sample['owner_id']) in (45799806, 86517261, 89083141, 17771956, 1158406, 64312155):
+        if abs(sample['owner_id']) in session['bad_name_group'].values():
             name_group = 'Рассказали здесь'
         else:
             name_group = session['vk_app'].groups.getById(group_ids=abs(sample['owner_id']),
@@ -166,7 +166,7 @@ def parser():
 
         # Текст обрамляется подписями.
         sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n" \
-                         f"@{url_of_post(sample)} ({name_group}.)"
+                         f"@{url_of_post(sample)} ({name_group})"
 
         result_posts.append(sample)
 
