@@ -168,9 +168,14 @@ def parser():
             bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
 
-        # Текст обрамляется подписями без ссылки на источник, она будет в копирайте при постинге
+        # Получаем название группы. Текст обрамляется подписями.
+        if abs(sample['owner_id']) in (45799806, 86517261, 89083141, 17771956, 1158406):
+            name_group = 'Прилетело отсюда'
+        else:
+            name_group = session['vk_app'].groups.getById(group_ids=abs(sample['owner_id']),
+                                                          fields='description')[0]['name'][:25]
         sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n" \
-                         f"@{url_of_post(sample)} (Рассказали нам здесь.)"
+                         f"@{url_of_post(sample)} ({name_group}.)"
         result_posts.append(sample)
 
     if theme in 'novost':
