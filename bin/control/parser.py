@@ -162,7 +162,7 @@ def parser():
             name_group = 'Рассказали здесь'
         else:
             name_group = session['vk_app'].groups.getById(group_ids=abs(sample['owner_id']),
-                                                          fields='description')[0]['name'][:25]
+                                                          fields='description')[0]['name'][:40]
 
         # Текст обрамляется подписями.
         sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n" \
