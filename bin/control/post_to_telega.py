@@ -57,7 +57,7 @@ async def post_to_telegram():
         text_list = clear_posts[0]['text'].split(sep="\n", maxsplit=-1)
         clear_posts[0]['text'] = ''
         for i in text_list:
-            if ("[http" and 'Рассказали нам здесь') not in i:
+            if ("[http" and '|') not in i:
                 clear_posts[0]['text'] += i + "\n"
         clear_posts[0]['text'] = clear_posts[0]['text'][:-1]
 
