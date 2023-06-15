@@ -39,10 +39,10 @@ while go_program:
     if category == 6:
         category = 'sport'
 
-    go_program = input(f"Для выхода из программы просто нажми Ентер."
+    go_program = int(input(f"Для выхода из программы просто нажми Ентер."
                        f"Группа: {name_group}, номер: {id_group} в категорию: {category}\n"
                        f"Если НЕПРАВИЛЬНО введи 100 для переделки\n"
-                       f"Если все ВЕРНО, введи 1 : ")
+                       f"Если все ВЕРНО, введи 1 : "))
     if go_program == 1:
         if category not in table:
             table[category] = {}

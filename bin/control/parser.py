@@ -161,7 +161,7 @@ def parser():
         # Проверяем есть ли название уже в нашей базе
         name_group = ''
         for i in ('detsad', 'kultura', 'admin', 'novost', 'union', 'sport'):
-            for key, value in session[i]:
+            for key, value in session[i].items():
                 if sample['owner_id'] == value:
                     name_group = key
                     break
