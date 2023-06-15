@@ -30,7 +30,7 @@ async def post_to_telegram():
         else:
             bot = Bot(token=session['TELEGA_TOKEN_VALSTANBOT'])
 
-        posts = get_msg(twins[0], 0, 20)
+        posts = get_msg(twins[0], 0, session['work'][session['name_session']]['table_size'])
 
         # Набираем правильные посты
         clear_posts = []
