@@ -6,7 +6,7 @@ go_program = True
 while go_program:
     client = MongoClient(session['MONGO_CLIENT'])
     mongo_base = client['postopus']
-    collection = mongo_base['bal']
+    collection = mongo_base['leb']
     table = collection.find_one({'title': 'config'}, {'_id': 0, 'title': 0})
 
     id_group = 0
