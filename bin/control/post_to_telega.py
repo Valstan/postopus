@@ -22,7 +22,6 @@ async def send_media_post(media, post_group_telega, bot):
 
 
 async def post_to_telegram():
-
     for twins in session['all_telega_group']:
 
         if 'malmyzh_info' in twins[1]:
@@ -30,7 +29,7 @@ async def post_to_telegram():
         else:
             bot = Bot(token=session['TELEGA_TOKEN_VALSTANBOT'])
 
-        posts = get_msg(twins[0], 0, session['work'][session['name_session']]['table_size'])
+        posts = get_msg(twins[0], 0, 20)
 
         # Набираем правильные посты
         clear_posts = []
@@ -104,8 +103,7 @@ async def post_to_telegram():
             await send_text_post(clear_posts[0]['text'], twins[1], bot)
 
         session['work'][session['name_session']]['lip'].append(lip_of_post(clear_posts[0]))
-
-    save_table(session['name_session'])
+        save_table(session['name_session'])
 
 
 if __name__ == '__main__':
