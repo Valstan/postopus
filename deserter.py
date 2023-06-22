@@ -36,12 +36,16 @@ def deserter():
             offset += 1000
 
         intersection_members = set(deserter_base[name_group]['old_members']) & set(members)
-        deserter_base[name_group]['plusminus'].append(
+
+        deserter_base[name_group]['plusminus'].insert(
+            0,
             f"{members_ping['count']} | "
             f"+{len(set(members) - intersection_members)} | "
             f"-{len(set(deserter_base[name_group]['old_members']) - intersection_members)}")
+
         while len(deserter_base[name_group]['plusminus']) > 30:
-            del deserter_base[name_group]['plusminus'][0]
+            del deserter_base[name_group]['plusminus'][len(deserter_base[name_group]['plusminus']) - 1]
+
         deserter_base[name_group]['old_members'] = members
 
     collection.update_one({'title': 'deserter'}, {'$set': deserter_base}, upsert=True)

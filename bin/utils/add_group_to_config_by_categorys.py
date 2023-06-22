@@ -21,8 +21,9 @@ while go_program:
         url = input(f"Введи ссылку на пост в группе, которую хотите добавить в базу {table['name_group']}: ")
 
         if 'wall' in url:
-            text_list = url.split(sep="wall", maxsplit=-1)
-            text_list = text_list[1].split(sep="_", maxsplit=-1)
+            text_list = url.split(sep="wall")
+            text_list = text_list[1].split(sep="_")
+            # text_list = text_list[1].split(sep="_", maxsplit=-1)
             id_group = int(text_list[0])
 
             for i in ('detsad', 'kultura', 'admin', 'novost', 'union', 'sport', 'reklama'):
