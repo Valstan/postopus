@@ -18,20 +18,23 @@ while go_program:
     name_group = ''
     id_group = 0
     while not id_group:
-        url = input(f"Введи ссылку на пост в группе, которую хотите добавить в базу: ")
+        url = input(f"Введи ссылку на пост в группе, которую хотите добавить в базу {table['name_group']}: ")
 
         if 'wall' in url:
             text_list = url.split(sep="wall", maxsplit=-1)
             text_list = text_list[1].split(sep="_", maxsplit=-1)
             id_group = int(text_list[0])
 
-            for i in ('detsad', 'kultura', 'admin', 'novost', 'union', 'sport'):
+            for i in ('detsad', 'kultura', 'admin', 'novost', 'union', 'sport', 'reklama'):
                 if i in table and id_group in table[i].values():
-                    print(f"Эта группа уже есть в категории {i}, набери другую группу.")
-                    id_group = 0
-                    break
+                    aaa = input(f"Эта группа уже есть в категории {i}, продолжить внос - 1, начать сначала - 0:")
+                    if aaa == '0':
+                        id_group = 0
+                        break
 
-            if id_group < 0:
+            if id_group == 0:
+                continue
+            elif id_group < 0:
                 name_group = vk_app.groups.getById(group_ids=abs(id_group),
                                                    fields='description')[0]['name']
             else:
@@ -45,7 +48,7 @@ while go_program:
 
     category = 0
     while not category:
-        category = int(input(f"1-detsad, 2-kultura, 3-admin, 4-novost, 5-union, 6-sport\n"
+        category = int(input(f"1-detsad, 2-kultura, 3-admin, 4-novost, 5-union, 6-sport, 7-reklama\n"
                              f"Группа: {name_group} добавить в категорию: "))
 
     if category == 1:
@@ -60,6 +63,8 @@ while go_program:
         category = 'union'
     if category == 6:
         category = 'sport'
+    if category == 7:
+        category = 'reklama'
 
     go_program = input(f"Для выхода из программы просто нажми Ентер."
                        f"Группа: {name_group}, номер: {id_group} в категорию: {category}\n"
