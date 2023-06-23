@@ -25,7 +25,7 @@ def post_bezfoto():
 
     if session['work']['bezfoto']['lip']:
 
-        text = f"#{session['heshteg']['reklama']}{session['heshteg']['raicentr']}\n" \
+        text = f"#{session['heshteg']['reklama']}{session['heshteg_local']['raicentr']}\n" \
                f"{''.join(map(str, session['work']['bezfoto']['lip'][:15]))}"
 
         post_msg(session['post_group_vk'], text)
