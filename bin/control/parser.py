@@ -53,28 +53,19 @@ def parser():
 
     result_posts = []
     for sample in posts:
-
-        if lip_of_post(sample) in session['work'][theme]['lip']:
-            bags(sample_text=sample['text'], url=url_of_post(sample))
+        # Первоначальная быстрая проверка на повторы и на старость
+        if lip_of_post(sample) in session['work'][theme]['lip'] or not sort_old_date(sample):
             continue
 
-        # Проверяем пост на "старость"
-        if not sort_old_date(sample):
-            bags(sample_text=sample['text'], url=url_of_post(sample))
-            session['work'][theme]['lip'].append(lip_of_post(sample))
-            continue
-
-        # Выравниваем репосты
+        # Вытаскиваем репосты
         sample = clear_copy_history(sample)
 
         # Фильтр на ПОВТОРЫ и ЗАПРЕЩЕННЫЕ ГРУППЫ И АККАУНТЫ
         if lip_of_post(sample) in session['work'][theme]['lip'] or abs(sample['owner_id']) in session['black_id']:
-            bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
 
         # Если режим СОСЕД - Ищем в тексте поста хештег с новостью, если нет, то не берем пост
         if theme in 'sosed' and not search_text(["#Новости"], sample['text']):
-            session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
 
         # Сортировка Кино и Музыки, берем только с видео и музыкой
@@ -84,7 +75,6 @@ def parser():
                 if atata['type'] in 'video audio':
                     flag = False
             if flag:
-                session['work'][theme]['lip'].append(lip_of_post(sample))
                 continue
 
         # Фильтры для новостей
@@ -101,7 +91,6 @@ def parser():
             # Проверяются только определенные сообщества
             if abs(sample['owner_id']) in session['filter_group_by_region_words'].values():
                 if not search_text(session[f"{session['filter_region']}_words"], sample['text']):
-                    session['work'][theme]['lip'].append(lip_of_post(sample))
                     continue
 
             # Фильтр для БалтасиРу Балтаси Хезмәт и Кукмор-РТ на присутствие ссылки на сайт
@@ -109,15 +98,12 @@ def parser():
                 if search_text(['shahrikazan', 'kukmor-rt.ru', 'kazved.ru'], sample['text']) or \
                     'attachments' in sample and 'link' in sample['attachments'][0] and \
                     'baltaci' in sample['attachments'][0]['link']['url']:
-                    session['work'][theme]['lip'].append(lip_of_post(sample))
                     continue
 
         # Проверяем на повторы или запрещенку
         text_rafinad = text_to_rafinad(sample['text'])
         if search_text([text_rafinad[int(len(text_rafinad) * 0.2):int(len(text_rafinad) * 0.7)]],
                        old_novost_txt) or search_text(session['delete_msg_blacklist'], text_rafinad):
-            bags(sample_text=sample['text'], url=url_of_post(sample))
-            session['work'][theme]['lip'].append(lip_of_post(sample))
             continue
         else:
             old_novost_txt += text_rafinad
@@ -128,14 +114,12 @@ def parser():
         # Чистка и исправление текста для всех публичный мягкий набор слов и простых предложений
         # sample['text'] = clear_text(session['clear_text_blacklist']['novost'], sample['text'])
         if ('views' not in sample or theme == 'reklama') and 'attachments' in sample:
-            bags(sample_text=sample['text'], url=url_of_post(sample))
             del sample['attachments']
         if 'attachments' not in sample or len(sample['attachments']) == 0:
             # Отправляем пост в блок рекламы с дальнейшими проверками
 
             # Если сюда попало сообщение не из Новостей и Рекламы, то не берем его:
             if theme not in 'novost reklama':
-                session['work'][theme]['lip'].append(lip_of_post(sample))
                 continue
 
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
@@ -153,8 +137,6 @@ def parser():
 
         # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
         if sort_po_foto(sample) and sort_po_video(sample):
-            session['work'][theme]['lip'].append(lip_of_post(sample))
-            bags(sample_text=sample['text'], url=url_of_post(sample))
             continue
 
         # Получаем название группы. Если это группа популярная по сбору новостей, то название ее не указываю.

@@ -7,6 +7,7 @@ from bin.control.post_to_telega import post_to_telegram
 from bin.control.repost_me import repost_me
 from bin.control.repost_oleny import repost_oleny
 from bin.control.repost_reklama import repost_reklama
+from bin.control.sosed import sosed
 from bin.rw.post_bezfoto import post_bezfoto
 from bin.rw.posting_post import posting_post
 from bin.utils.driver_tables import load_table
@@ -59,8 +60,8 @@ def control():
     # elif session['name_session'] in 'rpg':
     #     rpg()
 
-    # elif session['name_session'] == 'parsing':
-    #     parsing()
+    elif session['name_session'] == 'sosed':
+        sosed()
 
     elif session['name_session'] in 'telegram':
         asyncio.run(post_to_telegram())
