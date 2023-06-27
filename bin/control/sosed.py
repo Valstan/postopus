@@ -14,7 +14,7 @@ def sosed():
     # Находим его имя в общем списке
     posts = []
     for name_group in session['all_my_groups'].keys():
-        if near in name_group:
+        if search_text([near], name_group):
             posts = get_msg(session['all_my_groups'][name_group], 0, 50)
 
     if not posts:
@@ -24,6 +24,8 @@ def sosed():
     for sample in posts:
         if lip_of_post(sample) in session['work']['sosed']['lip'] and not search_text(["#Новости"], sample['text']):
             continue
+        if 'views' not in sample:
+            sample['views'] = {'count': 0}
         result_posts.append(sample)
 
     if result_posts:
