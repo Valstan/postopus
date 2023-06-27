@@ -7,7 +7,6 @@ from bin.rw.read_posts import read_posts
 from bin.sort.sort_old_date import sort_old_date
 from bin.sort.sort_po_foto import sort_po_foto
 from bin.sort.sort_po_video import sort_po_video
-from bin.utils.bags import bags
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.clear_text import clear_text
 from bin.utils.driver_tables import load_table, save_table
@@ -76,6 +75,10 @@ def parser():
                     flag = False
             if flag:
                 continue
+
+        # Фильтр для Смешного видео
+        if theme in 'prikol' and len(sample['text']) > 100:
+            continue
 
         # Фильтры для новостей
         if theme in 'novost':
