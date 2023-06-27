@@ -17,12 +17,11 @@ def load_table(name_table):
 
     if name_table not in 'config billboard':
         if table:
-            for key in session['constructor_table']:
+            for key in ('lip', 'hash'):
                 if not table.get(key):
-                    table[key] = session['constructor_table'][key]
+                    table[key] = []
         else:
-            table = session['constructor_table']
-            table['title'] = name_table
+            table = {'lip': [], 'hash': [], 'title': name_table}
 
     return table
 
@@ -30,11 +29,10 @@ def load_table(name_table):
 def save_table(name_table):
     collection = session['MONGO_BASE'][session['name_base']]
     # Изменяем размеры таблиц содержащих только списки
-    for n in session['work'][name_table]:
-        if isinstance(session['work'][name_table][n], list) and session['work'][name_table]['table_size']:
-            while len(session['work'][name_table][n]) > session['work'][name_table]['table_size']:
+    for n in session['work'][name_table].keys():
+        if n in 'lip hash':
+            while len(session['work'][name_table][n]) > 30:
                 del session['work'][name_table][n][0]
-
     collection.update_one({'title': name_table}, {'$set': session['work'][name_table]}, upsert=True)
 
 
