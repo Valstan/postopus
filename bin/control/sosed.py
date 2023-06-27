@@ -15,7 +15,7 @@ def sosed():
     posts = []
     for name_group in session['all_my_groups'].keys():
         if search_text([near], name_group):
-            posts = get_msg(session['all_my_groups'][name_group], 0, 50)
+            posts = get_msg(session['all_my_groups'][name_group], 0, 30)
 
     if not posts:
         quit()
