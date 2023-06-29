@@ -39,7 +39,7 @@ def parser():
 
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
-        posts = get_msg(random.choice(list(session[theme].values())), 0, 50)
+        posts = get_msg(random.choice(list(session[theme].values())), 0, 20)
 
     # Всетаки вернул проверку по тексту на уже опубликованные
     old_novost = get_msg(session['post_group_vk'], 0, 100)
