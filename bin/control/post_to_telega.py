@@ -6,6 +6,7 @@ from aiogram.types import InputMediaPhoto, FSInputFile
 from bin.rw.get_image import get_image
 from bin.rw.get_link_image_select_size import get_link_image_select_size
 from bin.rw.get_msg import get_msg
+from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.driver_tables import save_table
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.search_text import search_text
@@ -34,15 +35,26 @@ async def post_to_telegram():
         # Набираем правильные посты
         clear_posts = []
         for sample in posts:
-            if 'malmyzh_info' in twins[1]:
-                if not search_text(['Новости', 'афиша'], sample['text']) or search_text(['АФИША ВАКАНСИЙ'],
-                                                                                        sample['text']):
-                    continue
-                if search_text(['афиша'], sample['text']):
-                    sample['views']['count'] += 20000
-            if 'copy_history' in sample or 'views' not in sample or lip_of_post(sample) in \
-                session['work'][session['name_session']][f"lip_{twins[1]}"]:
+            if lip_of_post(sample) in session['work'][session['name_session']][f"lip_{twins[1]}"]:
                 continue
+            # if 'malmyzh_info' in twins[1]:
+            # if search_text(['АФИША ВАКАНСИЙ'], sample['text']):
+            #     continue
+            # if search_text(['афиша'], sample['text']):
+            #     sample['views']['count'] += 20000
+
+            # Вытягиваем если есть репосты и снова проверяем на повтор по номеру поста
+            sample = clear_copy_history(sample)
+            if lip_of_post(sample) in session['work'][session['name_session']][f"lip_{twins[1]}"] \
+                or sample['owner_id'] == -179037590\
+                or search_text(['ОбъявленияМалмыж',
+                                'УраПерерывчикМалмыж',
+                                'КиноМалмыж'], sample['text']):
+                continue
+
+            if 'views' not in sample:
+                sample['views'] = {'count': 5}
+
             clear_posts.append(sample)
 
         if not clear_posts:
