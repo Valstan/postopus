@@ -19,16 +19,10 @@ async def send_text_post(text, post_group_telega, bot):
 
 async def send_media_post(media, post_group_telega, bot):
     await bot.send_media_group(post_group_telega, media)
-    await bot.session.close()
 
 
 async def post_to_telegram():
     for twins in session['all_telega_group']:
-
-        if 'malmyzh_info' in twins[1]:
-            bot = Bot(token=session['TELEGA_TOKEN_AFONYA'])
-        else:
-            bot = Bot(token=session['TELEGA_TOKEN_VALSTANBOT'])
 
         posts = get_msg(twins[0], 0, 20)
 
@@ -46,7 +40,7 @@ async def post_to_telegram():
             # Вытягиваем если есть репосты и снова проверяем на повтор по номеру поста
             sample = clear_copy_history(sample)
             if lip_of_post(sample) in session['work'][session['name_session']][f"lip_{twins[1]}"] \
-                or sample['owner_id'] == -179037590\
+                or sample['owner_id'] == -179037590 \
                 or search_text(['ОбъявленияМалмыж',
                                 'УраПерерывчикМалмыж',
                                 'КиноМалмыж'], sample['text']):
@@ -71,6 +65,12 @@ async def post_to_telegram():
             if ("[http" and '|') not in i:
                 clear_posts[0]['text'] += i + "\n"
         clear_posts[0]['text'] = clear_posts[0]['text'][:-1]
+
+        # Открываем сессию Бота
+        if 'malmyzh_info' in twins[1]:
+            bot = Bot(token=session['TELEGA_TOKEN_AFONYA'])
+        else:
+            bot = Bot(token=session['TELEGA_TOKEN_VALSTANBOT'])
 
         # Если текст слишком длинный, то публикуем его сразу или режем на части и публикуем сразу
         if len(clear_posts[0]['text']) > 1024:
@@ -106,13 +106,17 @@ async def post_to_telegram():
                             media_files.append(f'telega_image_{count_attach}.jpg')
                             count_attach += 1
 
-            await send_media_post(media, twins[1], bot)
-            for i in media_files:
-                os.remove(i)
+            if media:
+                await send_media_post(media, twins[1], bot)
+                for i in media_files:
+                    os.remove(i)
 
         # Если текст был короткий и без фоток, то печатаем его
         if clear_posts[0]['text']:
             await send_text_post(clear_posts[0]['text'], twins[1], bot)
+
+        # Закрываем сессию Бота
+        await bot.session.close()
 
         session['work'][session['name_session']][f"lip_{twins[1]}"].append(lip_of_post(clear_posts[0]))
         while len(session['work'][session['name_session']][f"lip_{twins[1]}"]) > 30:
