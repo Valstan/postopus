@@ -57,6 +57,7 @@ def parser():
             continue
 
         # Вытаскиваем репосты
+        first_owher_id = sample['owner_id']
         sample = clear_copy_history(sample)
 
         # Фильтр на ПОВТОРЫ и ЗАПРЕЩЕННЫЕ ГРУППЫ И АККАУНТЫ
@@ -85,19 +86,19 @@ def parser():
 
             # Фильтр ЧУЖОЙ ЖУРНАЛИСТ для открытых групп в которые пишет кто попало
             # ВолейболвУржуме, СавальскаяВолость, Савали+17, МалмыЖ
-            if abs(sample['owner_id']) in (74344300, 99686065, 141990463, 9363816):
+            if abs(first_owher_id) in (74344300, 99686065, 141990463, 9363816):
                 if abs(sample['owner_id']) != abs(sample['from_id']):
                     session['work'][theme]['lip'].append(lip_of_post(sample))
                     continue
 
             # Фильтр НУЖНЫЕ слова по ОБЛАСТИ, если их нет, то пост пропускается.
             # Проверяются только определенные сообщества
-            if abs(sample['owner_id']) in session['filter_group_by_region_words'].values():
+            if abs(first_owher_id) in session['filter_group_by_region_words'].values():
                 if not search_text(session[f"{session['filter_region']}_words"], sample['text']):
                     continue
 
             # Фильтр для БалтасиРу Балтаси Хезмәт и Кукмор-РТ на присутствие ссылки на сайт
-            if abs(sample['owner_id']) in (65275507, 33406351):
+            if abs(first_owher_id) in (65275507, 33406351):
                 if search_text(['shahrikazan', 'kukmor-rt.ru', 'kazved.ru'], sample['text']) or \
                     'attachments' in sample and 'link' in sample['attachments'][0] and \
                     'baltaci' in sample['attachments'][0]['link']['url']:
