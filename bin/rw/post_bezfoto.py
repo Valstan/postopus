@@ -36,7 +36,9 @@ def post_bezfoto():
             sample = sample.split("@")[0]  # Отрезаю ссылку
             bezfoto.append(text_to_rafinad(sample[10:].lower()))  # отрезаю Эмодзи и lower для просмотра в Атласе
 
-        session['work']['all_bezfoto']['lip'].extend(bezfoto)
+        session['work']['all_bezfoto']['lip_main'].extend(bezfoto)
+        while len(session['work'][session['name_session']]['lip_main']) > 100:
+            del session['work'][session['name_session']]['lip_main'][0]
         del session['work']['bezfoto']['lip'][:15]
         save_table('bezfoto')
         save_table('all_bezfoto')
