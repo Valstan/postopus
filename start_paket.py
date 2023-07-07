@@ -9,7 +9,11 @@ if len(argv) == 2:
 else:
     argument = input(" Нужно ввести аргумент типа detsad или novost и т.д. - ")
 
-names_regions = ['dran', 'mi', 'klz', 'vp', 'ur', 'kukmor', 'bal', 'leb', 'nolinsk', 'nema', 'sovetsk']
+names_regions = ['dran',
+                 'mi', 'klz', 'vp', 'ur',
+                 'kukmor', 'bal',
+                 'leb', 'nolinsk', 'nema',
+                 'sovetsk', 'pizhanka']
 shuffle(names_regions)
 
 

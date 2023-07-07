@@ -9,7 +9,7 @@ vk_session = VkApi(token=session['VK_TOKEN_VALSTAN'])
 vk_app = vk_session.get_api()
 client = MongoClient(session['MONGO_CLIENT'])
 mongo_base = client['postopus']
-collection = mongo_base['sovetsk']
+collection = mongo_base['pizhanka']
 go_program = True
 while go_program:
 
