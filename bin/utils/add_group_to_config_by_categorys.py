@@ -40,7 +40,7 @@ while go_program:
                                                    fields='description')[0]['name']
             else:
                 name_group_all = vk_app.users.get(user_ids=abs(id_group),
-                                              fields='first_name,last_name')[0]
+                                                  fields='first_name,last_name')[0]
                 name_group = f"{name_group_all['first_name']} {name_group_all['last_name']}"
 
             name_group = re.sub(r"\W", ' ', name_group, 0, re.M | re.I)

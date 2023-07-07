@@ -2,6 +2,7 @@ import asyncio
 import random
 
 import config
+from bin.control.karavan import karavan
 from bin.control.parser import parser
 from bin.control.post_to_telega import post_to_telegram
 from bin.control.repost_me import repost_me
@@ -50,6 +51,9 @@ def control():
 
     elif session['name_session'] == 'repost_reklama':
         repost_reklama()
+
+    elif session['name_session'] == 'karavan':
+        karavan()
 
     # elif session['name_session'] == 'billboard':
     #     billboard()
