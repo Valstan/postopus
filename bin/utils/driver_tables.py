@@ -30,7 +30,7 @@ def save_table(name_table):
     if 'table_size' in session['work'][name_table]:
         size = session['work'][name_table]['table_size']
     else:
-        size = 30
+        size = 40
     collection = session['MONGO_BASE'][session['name_base']]
     # Изменяем размеры таблиц содержащих только списки
     for n in session['work'][name_table].keys():
