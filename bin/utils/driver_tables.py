@@ -27,11 +27,15 @@ def load_table(name_table):
 
 
 def save_table(name_table):
+    if 'all_bezfoto' in name_table:
+        size = 100
+    else:
+        size = 30
     collection = session['MONGO_BASE'][session['name_base']]
     # Изменяем размеры таблиц содержащих только списки
     for n in session['work'][name_table].keys():
         if n in 'lip hash':
-            while len(session['work'][name_table][n]) > 30:
+            while len(session['work'][name_table][n]) > size:
                 del session['work'][name_table][n][0]
     collection.update_one({'title': name_table}, {'$set': session['work'][name_table]}, upsert=True)
 

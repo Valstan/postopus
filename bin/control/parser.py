@@ -32,7 +32,7 @@ def parser():
         session['work']['all_bezfoto'] = load_table('all_bezfoto')
         # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
         # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
-        data_string = "".join(session['work']['all_bezfoto']['lip_main']) + text_to_rafinad(
+        data_string = "".join(session['work']['all_bezfoto']['lip']) + text_to_rafinad(
             "".join(session['work']['bezfoto']['lip']))
         # В строке ниже session['name_session'] не менять
         posts = read_posts(session[session['name_session']], 20)
