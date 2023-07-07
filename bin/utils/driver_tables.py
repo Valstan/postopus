@@ -27,8 +27,8 @@ def load_table(name_table):
 
 
 def save_table(name_table):
-    if 'all_bezfoto' in name_table:
-        size = 100
+    if 'table_size' in session['work'][name_table]:
+        size = session['work'][name_table]['table_size']
     else:
         size = 30
     collection = session['MONGO_BASE'][session['name_base']]
