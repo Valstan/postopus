@@ -1,3 +1,4 @@
+from bin.utils.search_text import search_text
 from config import session
 
 
@@ -34,7 +35,7 @@ def save_table(name_table):
     collection = session['MONGO_BASE'][session['name_base']]
     # Изменяем размеры таблиц содержащих только списки
     for n in session['work'][name_table].keys():
-        if n in 'lip hash':
+        if search_text(['lip', 'hash'], n):
             while len(session['work'][name_table][n]) > size:
                 del session['work'][name_table][n][0]
     collection.update_one({'title': name_table}, {'$set': session['work'][name_table]}, upsert=True)

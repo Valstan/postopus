@@ -119,8 +119,6 @@ async def post_to_telegram():
         await bot.session.close()
 
         session['work'][session['name_session']][f"lip_{twins[1]}"].append(lip_of_post(clear_posts[0]))
-        while len(session['work'][session['name_session']][f"lip_{twins[1]}"]) > 30:
-            del session['work'][session['name_session']][f"lip_{twins[1]}"][0]
         save_table(session['name_session'])
 
 
