@@ -13,7 +13,7 @@ names_regions = ['dran',
                  'mi', 'klz', 'vp', 'ur',
                  'kukmor', 'bal',
                  'leb', 'nolinsk', 'nema',
-                 'sovetsk', 'pizhanka']
+                 'sovetsk', 'pizhanka', 'arbazh']
 shuffle(names_regions)
 
 
