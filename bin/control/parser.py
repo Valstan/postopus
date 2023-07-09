@@ -143,23 +143,29 @@ def parser():
         if sort_po_foto(sample) and sort_po_video(sample):
             continue
 
-        # Получаем название группы. Если это группа популярная по сбору новостей, то название ее не указываю.
-        # Проверяем есть ли название уже в нашей базе
+        # Получаем название группы. Проверяем есть ли название уже в нашей базе
         name_group = ''
-        for i in ('detsad', 'kultura', 'admin', 'novost', 'union', 'sport'):
-            for key, value in session[i].items():
-                if sample['owner_id'] == value:
-                    name_group = key
-                    break
+
         # Проверяем можно ли публиковать имя группы
         if abs(sample['owner_id']) in session['bad_name_group'].values():
             name_group = 'Рассказали здесь'
-        elif not name_group:  # Если названия до сих пор нет
-            # Тащим название из интернета
-            if sample['owner_id'] > 0:  # значит пользователь
+        else:
+            for i in session['zagolovki'].keys():
+                for key, value in session[i].items():
+                    if sample['owner_id'] == value:
+                        name_group = key
+                        break
+                if name_group:
+                    break
+
+        # Если названия до сих пор нет, тащим название из интернета
+        if not name_group:
+            if sample['owner_id'] > 0:
+                # значит пользователь
                 name_group = session['vk_app'].users.get(user_ids=abs(sample['owner_id']),
                                                          fields='screen_name')[0]['screen_name'][:40]
-            else:  # иначе группа
+            else:
+                # иначе группа
                 name_group = session['vk_app'].groups.getById(group_ids=abs(sample['owner_id']),
                                                               fields='description')[0]['name'][:40]
 
