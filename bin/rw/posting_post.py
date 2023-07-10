@@ -70,8 +70,8 @@ def posting_post(msg_list):
                 attach, count_att = get_attach(sample)
 
             # Если длина текста больше чем в конфиге и текст есть или картинок-видео уже больше десяти, прекращаем набор
-            if len(text_post) + len(sample['text']) > session['text_post_maxsize_simbols']\
-                and text_post\
+            if len(text_post) + len(sample['text']) > session['text_post_maxsize_simbols'] \
+                and text_post \
                 or count_attach + count_att > 10:
                 break
             text_post += f"\n\n{sample['text']}"
@@ -87,16 +87,18 @@ def posting_post(msg_list):
         if 'attachments' in msg_list[0]:
             attachments, count_att = get_attach(msg_list[0])
         text_post = msg_list[0]['text']
-        session['work'][theme]['lip'].append(lip_of_post(msg_list[0]))
+        if lip_of_post(msg_list[0]) not in session['work'][theme]['lip']:
+            session['work'][theme]['lip'].append(lip_of_post(msg_list[0]))
 
-    if text_post:
+    if text_post or attachments:
         # Добавляем хэштеги
         if theme in 'novost':
             text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}" \
                          f"\n#{session['heshteg_local']['raicentr']} #{session['heshteg_local']['raion']}"
+        elif theme in 'oblast_novost':
+            pass
         else:
             text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}"
-
 
         try:
             post_msg(session['post_group_vk'],

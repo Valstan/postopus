@@ -3,6 +3,7 @@ import random
 
 import config
 from bin.control.karavan import karavan
+from bin.control.oblast_novost import oblast_novost
 from bin.control.parser import parser
 from bin.control.post_to_telega import post_to_telegram
 from bin.control.repost_me import repost_me
@@ -54,6 +55,9 @@ def control():
 
     elif session['name_session'] == 'karavan':
         karavan()
+
+    elif session['name_session'] == 'oblast_novost':
+        oblast_novost()
 
     # elif session['name_session'] == 'billboard':
     #     billboard()
