@@ -26,9 +26,11 @@ def oblast_novost():
 
         # Сначала пробиваем поиск людей, если есть то публикуем только их
         for sample in liza_posts:
-            if search_text(session[f"{region}_words"], sample['text']) \
+            if 'copy_history' not in sample \
+                and search_text(session[f"{region}_words"], sample['text']) \
                 and not search_text(['МВД России'], sample['text']) \
-                and not sort_old_date(sample):
+                and not sort_old_date(sample)\
+                and lip_of_post(sample) not in session['work'][session['name_session']]['lip']:
                 post = sample
                 break
 
@@ -41,11 +43,13 @@ def oblast_novost():
                 # Убираем ненужные посты
                 for sample in get_posts:
                     if 'copy_history' in sample or 'views' not in sample or \
-                        lip_of_post(sample) in session['work'][session['name_session']]['lip']:
+                        lip_of_post(sample) in session['work'][session['name_session']]['lip']\
+                        or sort_old_date(sample):
                         continue
                     posts.append(sample)
                 if posts:
-                    posts.sort(key=lambda x: x['views']['count'], reverse=True)
+                    if len(posts) > 1:
+                        posts.sort(key=lambda x: x['views']['count'], reverse=True)
                     post = posts[0]
                     break
 

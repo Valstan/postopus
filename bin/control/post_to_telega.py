@@ -24,20 +24,19 @@ async def send_media_post(media, post_group_telega, bot):
 async def post_to_telegram():
     for twins in session['all_telega_group']:
 
-        posts = get_msg(twins[0], 0, 20)
+        posts = get_msg(twins[0], 0, 10)
 
         # Набираем правильные посты
         clear_posts = []
         for sample in posts:
-            if lip_of_post(sample) in session['work'][session['name_session']][f"lip_{twins[1]}"]:
-                continue
+
             # if 'malmyzh_info' in twins[1]:
             # if search_text(['АФИША ВАКАНСИЙ'], sample['text']):
             #     continue
             # if search_text(['афиша'], sample['text']):
             #     sample['views']['count'] += 20000
 
-            # Вытягиваем если есть репосты и снова проверяем на повтор по номеру поста
+            # Вытягиваем если есть репосты и проверяем на повтор по номеру поста
             sample = clear_copy_history(sample)
             if lip_of_post(sample) in session['work'][session['name_session']][f"lip_{twins[1]}"] \
                 or sample['owner_id'] == -179037590 \
