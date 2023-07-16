@@ -6,7 +6,7 @@ from vk_api import VkApi
 
 from config import session
 
-address_repost = 'https://vk.com/wall-48016465_11824'
+address_repost = 'https://vk.com/wall-48016465_11882'
 
 vk_session = VkApi(token=session['VK_TOKEN_VALSTAN'])
 vk_app = vk_session.get_api()
