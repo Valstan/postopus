@@ -22,7 +22,7 @@ def copy_to_all_setka():
     vk_session = VkApi(token=session['VK_TOKEN_VALSTAN'])
     vk_app = vk_session.get_api()
 
-    # Берем только первый пост
+    # Берем только первый пост для
     sample = vk_app.wall.get(owner_id=lenta_copy_to_all_setka, count=1, offset=0)['items'][0]
 
     if sample['date'] > last_date:
