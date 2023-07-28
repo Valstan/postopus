@@ -39,7 +39,7 @@ def copy_to_all_setka():
 
         for post_group_vk in table['all_my_groups'].values():
             # Если не Олени, то печатаем
-            if post_group_vk != oleny_id:
+            if post_group_vk not in (oleny_id, sample('owner_id')):
                 vk_app.wall.post(owner_id=post_group_vk,
                                  from_group=1,
                                  message=sample['text'],
