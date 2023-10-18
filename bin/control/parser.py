@@ -88,7 +88,6 @@ def parser():
             # ВолейболвУржуме, СавальскаяВолость, Савали+17, МалмыЖ
             if abs(first_owher_id) in (74344300, 99686065, 141990463, 9363816):
                 if abs(sample['owner_id']) != abs(sample['from_id']):
-                    session['work'][theme]['lip'].append(lip_of_post(sample))
                     continue
 
             # Фильтр НУЖНЫЕ слова по ОБЛАСТИ, если их нет, то пост пропускается.
