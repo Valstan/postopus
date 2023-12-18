@@ -92,10 +92,10 @@ def posting_post(msg_list):
 
     if text_post or attachments:
         # Добавляем хэштеги
-        if theme in 'novost':
-            text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}" \
-                         f"\n#{session['heshteg_local']['raicentr']} #{session['heshteg_local']['raion']}"
-        elif theme in 'oblast_novost':
+        # if theme in 'novost':
+        #    text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}" \
+        #                 f"\n#{session['heshteg_local']['raicentr']} #{session['heshteg_local']['raion']}"
+        if theme in 'oblast_novost':
             pass
         else:
             text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}"
