@@ -86,9 +86,8 @@ def parser():
 
             # Фильтр ЧУЖОЙ ЖУРНАЛИСТ для открытых групп в которые пишет кто попало
             # ВолейболвУржуме, СавальскаяВолость, Савали+17, МалмыЖ
-            if abs(first_owher_id) in (74344300, 99686065, 141990463, 9363816):
+            if abs(first_owher_id) in session["only_main_news"]:
                 if abs(sample['owner_id']) != abs(sample['from_id']):
-                    session['work'][theme]['lip'].append(lip_of_post(sample))
                     continue
 
             # Фильтр НУЖНЫЕ слова по ОБЛАСТИ, если их нет, то пост пропускается.
