@@ -95,9 +95,7 @@ def posting_post(msg_list):
         # if theme in 'novost':
         #    text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}" \
         #                 f"\n#{session['heshteg_local']['raicentr']} #{session['heshteg_local']['raion']}"
-        if theme in 'oblast_novost':
-            pass
-        else:
+        if theme in 'novost' or theme not in 'oblast_novost':
             text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}"
 
         try:
