@@ -26,7 +26,7 @@ while go_program:
             # text_list = text_list[1].split(sep="_", maxsplit=-1)
             id_group = int(text_list[0])
 
-            for i in ('detsad', 'kultura', 'admin', 'novost', 'union', 'sport', 'reklama'):
+            for i in ('detsad', 'kultura', 'admin', 'novost', 'union', 'sport', 'reklama', 'kultpodved'):
                 if i in table and id_group in table[i].values():
                     aaa = input(f"Эта группа уже есть в категории {i}, продолжить внос - 1, начать сначала - 0:")
                     if aaa == '0':
@@ -49,7 +49,7 @@ while go_program:
 
     category = 0
     while not category:
-        category = int(input(f"1-detsad, 2-kultura, 3-admin, 4-novost, 5-union, 6-sport, 7-reklama\n"
+        category = int(input(f"1-detsad, 2-kultura, 3-admin, 4-novost, 5-union, 6-sport, 7-reklama, 8-kultpodved\n"
                              f"Группа: {name_group} добавить в категорию: "))
 
     if category == 1:
@@ -66,6 +66,8 @@ while go_program:
         category = 'sport'
     if category == 7:
         category = 'reklama'
+    if category == 8:
+        category = 'kultpodved'
 
     go_program = input(f"Для выхода из программы просто нажми Ентер."
                        f"Группа: {name_group}, номер: {id_group} в категорию: {category}\n"
