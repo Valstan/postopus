@@ -143,35 +143,35 @@ def parser():
             continue
 
         # Если группа-источник запрещена, то ссылку на нее не ставлю
-        # if abs(sample['owner_id']) in session['bad_name_group'].values():
-        #     sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}"
-        # else:
-        #     name_group = ''
-        #     for i in session['zagolovki'].keys():
-        #         for key, value in session[i].items():
-        #             if sample['owner_id'] == value:
-        #                 name_group = key
-        #                 break
-        #         if name_group:
-        #             break
-        #
-        #     # Если названия до сих пор нет, тащим название из интернета
-        #     if not name_group:
-        #         if sample['owner_id'] > 0:
-        #             # значит пользователь
-        #             name_group = session['vk_app'].users.get(user_ids=abs(sample['owner_id']),
-        #                                                      fields='screen_name')[0]['screen_name'][:40]
-        #         else:
-        #             # иначе группа
-        #             name_group = session['vk_app'].groups.getById(group_ids=abs(sample['owner_id']),
-        #                                                           fields='description')[0]['name'][:40]
-        #
-        #     # Текст обрамляется подписями.
-        #     sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n" \
-        #                      f"@{url_of_post(sample)} ({name_group})"
+        if abs(sample['owner_id']) in session['bad_name_group'].values():
+            sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}"
+        else:
+            name_group = ''
+            for i in session['zagolovki'].keys():
+                for key, value in session[i].items():
+                    if sample['owner_id'] == value:
+                        name_group = key
+                        break
+                if name_group:
+                    break
+
+            # Если названия до сих пор нет, тащим название из интернета
+            if not name_group:
+                if sample['owner_id'] > 0:
+                    # значит пользователь
+                    name_group = session['vk_app'].users.get(user_ids=abs(sample['owner_id']),
+                                                             fields='screen_name')[0]['screen_name'][:40]
+                else:
+                    # иначе группа
+                    name_group = session['vk_app'].groups.getById(group_ids=abs(sample['owner_id']),
+                                                                  fields='description')[0]['name'][:40]
+
+            # Текст обрамляется подписями.
+            sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n" \
+                             f"@{url_of_post(sample)} ({name_group})"
 
         # Вариант сбора текста поста без ссылок на источники
-        sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}"
+        # sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}"
 
         result_posts.append(sample)
 
