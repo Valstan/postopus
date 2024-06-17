@@ -36,7 +36,7 @@ def posting_post(msg_list):
     count_attach = 0
     attachments = ''
 
-    if theme in 'sosed repost_oleny repost_reklama karavan' and session['setka_regim_repost']:
+    if theme in 'sosed repost_oleny karavan' and session['setka_regim_repost']:
         session['vk_app'].wall.repost(object=url_of_post(msg_list[0]), group_id=abs(session['post_group_vk']))
         if lip_of_post(msg_list[0]) not in session['work'][theme]['lip']:
             session['work'][theme]['lip'].append(lip_of_post(msg_list[0]))
