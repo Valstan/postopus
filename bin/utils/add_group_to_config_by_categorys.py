@@ -50,7 +50,7 @@ while go_program:
     category = 0
     while not category:
         category = int(input(f"1-detsad, 2-kultura, 3-admin, 4-novost, 5-union, 6-sport, 7-reklama, 8-kultpodved\n"
-                             f"Группа: {name_group} добавить в категорию: "))
+                             f"Группа: \"{name_group}\" добавить в категорию: "))
 
     if category == 1:
         category = 'detsad'
