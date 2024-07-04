@@ -6,6 +6,7 @@ from bin.control.karavan import karavan
 from bin.control.oblast_novost import oblast_novost
 from bin.control.parser import parser
 from bin.control.post_to_telega import post_to_telegram
+from bin.control.repost_kultura import repost_kultura
 from bin.control.repost_me import repost_me
 from bin.control.repost_oleny import repost_oleny
 from bin.control.repost_reklama import repost_reklama
@@ -70,6 +71,9 @@ def control():
 
     elif session['name_session'] == 'sosed':
         sosed()
+
+    elif session['name_session'] == 'repost_kultura':
+        repost_kultura()
 
     elif session['name_session'] in 'telegram':
         asyncio.run(post_to_telegram())
