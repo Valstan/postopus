@@ -72,7 +72,7 @@ def control():
     elif session['name_session'] == 'sosed':
         sosed()
 
-    elif session['name_session'] == 'kultpodved':
+    elif session['name_session'] == 'repost_kultpodved':
         msg_list = repost_kultpodved()
         if msg_list:
             posting_post(msg_list)

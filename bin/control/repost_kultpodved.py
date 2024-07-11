@@ -1,7 +1,6 @@
-from random import shuffle, choice
+from random import shuffle
 
 from bin.rw.get_msg import get_msg
-from bin.rw.posting_post import posting_post
 from bin.rw.read_posts import read_posts
 from bin.sort.sort_old_date import sort_old_date
 from bin.sort.sort_po_foto import sort_po_foto
