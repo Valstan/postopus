@@ -26,7 +26,7 @@ def repost_kultpodved():
         if not search_text([session['heshteg']['reklama']], sample['text']):
             old_novost_txt += text_to_rafinad(sample['text'])
 
-    posts = read_posts(session[session['name_session']], 20)
+    posts = read_posts(session[session['name_session']], 5)
     shuffle(posts)
 
     result_posts = []
