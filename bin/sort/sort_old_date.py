@@ -11,7 +11,7 @@ def sort_old_date(sample):
     elif session['name_session'] in 'detsad kultura union sport oblast_novost'\
         and difference < session['time_old_post']['medium']:
         return True
-    elif session['name_session'] in 'krugozor music kino prikol art'\
+    elif session['name_session'] in 'krugozor music kino prikol art repost_kultpodved'\
         and difference < session['time_old_post']['light']:
         return True
     else:

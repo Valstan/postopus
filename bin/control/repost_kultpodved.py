@@ -36,7 +36,6 @@ def repost_kultpodved():
             continue
 
         # Вытаскиваем репосты
-        first_owher_id = sample['owner_id']
         sample = clear_copy_history(sample)
 
         # Фильтр на ПОВТОРЫ и ЗАПРЕЩЕННЫЕ ГРУППЫ И АККАУНТЫ
@@ -47,7 +46,7 @@ def repost_kultpodved():
         if abs(sample['owner_id']) != abs(sample['from_id']):
             continue
 
-        # Проверяем на повторы или запрещенку
+        # Проверяем на повторы
         text_rafinad = text_to_rafinad(sample['text'])
         if search_text([text_rafinad[int(len(text_rafinad) * 0.2):int(len(text_rafinad) * 0.7)]], old_novost_txt):
             continue
