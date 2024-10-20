@@ -2,6 +2,7 @@ import asyncio
 import random
 
 import config
+from bin.control.din_info import din_info
 from bin.control.karavan import karavan
 from bin.control.oblast_novost import oblast_novost
 from bin.control.parser import parser
@@ -79,6 +80,11 @@ def control():
 
     elif session['name_session'] in 'telegram':
         asyncio.run(post_to_telegram())
+
+    elif session['name_session'] == 'din_info':
+        msg_list = parser()
+        if msg_list:
+            asyncio.run(din_info(msg_list))
 
     # elif session['name_session'] == 'instagram':
     #     instagram_mi()
