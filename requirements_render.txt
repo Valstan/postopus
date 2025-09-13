@@ -8,10 +8,10 @@ dnspython==2.6.1
 pytz==2024.1
 aiogram~=3.13.1
 
-# AI/ML dependencies
-tensorflow>=2.13.0
-easyocr>=1.7.0
-pymorphy2>=0.9.1
+# AI/ML dependencies (отключено для экономии ресурсов)
+# tensorflow>=2.13.0
+# easyocr>=1.7.0
+# pymorphy2>=0.9.1
 
 # Web framework
 fastapi>=0.104.0
