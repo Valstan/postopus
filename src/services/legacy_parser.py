@@ -3,7 +3,12 @@
 """
 import logging
 import random
+import sys
+import os
 from typing import List, Dict, Any, Optional
+
+# Добавляем путь к модулям
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from models.post import Post
 from config import Config

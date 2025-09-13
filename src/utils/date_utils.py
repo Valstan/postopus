@@ -2,8 +2,13 @@
 Утилиты для работы с датами.
 """
 import logging
+import sys
+import os
 from datetime import datetime, timedelta
 from typing import Dict
+
+# Добавляем путь к модулям
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from models.post import Post
 

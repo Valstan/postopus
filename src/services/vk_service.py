@@ -4,7 +4,12 @@
 import logging
 import random
 import asyncio
+import sys
+import os
 from typing import List, Dict, Any, Optional
+
+# Добавляем путь к модулю config
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from vk_api import VkApi
 from vk_api.exceptions import VkApiError

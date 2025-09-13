@@ -2,8 +2,13 @@
 Сервис для обработки постов.
 """
 import logging
+import sys
+import os
 from typing import List, Optional, Dict, Any
 from datetime import datetime
+
+# Добавляем путь к модулям
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from models.post import Post, Attachment
 from utils.text_utils import TextProcessor

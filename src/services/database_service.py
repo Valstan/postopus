@@ -2,9 +2,14 @@
 Сервис для работы с базой данных.
 """
 import logging
+import sys
+import os
 from typing import Dict, Any, Optional
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure
+
+# Добавляем путь к модулю config
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from config import Config
 
