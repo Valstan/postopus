@@ -5,11 +5,11 @@ import logging
 import random
 from typing import List, Dict, Any, Optional
 
-from ..models.post import Post
-from ..models.config import AppConfig
-from ..utils.text_utils import TextProcessor
-from ..utils.date_utils import DateProcessor
-from ..utils.image_utils import ImageProcessor
+from models.post import Post
+from config import Config
+from utils.text_utils import TextProcessor
+from utils.date_utils import DateProcessor
+from utils.image_utils import ImageProcessor
 from .vk_service import VKService
 from .database_service import DatabaseService
 
@@ -195,7 +195,7 @@ class LegacyParser:
     def _create_post_from_data(self, data: Dict[str, Any]) -> Post:
         """Создает объект Post из данных VK API."""
         try:
-            from ..models.post import Post, Attachment
+            from models.post import Post, Attachment
             from datetime import datetime
             
             # Создаем вложения

@@ -12,7 +12,7 @@ from contextlib import asynccontextmanager
 from .routers import auth, dashboard, posts, settings, scheduler
 from .database import get_database
 from .auth import get_current_user
-from ..models.config import AppConfig
+from config import Config
 
 # Настраиваем логирование
 logging.basicConfig(level=logging.INFO)
