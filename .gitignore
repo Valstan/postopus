@@ -71,4 +71,4 @@ secrets.json
 tokens.txt
 
 # Render.com specific
-render.yaml
+# render.yaml - НЕ игнорируем, нужен для развертывания
