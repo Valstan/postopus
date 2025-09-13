@@ -251,6 +251,174 @@ async def get_regions(db: Session = Depends(get_db)):
         logger.error(f"Error getting regions: {e}")
         return {"regions": []}
 
+@router.get("/posts")
+async def get_public_posts(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1, le=100),
+    status: str = Query(None, description="Фильтр по статусу"),
+    platform: str = Query(None, description="Фильтр по платформе"),
+    region: str = Query(None, description="Фильтр по региону"),
+    db: Session = Depends(get_db)
+):
+    """Получение списка постов (без аутентификации)."""
+    try:
+        query = db.query(Post)
+        
+        if status:
+            query = query.filter(Post.status == status)
+        if platform:
+            query = query.filter(Post.platform == platform)
+        if region:
+            query = query.filter(Post.region == region)
+        
+        posts = query.order_by(desc(Post.created_at)).offset(skip).limit(limit).all()
+        
+        return {
+            "posts": [
+                {
+                    "id": post.id,
+                    "title": post.title,
+                    "content": post.content,
+                    "status": post.status,
+                    "platform": post.platform,
+                    "region": post.region,
+                    "created_at": post.created_at.isoformat() if post.created_at else None,
+                    "published_at": post.published_at.isoformat() if post.published_at else None,
+                    "views": post.views,
+                    "likes": post.likes,
+                    "reposts": post.reposts
+                }
+                for post in posts
+            ],
+            "total": query.count(),
+            "skip": skip,
+            "limit": limit
+        }
+    except Exception as e:
+        logger.error(f"Error getting public posts: {e}")
+        return {"posts": [], "total": 0, "skip": skip, "limit": limit}
+
+@router.get("/groups")
+async def get_public_groups(
+    platform: str = Query(None, description="Фильтр по платформе"),
+    region: str = Query(None, description="Фильтр по региону"),
+    active_only: bool = Query(True, description="Только активные группы"),
+    db: Session = Depends(get_db)
+):
+    """Получение списка групп (без аутентификации)."""
+    try:
+        query = db.query(Group)
+        
+        if platform:
+            query = query.filter(Group.platform == platform)
+        if region:
+            query = query.filter(Group.region == region)
+        if active_only:
+            query = query.filter(Group.is_active == True)
+        
+        groups = query.order_by(Group.name).all()
+        
+        return {
+            "groups": [
+                {
+                    "id": group.id,
+                    "name": group.name,
+                    "platform": group.platform,
+                    "group_id": group.group_id,
+                    "region": group.region,
+                    "is_active": group.is_active,
+                    "created_at": group.created_at.isoformat() if group.created_at else None
+                }
+                for group in groups
+            ],
+            "total": len(groups)
+        }
+    except Exception as e:
+        logger.error(f"Error getting public groups: {e}")
+        return {"groups": [], "total": 0}
+
+@router.get("/analytics")
+async def get_public_analytics(
+    days: int = Query(30, description="Количество дней для анализа"),
+    db: Session = Depends(get_db)
+):
+    """Получение аналитики (без аутентификации)."""
+    try:
+        start_date = datetime.utcnow() - timedelta(days=days)
+        
+        # Общая статистика
+        total_posts = db.query(Post).count()
+        posts_in_period = db.query(Post).filter(Post.created_at >= start_date).count()
+        total_groups = db.query(Group).count()
+        active_groups = db.query(Group).filter(Group.is_active == True).count()
+        
+        # Статистика по платформам
+        platform_stats = db.query(
+            Group.platform,
+            func.count(Group.id).label('count')
+        ).group_by(Group.platform).all()
+        
+        # Статистика по регионам
+        region_stats = db.query(
+            Post.region,
+            func.count(Post.id).label('count')
+        ).filter(Post.region.isnot(None)).group_by(Post.region).all()
+        
+        # Статистика по статусам
+        status_stats = db.query(
+            Post.status,
+            func.count(Post.id).label('count')
+        ).group_by(Post.status).all()
+        
+        return {
+            "period": {
+                "days": days,
+                "start_date": start_date.isoformat(),
+                "end_date": datetime.utcnow().isoformat()
+            },
+            "overview": {
+                "total_posts": total_posts,
+                "posts_in_period": posts_in_period,
+                "total_groups": total_groups,
+                "active_groups": active_groups
+            },
+            "platform_stats": [{"platform": platform, "count": count} for platform, count in platform_stats],
+            "region_stats": [{"region": region, "count": count} for region, count in region_stats],
+            "status_stats": [{"status": status, "count": count} for status, count in status_stats]
+        }
+    except Exception as e:
+        logger.error(f"Error getting public analytics: {e}")
+        return {
+            "period": {"days": days, "start_date": None, "end_date": None},
+            "overview": {"total_posts": 0, "posts_in_period": 0, "total_groups": 0, "active_groups": 0},
+            "platform_stats": [],
+            "region_stats": [],
+            "status_stats": []
+        }
+
+@router.get("/settings")
+async def get_public_settings():
+    """Получение настроек (без аутентификации)."""
+    try:
+        from ..web.config import Config
+        
+        return {
+            "regions": Config.REGIONS,
+            "platforms": ["vk", "telegram", "instagram"],
+            "statuses": ["draft", "ready", "scheduled", "published", "failed"],
+            "cron_schedule": Config.CRON_SCHEDULE,
+            "token_names": Config.TOKEN_NAMES
+        }
+    except Exception as e:
+        logger.error(f"Error getting public settings: {e}")
+        return {
+            "regions": [],
+            "platforms": [],
+            "statuses": [],
+            "cron_schedule": [],
+            "token_names": {}
+        }
+
 @router.get("/search")
 async def search_posts(
     q: str = Query(..., description="Поисковый запрос"),
