@@ -32,6 +32,7 @@ flower>=2.0.0
 # Database
 psycopg2-binary>=2.9.7
 sqlalchemy>=2.0.23
+pymongo>=4.8.0
 
 # HTTP client
 httpx>=0.25.0

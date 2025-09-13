@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
 
-from .routers import auth, dashboard, posts, settings, scheduler
+from .routers import auth, dashboard, posts, settings, scheduler, analytics
 from .database import get_database, init_db, test_connection
 from .routers.auth import get_current_user
 
@@ -62,6 +62,7 @@ app.include_router(dashboard.router, prefix="/api/dashboard", tags=["dashboard"]
 app.include_router(posts.router, prefix="/api/posts", tags=["posts"])
 app.include_router(settings.router, prefix="/api/settings", tags=["settings"])
 app.include_router(scheduler.router, prefix="/api/scheduler", tags=["scheduler"])
+app.include_router(analytics.router, prefix="/api/analytics", tags=["analytics"])
 
 # Статические файлы для фронтенда
 app.mount("/static", StaticFiles(directory="web/static"), name="static")
@@ -70,23 +71,27 @@ app.mount("/static", StaticFiles(directory="web/static"), name="static")
 async def read_root():
     """Главная страница."""
     try:
-        with open("web/templates/index.html", "r", encoding="utf-8") as f:
+        with open("web/templates/enhanced_dashboard.html", "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read())
     except FileNotFoundError:
-        return HTMLResponse(content="""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Postopus</title>
-            <meta charset="utf-8">
-        </head>
-        <body>
-            <h1>Postopus Web Interface</h1>
-            <p>Система автоматической публикации контента</p>
-            <p>Веб-интерфейс загружается...</p>
-        </body>
-        </html>
-        """)
+        try:
+            with open("web/templates/index.html", "r", encoding="utf-8") as f:
+                return HTMLResponse(content=f.read())
+        except FileNotFoundError:
+            return HTMLResponse(content="""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Postopus</title>
+                <meta charset="utf-8">
+            </head>
+            <body>
+                <h1>Postopus Web Interface</h1>
+                <p>Система автоматической публикации контента</p>
+                <p>Веб-интерфейс загружается...</p>
+            </body>
+            </html>
+            """)
 
 @app.get("/health")
 async def health_check():
