@@ -11,7 +11,7 @@ from contextlib import asynccontextmanager
 
 from .routers import auth, dashboard, posts, settings, scheduler
 from .database import get_database
-from .auth import get_current_user
+from .routers.auth import get_current_user
 from ..models.config import AppConfig
 
 # Настраиваем логирование
