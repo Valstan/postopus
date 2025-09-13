@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 from typing import Dict
 
 from ..models.post import Post
-from ..models.config import AppConfig
 
 logger = logging.getLogger(__name__)
 
@@ -14,8 +13,13 @@ logger = logging.getLogger(__name__)
 class DateProcessor:
     """Класс для обработки дат."""
     
-    def __init__(self, config: AppConfig):
-        self.config = config
+    def __init__(self):
+        # Временные ограничения по темам (в секундах)
+        self.time_limits = {
+            'hard': 3600,    # 1 час
+            'medium': 7200,  # 2 часа
+            'light': 14400   # 4 часа
+        }
     
     def is_post_fresh(self, post: Post, theme: str) -> bool:
         """
@@ -51,7 +55,7 @@ class DateProcessor:
         Returns:
             Максимальный возраст в секундах
         """
-        time_limits = self.config.filters.time_old_post
+        time_limits = self.time_limits
         
         # Жесткие ограничения для новостей и рекламы
         if theme in ['admin', 'novost', 'reklama', 'sosed', 'malmigrus']:

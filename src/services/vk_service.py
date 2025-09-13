@@ -10,7 +10,7 @@ from vk_api import VkApi
 from vk_api.exceptions import VkApiError
 
 from ..models.post import Post
-from ..models.config import AppConfig
+from ..web.config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -18,8 +18,7 @@ logger = logging.getLogger(__name__)
 class VKService:
     """Сервис для работы с VK API."""
     
-    def __init__(self, config: AppConfig):
-        self.config = config
+    def __init__(self):
         self.vk_app: Optional[VkApi] = None
         self.current_token: Optional[str] = None
     
@@ -99,15 +98,17 @@ class VKService:
     
     def _get_read_token(self) -> Optional[str]:
         """Возвращает случайный токен для чтения."""
-        if not self.config.vk.read_tokens:
+        tokens = Config.get_active_vk_tokens()
+        if not tokens:
             return None
-        return random.choice(self.config.vk.read_tokens)
+        return random.choice(tokens)
     
     def _get_post_token(self) -> Optional[str]:
         """Возвращает случайный токен для публикации."""
-        if not self.config.vk.post_tokens:
+        tokens = Config.get_active_vk_tokens()
+        if not tokens:
             return None
-        return random.choice(self.config.vk.post_tokens)
+        return random.choice(tokens)
     
     async def _create_vk_session(self, token: str) -> bool:
         """

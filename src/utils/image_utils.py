@@ -3,12 +3,11 @@
 """
 import hashlib
 import logging
+import io
 from typing import List, Optional
 from PIL import Image
 import requests
 from pathlib import Path
-
-from ..models.config import AppConfig
 
 logger = logging.getLogger(__name__)
 
@@ -16,8 +15,7 @@ logger = logging.getLogger(__name__)
 class ImageProcessor:
     """Класс для обработки изображений."""
     
-    def __init__(self, config: AppConfig):
-        self.config = config
+    def __init__(self):
         self.temp_dir = Path("temp_images")
         self.temp_dir.mkdir(exist_ok=True)
     
@@ -90,10 +88,9 @@ class ImageProcessor:
             if not image_hash:
                 return False
             
-            # Проверяем в рабочей таблице
-            if 'work' in self.config and theme in self.config.work:
-                if 'hash' in self.config.work[theme] and image_hash in self.config.work[theme]['hash']:
-                    return True
+            # TODO: Проверяем в базе данных
+            # if image_hash in database.get_image_hashes(theme):
+            #     return True
             
             return False
         except Exception as e:
@@ -113,14 +110,8 @@ class ImageProcessor:
             if not image_hash:
                 return
             
-            if 'work' not in self.config:
-                self.config.work = {}
-            if theme not in self.config.work:
-                self.config.work[theme] = {'hash': []}
-            if 'hash' not in self.config.work[theme]:
-                self.config.work[theme]['hash'] = []
-            
-            self.config.work[theme]['hash'].append(image_hash)
+            # TODO: Сохраняем в базу данных
+            # database.add_image_hash(theme, image_hash)
             
         except Exception as e:
             logger.error(f"Error adding image hash: {e}")

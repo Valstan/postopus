@@ -6,7 +6,7 @@ from typing import Dict, Any, Optional
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure
 
-from ..models.config import AppConfig
+from ..web.config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -14,8 +14,7 @@ logger = logging.getLogger(__name__)
 class DatabaseService:
     """Сервис для работы с базой данных."""
     
-    def __init__(self, config: AppConfig):
-        self.config = config
+    def __init__(self):
         self.client: Optional[MongoClient] = None
         self.database = None
     
@@ -27,8 +26,8 @@ class DatabaseService:
             True если подключение успешно
         """
         try:
-            self.client = MongoClient(self.config.database.mongo_client)
-            self.database = self.client[self.config.database.database_name]
+            self.client = MongoClient(Config.MONGO_CLIENT)
+            self.database = self.client["postopus"]
             
             # Тестируем соединение
             self.client.admin.command('ping')

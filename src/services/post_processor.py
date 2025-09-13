@@ -6,7 +6,6 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 
 from ..models.post import Post, Attachment
-from ..models.config import AppConfig
 from ..utils.text_utils import TextProcessor
 from ..utils.image_utils import ImageProcessor
 from ..utils.date_utils import DateProcessor
@@ -17,11 +16,10 @@ logger = logging.getLogger(__name__)
 class PostProcessor:
     """Основной класс для обработки постов."""
     
-    def __init__(self, config: AppConfig):
-        self.config = config
-        self.text_processor = TextProcessor(config)
-        self.image_processor = ImageProcessor(config)
-        self.date_processor = DateProcessor(config)
+    def __init__(self):
+        self.text_processor = TextProcessor()
+        self.image_processor = ImageProcessor()
+        self.date_processor = DateProcessor()
     
     def process_posts(self, posts: List[Dict[str, Any]], theme: str) -> List[Post]:
         """
@@ -125,9 +123,10 @@ class PostProcessor:
             return False
         
         # Проверка на запрещенные группы/пользователи
-        if abs(post.owner_id) in self.config.filters.black_id:
-            logger.debug(f"Post {post.get_unique_id()} from blacklisted source")
-            return False
+        # TODO: Добавить проверку blacklist из базы данных
+        # if abs(post.owner_id) in blacklist:
+        #     logger.debug(f"Post {post.get_unique_id()} from blacklisted source")
+        #     return False
         
         # Проверка текста на запрещенные слова
         if self.text_processor.contains_blacklisted_words(post.text):
@@ -144,10 +143,9 @@ class PostProcessor:
         """Проверяет, является ли пост дубликатом."""
         post_id = post.get_unique_id()
         
-        # Проверяем в рабочей таблице
-        if 'work' in self.config and theme in self.config.work:
-            if 'lip' in self.config.work[theme] and post_id in self.config.work[theme]['lip']:
-                return True
+        # TODO: Проверяем в базе данных
+        # if post_id in database.get_processed_posts(theme):
+        #     return True
         
         return False
     

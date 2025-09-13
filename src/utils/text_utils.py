@@ -5,16 +5,18 @@ import re
 import logging
 from typing import List, Optional
 
-from ..models.config import AppConfig
-
 logger = logging.getLogger(__name__)
 
 
 class TextProcessor:
     """Класс для обработки текста."""
     
-    def __init__(self, config: AppConfig):
-        self.config = config
+    def __init__(self):
+        # TODO: Загружать blacklist из базы данных
+        self.blacklist = [
+            "реклама", "спам", "продам", "куплю", "обменяю",
+            "заработок", "деньги", "кредит", "займ"
+        ]
     
     def contains_blacklisted_words(self, text: str) -> bool:
         """
@@ -26,12 +28,12 @@ class TextProcessor:
         Returns:
             True если содержит запрещенные слова
         """
-        if not text or not self.config.filters.delete_msg_blacklist:
+        if not text or not self.blacklist:
             return False
         
         try:
             # Создаем регулярное выражение из списка запрещенных слов
-            pattern = '|'.join(re.escape(word) for word in self.config.filters.delete_msg_blacklist)
+            pattern = '|'.join(re.escape(word) for word in self.blacklist)
             return bool(re.search(pattern, text, re.IGNORECASE | re.MULTILINE))
         except Exception as e:
             logger.error(f"Error checking blacklisted words: {e}")
@@ -73,7 +75,8 @@ class TextProcessor:
             return text
         
         try:
-            blacklist = self.config.filters.clear_text_blacklist.get(blacklist_type, [])
+            # TODO: Загружать blacklist из базы данных по типу
+            blacklist = self.blacklist
             if not blacklist:
                 return text
             

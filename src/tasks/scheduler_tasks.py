@@ -9,7 +9,6 @@ from typing import List, Dict, Any
 
 from .celery_app import celery_app
 from ..services.database_service import DatabaseService
-from ..models.config import AppConfig
 
 logger = logging.getLogger(__name__)
 
@@ -24,11 +23,8 @@ def cleanup_logs_task(self, days_to_keep: int = 30):
     try:
         logger.info(f"Starting cleanup_logs_task, keeping logs for {days_to_keep} days")
         
-        # Создаем конфигурацию
-        config = AppConfig.from_env()
-        
         # Создаем сервисы
-        database_service = DatabaseService(config)
+        database_service = DatabaseService()
         
         # Подключаемся к базе данных
         if not database_service.connect():
@@ -86,11 +82,8 @@ def backup_database_task(self):
     try:
         logger.info("Starting backup_database_task")
         
-        # Создаем конфигурацию
-        config = AppConfig.from_env()
-        
         # Создаем сервисы
-        database_service = DatabaseService(config)
+        database_service = DatabaseService()
         
         # Подключаемся к базе данных
         if not database_service.connect():
@@ -160,11 +153,8 @@ def health_check_task(self):
     try:
         logger.info("Starting health_check_task")
         
-        # Создаем конфигурацию
-        config = AppConfig.from_env()
-        
         # Создаем сервисы
-        database_service = DatabaseService(config)
+        database_service = DatabaseService()
         
         # Проверяем подключение к базе данных
         db_healthy = database_service.connect()
@@ -230,11 +220,8 @@ def update_statistics_task(self):
     try:
         logger.info("Starting update_statistics_task")
         
-        # Создаем конфигурацию
-        config = AppConfig.from_env()
-        
         # Создаем сервисы
-        database_service = DatabaseService(config)
+        database_service = DatabaseService()
         
         # Подключаемся к базе данных
         if not database_service.connect():

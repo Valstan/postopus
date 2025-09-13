@@ -9,7 +9,6 @@ from .celery_app import celery_app
 from ..services.post_processor import PostProcessor
 from ..services.vk_service import VKService
 from ..services.database_service import DatabaseService
-from ..models.config import AppConfig
 
 logger = logging.getLogger(__name__)
 
@@ -25,13 +24,10 @@ def parse_posts_task(self, session_name: str, bags: str = "0"):
     try:
         logger.info(f"Starting parse_posts_task for session: {session_name}")
         
-        # Создаем конфигурацию
-        config = AppConfig.from_env()
-        
         # Создаем сервисы
-        post_processor = PostProcessor(config)
-        vk_service = VKService(config)
-        database_service = DatabaseService(config)
+        post_processor = PostProcessor()
+        vk_service = VKService()
+        database_service = DatabaseService()
         
         # Подключаемся к базе данных
         if not database_service.connect():
@@ -91,12 +87,9 @@ def publish_post_task(self, post_id: str, target_platforms: List[str]):
     try:
         logger.info(f"Starting publish_post_task for post: {post_id}")
         
-        # Создаем конфигурацию
-        config = AppConfig.from_env()
-        
         # Создаем сервисы
-        vk_service = VKService(config)
-        database_service = DatabaseService(config)
+        vk_service = VKService()
+        database_service = DatabaseService()
         
         # Подключаемся к базе данных
         if not database_service.connect():
@@ -217,12 +210,9 @@ def update_post_stats_task(self, post_id: str):
     try:
         logger.info(f"Starting update_post_stats_task for post: {post_id}")
         
-        # Создаем конфигурацию
-        config = AppConfig.from_env()
-        
         # Создаем сервисы
-        vk_service = VKService(config)
-        database_service = DatabaseService(config)
+        vk_service = VKService()
+        database_service = DatabaseService()
         
         # Подключаемся к базе данных
         if not database_service.connect():
