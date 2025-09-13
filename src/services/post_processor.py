@@ -5,10 +5,10 @@ import logging
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 
-from ..models.post import Post, Attachment
-from ..utils.text_utils import TextProcessor
-from ..utils.image_utils import ImageProcessor
-from ..utils.date_utils import DateProcessor
+from models.post import Post, Attachment
+from utils.text_utils import TextProcessor
+from utils.image_utils import ImageProcessor
+from utils.date_utils import DateProcessor
 
 logger = logging.getLogger(__name__)
 

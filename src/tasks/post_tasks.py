@@ -6,9 +6,9 @@ from datetime import datetime
 from typing import List, Dict, Any
 
 from .celery_app import celery_app
-from ..services.post_processor import PostProcessor
-from ..services.vk_service import VKService
-from ..services.database_service import DatabaseService
+from services.post_processor import PostProcessor
+from services.vk_service import VKService
+from services.database_service import DatabaseService
 
 logger = logging.getLogger(__name__)
 

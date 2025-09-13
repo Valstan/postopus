@@ -53,7 +53,7 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements_render.txt
-    startCommand: celery -A src.tasks.celery_app worker --loglevel=info
+    startCommand: cd src && celery -A tasks.celery_app worker --loglevel=info
     envVars:
       - key: POSTGRES_HOST
         fromDatabase:
@@ -97,7 +97,7 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements_render.txt
-    startCommand: celery -A src.tasks.celery_app beat --loglevel=info
+    startCommand: cd src && celery -A tasks.celery_app beat --loglevel=info
     envVars:
       - key: POSTGRES_HOST
         fromDatabase:

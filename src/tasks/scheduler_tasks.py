@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Any
 
 from .celery_app import celery_app
-from ..services.database_service import DatabaseService
+from services.database_service import DatabaseService
 
 logger = logging.getLogger(__name__)
 

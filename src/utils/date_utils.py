@@ -5,7 +5,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import Dict
 
-from ..models.post import Post
+from models.post import Post
 
 logger = logging.getLogger(__name__)
 
