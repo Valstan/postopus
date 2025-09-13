@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postopus - Система автоматической публикации контента</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Навигация -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-rocket"></i> Postopus
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#dashboard" @click="currentView = 'dashboard'">
+                                <i class="fas fa-tachometer-alt"></i> Дашборд
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#posts" @click="currentView = 'posts'">
+                                <i class="fas fa-newspaper"></i> Посты
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#scheduler" @click="currentView = 'scheduler'">
+                                <i class="fas fa-clock"></i> Планировщик
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#settings" @click="currentView = 'settings'">
+                                <i class="fas fa-cog"></i> Настройки
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> Пользователь
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" @click="logout">Выйти</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Основной контент -->
+        <div class="container-fluid mt-4">
+            <!-- Дашборд -->
+            <div v-if="currentView === 'dashboard'" class="row">
+                <div class="col-12">
+                    <h2><i class="fas fa-tachometer-alt"></i> Дашборд</h2>
+                </div>
+                
+                <!-- Статистика -->
+                <div class="col-md-3 mb-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>{{ stats.total_posts || 0 }}</h4>
+                                    <p class="mb-0">Всего постов</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-newspaper fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>{{ stats.published_today || 0 }}</h4>
+                                    <p class="mb-0">Опубликовано сегодня</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-calendar-day fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>{{ stats.scheduled_tasks || 0 }}</h4>
+                                    <p class="mb-0">Запланированных задач</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>{{ stats.error_count || 0 }}</h4>
+                                    <p class="mb-0">Ошибок за 24ч</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- График -->
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Статистика публикаций</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="postsChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Недавние посты -->
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Недавние посты</h5>
+                        </div>
+                        <div class="card-body">
+                            <div v-if="recentPosts.length === 0" class="text-center text-muted">
+                                <i class="fas fa-inbox fa-3x mb-3"></i>
+                                <p>Нет недавних постов</p>
+                            </div>
+                            <div v-else>
+                                <div v-for="post in recentPosts" :key="post.id" class="border-bottom pb-3 mb-3">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <h6>{{ post.text.substring(0, 100) }}{{ post.text.length > 100 ? '...' : '' }}</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-clock"></i> {{ formatDate(post.published_at) }}
+                                            </small>
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <span class="badge bg-primary me-2">
+                                                <i class="fas fa-eye"></i> {{ post.views }}
+                                            </span>
+                                            <span class="badge bg-success me-2">
+                                                <i class="fas fa-heart"></i> {{ post.likes }}
+                                            </span>
+                                            <span class="badge bg-info">
+                                                <i class="fas fa-share"></i> {{ post.reposts }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Посты -->
+            <div v-if="currentView === 'posts'" class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-newspaper"></i> Управление постами</h2>
+                        <button class="btn btn-primary" @click="showCreatePostModal = true">
+                            <i class="fas fa-plus"></i> Создать пост
+                        </button>
+                    </div>
+                    
+                    <!-- Фильтры -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-label">Статус</label>
+                                    <select class="form-select" v-model="postFilters.status">
+                                        <option value="">Все</option>
+                                        <option value="draft">Черновик</option>
+                                        <option value="ready">Готов к публикации</option>
+                                        <option value="scheduled">Запланирован</option>
+                                        <option value="published">Опубликован</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Платформа</label>
+                                    <select class="form-select" v-model="postFilters.platform">
+                                        <option value="">Все</option>
+                                        <option value="vk">VK</option>
+                                        <option value="telegram">Telegram</option>
+                                        <option value="instagram">Instagram</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Поиск</label>
+                                    <input type="text" class="form-control" v-model="postFilters.search" placeholder="Поиск по тексту...">
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button class="btn btn-outline-primary" @click="loadPosts">
+                                        <i class="fas fa-search"></i> Поиск
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Список постов -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div v-if="posts.length === 0" class="text-center text-muted">
+                                <i class="fas fa-inbox fa-3x mb-3"></i>
+                                <p>Посты не найдены</p>
+                            </div>
+                            <div v-else>
+                                <div v-for="post in posts" :key="post.id" class="border-bottom pb-3 mb-3">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <h6>{{ post.text.substring(0, 200) }}{{ post.text.length > 200 ? '...' : '' }}</h6>
+                                            <div class="mt-2">
+                                                <span class="badge bg-secondary me-2">{{ post.status }}</span>
+                                                <span v-for="platform in post.target_platforms" :key="platform" class="badge bg-info me-2">
+                                                    {{ platform.toUpperCase() }}
+                                                </span>
+                                            </div>
+                                            <small class="text-muted">
+                                                <i class="fas fa-clock"></i> {{ formatDate(post.created_at) }}
+                                            </small>
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-sm btn-outline-primary" @click="editPost(post)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-success" @click="publishPost(post.id)" v-if="post.status === 'ready'">
+                                                    <i class="fas fa-paper-plane"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" @click="deletePost(post.id)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Планировщик -->
+            <div v-if="currentView === 'scheduler'" class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-clock"></i> Планировщик задач</h2>
+                        <button class="btn btn-primary" @click="showCreateTaskModal = true">
+                            <i class="fas fa-plus"></i> Создать задачу
+                        </button>
+                    </div>
+                    
+                    <!-- Статус планировщика -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h4 class="text-success">{{ schedulerStatus.tasks.total || 0 }}</h4>
+                                        <p class="mb-0">Всего задач</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h4 class="text-primary">{{ schedulerStatus.tasks.enabled || 0 }}</h4>
+                                        <p class="mb-0">Активных</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h4 class="text-warning">{{ schedulerStatus.tasks.running || 0 }}</h4>
+                                        <p class="mb-0">Выполняется</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h4 class="text-info">{{ schedulerStatus.executions.today || 0 }}</h4>
+                                        <p class="mb-0">Выполнено сегодня</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Список задач -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div v-if="tasks.length === 0" class="text-center text-muted">
+                                <i class="fas fa-tasks fa-3x mb-3"></i>
+                                <p>Задачи не найдены</p>
+                            </div>
+                            <div v-else>
+                                <div v-for="task in tasks" :key="task.id" class="border-bottom pb-3 mb-3">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <h6>{{ task.name }}</h6>
+                                            <p class="text-muted mb-2">{{ task.description || 'Без описания' }}</p>
+                                            <div class="mt-2">
+                                                <span class="badge bg-secondary me-2">{{ task.status }}</span>
+                                                <span class="badge bg-info me-2">{{ task.session_name }}</span>
+                                                <span class="badge bg-warning">{{ task.schedule }}</span>
+                                            </div>
+                                            <small class="text-muted">
+                                                <i class="fas fa-clock"></i> Следующий запуск: {{ formatDate(task.next_run) }}
+                                            </small>
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-sm btn-outline-primary" @click="editTask(task)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-success" @click="runTask(task.id)" v-if="task.enabled">
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-warning" @click="toggleTask(task.id, !task.enabled)">
+                                                    <i class="fas fa-pause" v-if="task.enabled"></i>
+                                                    <i class="fas fa-play" v-else></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" @click="deleteTask(task.id)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Настройки -->
+            <div v-if="currentView === 'settings'" class="row">
+                <div class="col-12">
+                    <h2><i class="fas fa-cog"></i> Настройки</h2>
+                    
+                    <!-- Вкладки настроек -->
+                    <ul class="nav nav-tabs mb-4">
+                        <li class="nav-item">
+                            <a class="nav-link" :class="{ active: settingsTab === 'general' }" @click="settingsTab = 'general'">
+                                Общие
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" :class="{ active: settingsTab === 'vk' }" @click="settingsTab = 'vk'">
+                                VK
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" :class="{ active: settingsTab === 'telegram' }" @click="settingsTab = 'telegram'">
+                                Telegram
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" :class="{ active: settingsTab === 'filters' }" @click="settingsTab = 'filters'">
+                                Фильтры
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Общие настройки -->
+                    <div v-if="settingsTab === 'general'" class="card">
+                        <div class="card-body">
+                            <form @submit.prevent="saveGeneralSettings">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Максимальная длина поста</label>
+                                            <input type="number" class="form-control" v-model="settings.text_post_maxsize_simbols">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Размер таблицы</label>
+                                            <input type="number" class="form-control" v-model="settings.table_size">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Сохранить</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Настройки VK -->
+                    <div v-if="settingsTab === 'vk'" class="card">
+                        <div class="card-body">
+                            <form @submit.prevent="saveVKSettings">
+                                <div class="mb-3">
+                                    <label class="form-label">Токены для чтения (через запятую)</label>
+                                    <textarea class="form-control" v-model="vkTokens" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Токены для публикации (через запятую)</label>
+                                    <textarea class="form-control" v-model="vkPostTokens" rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Сохранить</button>
+                                <button type="button" class="btn btn-outline-primary ms-2" @click="testConnection('vk')">
+                                    Тестировать подключение
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Настройки Telegram -->
+                    <div v-if="settingsTab === 'telegram'" class="card">
+                        <div class="card-body">
+                            <form @submit.prevent="saveTelegramSettings">
+                                <div class="mb-3">
+                                    <label class="form-label">Токен бота</label>
+                                    <input type="password" class="form-control" v-model="telegramBotToken">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">ID чата</label>
+                                    <input type="text" class="form-control" v-model="telegramChatId">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Сохранить</button>
+                                <button type="button" class="btn btn-outline-primary ms-2" @click="testConnection('telegram')">
+                                    Тестировать подключение
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Настройки фильтров -->
+                    <div v-if="settingsTab === 'filters'" class="card">
+                        <div class="card-body">
+                            <form @submit.prevent="saveFilterSettings">
+                                <div class="mb-3">
+                                    <label class="form-label">Запрещенные слова (по одному на строку)</label>
+                                    <textarea class="form-control" v-model="blacklistText" rows="5"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Запрещенные ID групп (через запятую)</label>
+                                    <input type="text" class="form-control" v-model="blackIdText">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Сохранить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальные окна -->
+    <!-- Создание поста -->
+    <div class="modal fade" :class="{ show: showCreatePostModal, 'd-block': showCreatePostModal }" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Создать пост</h5>
+                    <button type="button" class="btn-close" @click="showCreatePostModal = false"></button>
+                </div>
+                <div class="modal-body">
+                    <form @submit.prevent="createPost">
+                        <div class="mb-3">
+                            <label class="form-label">Текст поста</label>
+                            <textarea class="form-control" v-model="newPost.text" rows="5" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Платформы</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="vk" v-model="newPost.target_platforms">
+                                <label class="form-check-label">VK</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="telegram" v-model="newPost.target_platforms">
+                                <label class="form-check-label">Telegram</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Запланировать на</label>
+                            <input type="datetime-local" class="form-control" v-model="newPost.scheduled_at">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @click="showCreatePostModal = false">Отмена</button>
+                    <button type="button" class="btn btn-primary" @click="createPost">Создать</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Создание задачи -->
+    <div class="modal fade" :class="{ show: showCreateTaskModal, 'd-block': showCreateTaskModal }" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Создать задачу</h5>
+                    <button type="button" class="btn-close" @click="showCreateTaskModal = false"></button>
+                </div>
+                <div class="modal-body">
+                    <form @submit.prevent="createTask">
+                        <div class="mb-3">
+                            <label class="form-label">Название</label>
+                            <input type="text" class="form-control" v-model="newTask.name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Описание</label>
+                            <textarea class="form-control" v-model="newTask.description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Расписание (Cron)</label>
+                            <input type="text" class="form-control" v-model="newTask.schedule" placeholder="0 */30 * * * *" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Сессия</label>
+                            <select class="form-select" v-model="newTask.session_name" required>
+                                <option value="novost">Новости</option>
+                                <option value="reklama">Реклама</option>
+                                <option value="sosed">Сосед</option>
+                                <option value="kultura">Культура</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @click="showCreateTaskModal = false">Отмена</button>
+                    <button type="button" class="btn btn-primary" @click="createTask">Создать</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

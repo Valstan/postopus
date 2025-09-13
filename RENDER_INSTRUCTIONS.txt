@@ -1,0 +1,46 @@
+
+📋 ИНСТРУКЦИИ ДЛЯ RENDER.COM:
+
+1. Перейдите на https://render.com
+2. Войдите через GitHub
+3. Создайте PostgreSQL базу данных:
+   - Name: postopus-db
+   - Plan: Free
+4. Создайте Redis:
+   - Name: postopus-redis
+   - Plan: Free
+5. Создайте Web Service:
+   - Подключите GitHub репозиторий
+   - Build Command: pip install -r requirements_render.txt
+   - Start Command: python -m uvicorn src.web.main_render:app --host 0.0.0.0 --port $PORT
+6. Создайте Background Worker (Celery):
+   - Name: postopus-worker
+   - Start Command: celery -A src.tasks.celery_app worker --loglevel=info
+7. Создайте Background Worker (Scheduler):
+   - Name: postopus-scheduler
+   - Start Command: celery -A src.tasks.celery_app beat --loglevel=info
+
+📋 ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ:
+
+MONGO_CLIENT = (Connection String из PostgreSQL)
+REDIS_URL = (Connection String из Redis)
+CELERY_BROKER_URL = (Connection String из Redis)
+CELERY_RESULT_BACKEND = (Connection String из Redis)
+SECRET_KEY = (сгенерируйте случайную строку 32+ символов)
+LOG_LEVEL = INFO
+VK_TOKENS = your_vk_token_1,your_vk_token_2
+VK_READ_TOKENS = your_read_token_1,your_read_token_2
+VK_POST_TOKENS = your_post_token_1,your_post_token_2
+VK_REPOST_TOKENS = your_repost_token_1,your_repost_token_2
+TELEGRAM_BOT_TOKEN = your_bot_token
+TELEGRAM_CHAT_ID = your_chat_id
+
+📋 ПОСЛЕ РАЗВЕРТЫВАНИЯ:
+
+1. Откройте URL вашего приложения
+2. Зарегистрируйтесь как администратор
+3. Настройте VK API токены
+4. Создайте задачи в планировщике
+5. Протестируйте работу
+
+Подробная инструкция: DEPLOY_TO_RENDER.md

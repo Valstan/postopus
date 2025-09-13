@@ -1,0 +1,19 @@
+
+📋 ИНСТРУКЦИИ ДЛЯ СОЗДАНИЯ GITHUB РЕПОЗИТОРИЯ:
+
+1. Перейдите на https://github.com
+2. Нажмите "New repository"
+3. Назовите репозиторий: postopus
+4. Сделайте его публичным
+5. НЕ добавляйте README, .gitignore или лицензию
+6. Нажмите "Create repository"
+
+📋 КОМАНДЫ ДЛЯ ЗАГРУЗКИ КОДА:
+
+git add .
+git commit -m "Initial commit: Postopus web platform"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/postopus.git
+git push -u origin main
+
+Замените YOUR_USERNAME на ваш GitHub username!
