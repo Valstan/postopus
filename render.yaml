@@ -139,6 +139,7 @@ services:
   - type: redis
     name: postopus-redis
     plan: free
+    ipAllowList: []
 
 databases:
   - name: mikrokredit-db
