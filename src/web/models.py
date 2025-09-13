@@ -23,7 +23,9 @@ class Post(Base):
     published_at = Column(DateTime, nullable=True)
     vk_group_id = Column(String(100), nullable=True)
     telegram_chat_id = Column(String(100), nullable=True)
-    metadata = Column(JSON, nullable=True)  # Дополнительные данные
+    region = Column(String(100), nullable=True)
+    source_collection = Column(String(100), nullable=True)
+    meta_data = Column(JSON, nullable=True)  # Дополнительные данные
 
 class Group(Base):
     """Модель группы/паблика."""
@@ -35,6 +37,7 @@ class Group(Base):
     group_id = Column(String(100), nullable=False)
     access_token = Column(String(500), nullable=True)
     is_active = Column(Boolean, default=True)
+    region = Column(String(100), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     settings = Column(JSON, nullable=True)  # Настройки группы

@@ -255,7 +255,7 @@ class DataMigrator:
                 telegram_chat_id=str(telegram_groups[0]) if telegram_groups else None,
                 region=self._extract_region_from_name(collection_name),
                 source_collection=collection_name,
-                metadata={
+                meta_data={
                     'mongo_collection': collection_name,
                     'mongo_id': str(doc.get('_id')),
                     'vk_groups': vk_groups,
