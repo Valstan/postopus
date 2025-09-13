@@ -47,8 +47,8 @@ services:
       - key: LOG_LEVEL
         value: INFO
 
-  # Celery Worker
-  - type: worker
+  # Celery Worker (как Web Service, так как Background Workers недоступны на бесплатном плане)
+  - type: web
     name: postopus-worker
     env: python
     plan: free
@@ -91,8 +91,8 @@ services:
           name: postopus-redis
           property: connectionString
 
-  # Celery Beat Scheduler
-  - type: worker
+  # Celery Beat Scheduler (как Web Service, так как Background Workers недоступны на бесплатном плане)
+  - type: web
     name: postopus-scheduler
     env: python
     plan: free

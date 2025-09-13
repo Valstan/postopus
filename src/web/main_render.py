@@ -12,14 +12,10 @@ from contextlib import asynccontextmanager
 from .routers import auth, dashboard, posts, settings, scheduler
 from .database import get_database, init_db, test_connection
 from .routers.auth import get_current_user
-from ..models.config import AppConfig
 
 # Настраиваем логирование
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# Глобальная конфигурация
-config = AppConfig.from_env()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
