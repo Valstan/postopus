@@ -10,7 +10,7 @@ from vk_api import VkApi
 from vk_api.exceptions import VkApiError
 
 from ..models.post import Post
-from ..config import Config
+from config import Config
 
 logger = logging.getLogger(__name__)
 

@@ -400,7 +400,7 @@ async def get_public_analytics(
 async def get_public_settings():
     """Получение настроек (без аутентификации)."""
     try:
-        from ..web.config import Config
+        from ..config import Config
         
         return {
             "regions": Config.REGIONS,

@@ -6,7 +6,7 @@ from typing import Dict, Any, Optional
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure
 
-from ..config import Config
+from config import Config
 
 logger = logging.getLogger(__name__)
 
