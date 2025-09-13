@@ -135,10 +135,11 @@ services:
           name: postopus-redis
           property: connectionString
 
-databases:
-  - name: mikrokredit-db
+  # Redis сервис
+  - type: redis
+    name: postopus-redis
     plan: free
 
-  - name: postopus-redis
-    type: redis
+databases:
+  - name: mikrokredit-db
     plan: free
