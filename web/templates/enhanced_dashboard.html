@@ -250,7 +250,7 @@
             try {
                 showLoading();
                 
-                const response = await fetch('/api/analytics/dashboard');
+                const response = await fetch('/api/public/dashboard');
                 if (!response.ok) throw new Error('Ошибка загрузки данных');
                 
                 const data = await response.json();
@@ -380,7 +380,7 @@
                 const params = new URLSearchParams({ q: query });
                 if (region) params.append('region', region);
                 
-                const response = await fetch(`/api/analytics/search?${params}`);
+                const response = await fetch(`/api/public/search?${params}`);
                 if (!response.ok) throw new Error('Ошибка поиска');
                 
                 const data = await response.json();
