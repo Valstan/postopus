@@ -10,7 +10,7 @@ from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
 
 from .routers import auth, dashboard, posts, settings, scheduler
-from .database import get_database
+from .database import get_database, init_db, test_connection
 from .routers.auth import get_current_user
 from ..models.config import AppConfig
 
@@ -26,11 +26,22 @@ async def lifespan(app: FastAPI):
     """Управление жизненным циклом приложения."""
     # Startup
     logger.info("Starting Postopus Web Interface on Render.com...")
-    await get_database().connect()
+    
+    # Тестируем подключение к PostgreSQL
+    if test_connection():
+        logger.info("✅ PostgreSQL connected successfully")
+        # Инициализируем базу данных (создаем таблицы)
+        if init_db():
+            logger.info("✅ Database tables created successfully")
+        else:
+            logger.error("❌ Failed to create database tables")
+    else:
+        logger.error("❌ Failed to connect to PostgreSQL")
+    
     yield
+    
     # Shutdown
     logger.info("Shutting down Postopus Web Interface...")
-    await get_database().close()
 
 # Создаем приложение FastAPI
 app = FastAPI(
@@ -88,7 +99,7 @@ async def health_check():
         "status": "healthy",
         "version": "2.0.0",
         "platform": "render.com",
-        "database": "connected" if await get_database().is_connected() else "disconnected"
+        "database": "connected" if test_connection() else "disconnected"
     }
 
 @app.get("/api/info")
