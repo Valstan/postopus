@@ -10,7 +10,7 @@ celery_app = Celery(
     "postopus",
     broker=os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0"),
     backend=os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/0"),
-    include=["src.tasks.post_tasks", "src.tasks.scheduler_tasks"]
+    include=["tasks.post_tasks", "tasks.scheduler_tasks"]
 )
 
 # Настройки Celery
@@ -32,41 +32,41 @@ celery_app.conf.update(
 celery_app.conf.beat_schedule = {
     # Задача каждые 30 минут
     "parse-posts-every-30-minutes": {
-        "task": "src.tasks.post_tasks.parse_posts_task",
+        "task": "tasks.post_tasks.parse_posts_task",
         "schedule": crontab(minute="*/30"),
         "args": ("novost",)
     },
     
     # Задача каждый час
     "parse-posts-every-hour": {
-        "task": "src.tasks.post_tasks.parse_posts_task",
+        "task": "tasks.post_tasks.parse_posts_task",
         "schedule": crontab(minute=0),
         "args": ("reklama",)
     },
     
     # Задача каждый день в 9:00
     "daily-posts-9am": {
-        "task": "src.tasks.post_tasks.parse_posts_task",
+        "task": "tasks.post_tasks.parse_posts_task",
         "schedule": crontab(hour=9, minute=0),
         "args": ("sosed",)
     },
     
     # Задача каждый день в 18:00
     "daily-posts-6pm": {
-        "task": "src.tasks.post_tasks.parse_posts_task",
+        "task": "tasks.post_tasks.parse_posts_task",
         "schedule": crontab(hour=18, minute=0),
         "args": ("kultura",)
     },
     
     # Очистка логов каждую неделю
     "cleanup-logs-weekly": {
-        "task": "src.tasks.scheduler_tasks.cleanup_logs_task",
+        "task": "tasks.scheduler_tasks.cleanup_logs_task",
         "schedule": crontab(hour=2, minute=0, day_of_week=1),  # Понедельник в 2:00
     },
     
     # Резервное копирование каждый день в 3:00
     "backup-daily": {
-        "task": "src.tasks.scheduler_tasks.backup_database_task",
+        "task": "tasks.scheduler_tasks.backup_database_task",
         "schedule": crontab(hour=3, minute=0),
     },
 }

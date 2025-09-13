@@ -12,7 +12,7 @@ from services.database_service import DatabaseService
 
 logger = logging.getLogger(__name__)
 
-@celery_app.task(bind=True, name="src.tasks.post_tasks.parse_posts_task")
+@celery_app.task(bind=True, name="tasks.post_tasks.parse_posts_task")
 def parse_posts_task(self, session_name: str, bags: str = "0"):
     """
     Задача для парсинга и публикации постов.
@@ -75,7 +75,7 @@ def parse_posts_task(self, session_name: str, bags: str = "0"):
         )
         raise
 
-@celery_app.task(bind=True, name="src.tasks.post_tasks.publish_post_task")
+@celery_app.task(bind=True, name="tasks.post_tasks.publish_post_task")
 def publish_post_task(self, post_id: str, target_platforms: List[str]):
     """
     Задача для публикации конкретного поста.
@@ -145,7 +145,7 @@ def publish_post_task(self, post_id: str, target_platforms: List[str]):
         )
         raise
 
-@celery_app.task(bind=True, name="src.tasks.post_tasks.process_scheduled_posts_task")
+@celery_app.task(bind=True, name="tasks.post_tasks.process_scheduled_posts_task")
 def process_scheduled_posts_task(self):
     """
     Задача для обработки запланированных постов.
@@ -199,7 +199,7 @@ def process_scheduled_posts_task(self):
         )
         raise
 
-@celery_app.task(bind=True, name="src.tasks.post_tasks.update_post_stats_task")
+@celery_app.task(bind=True, name="tasks.post_tasks.update_post_stats_task")
 def update_post_stats_task(self, post_id: str):
     """
     Задача для обновления статистики поста.

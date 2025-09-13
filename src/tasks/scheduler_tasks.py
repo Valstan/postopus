@@ -12,7 +12,7 @@ from services.database_service import DatabaseService
 
 logger = logging.getLogger(__name__)
 
-@celery_app.task(bind=True, name="src.tasks.scheduler_tasks.cleanup_logs_task")
+@celery_app.task(bind=True, name="tasks.scheduler_tasks.cleanup_logs_task")
 def cleanup_logs_task(self, days_to_keep: int = 30):
     """
     Задача для очистки старых логов.
@@ -74,7 +74,7 @@ def cleanup_logs_task(self, days_to_keep: int = 30):
         )
         raise
 
-@celery_app.task(bind=True, name="src.tasks.scheduler_tasks.backup_database_task")
+@celery_app.task(bind=True, name="tasks.scheduler_tasks.backup_database_task")
 def backup_database_task(self):
     """
     Задача для создания резервной копии базы данных.
@@ -145,7 +145,7 @@ def backup_database_task(self):
         )
         raise
 
-@celery_app.task(bind=True, name="src.tasks.scheduler_tasks.health_check_task")
+@celery_app.task(bind=True, name="tasks.scheduler_tasks.health_check_task")
 def health_check_task(self):
     """
     Задача для проверки здоровья системы.
@@ -212,7 +212,7 @@ def health_check_task(self):
         )
         raise
 
-@celery_app.task(bind=True, name="src.tasks.scheduler_tasks.update_statistics_task")
+@celery_app.task(bind=True, name="tasks.scheduler_tasks.update_statistics_task")
 def update_statistics_task(self):
     """
     Задача для обновления статистики.
@@ -291,7 +291,7 @@ def update_statistics_task(self):
         )
         raise
 
-@celery_app.task(bind=True, name="src.tasks.scheduler_tasks.cleanup_temp_files_task")
+@celery_app.task(bind=True, name="tasks.scheduler_tasks.cleanup_temp_files_task")
 def cleanup_temp_files_task(self):
     """
     Задача для очистки временных файлов.
