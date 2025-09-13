@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostOpus - Улучшенный Дашборд</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .stat-card h3 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+        .stat-card p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+        }
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .region-badge {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 2px;
+            display: inline-block;
+        }
+        .post-item {
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 0 10px 10px 0;
+        }
+        .search-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .sidebar {
+            background: #2c3e50;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        .sidebar .nav-link {
+            color: #ecf0f1;
+            padding: 10px 20px;
+            margin: 5px 0;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        .sidebar .nav-link:hover {
+            background: #34495e;
+            color: white;
+        }
+        .sidebar .nav-link.active {
+            background: #3498db;
+            color: white;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+        }
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <div class="text-center mb-4">
+                    <h4 class="text-white">PostOpus</h4>
+                    <small class="text-muted">Управление контентом</small>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="#dashboard">
+                        <i class="fas fa-tachometer-alt me-2"></i>Дашборд
+                    </a>
+                    <a class="nav-link" href="#posts">
+                        <i class="fas fa-newspaper me-2"></i>Посты
+                    </a>
+                    <a class="nav-link" href="#groups">
+                        <i class="fas fa-users me-2"></i>Группы
+                    </a>
+                    <a class="nav-link" href="#analytics">
+                        <i class="fas fa-chart-bar me-2"></i>Аналитика
+                    </a>
+                    <a class="nav-link" href="#settings">
+                        <i class="fas fa-cog me-2"></i>Настройки
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-10 main-content">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1><i class="fas fa-tachometer-alt me-2"></i>Дашборд</h1>
+                    <div>
+                        <button class="btn btn-primary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt me-2"></i>Обновить
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Loading -->
+                <div id="loading" class="loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Загрузка...</span>
+                    </div>
+                    <p class="mt-3">Загрузка данных...</p>
+                </div>
+                
+                <!-- Error -->
+                <div id="error" class="error" style="display: none;">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span id="error-message">Ошибка загрузки данных</span>
+                </div>
+                
+                <!-- Dashboard Content -->
+                <div id="dashboard-content" style="display: none;">
+                    <!-- Statistics Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <h3 id="total-posts">-</h3>
+                                <p><i class="fas fa-newspaper me-2"></i>Всего постов</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <h3 id="total-groups">-</h3>
+                                <p><i class="fas fa-users me-2"></i>Групп</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <h3 id="total-users">-</h3>
+                                <p><i class="fas fa-user me-2"></i>Пользователей</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <h3 id="total-schedules">-</h3>
+                                <p><i class="fas fa-clock me-2"></i>Расписаний</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts Row -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <h5><i class="fas fa-chart-pie me-2"></i>Статусы постов</h5>
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <h5><i class="fas fa-chart-bar me-2"></i>Платформы</h5>
+                                <canvas id="platformChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Regions and Recent Posts -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <h5><i class="fas fa-map-marker-alt me-2"></i>Регионы</h5>
+                                <div id="regions-list">
+                                    <!-- Regions will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <h5><i class="fas fa-history me-2"></i>Последние посты</h5>
+                                <div id="recent-posts">
+                                    <!-- Recent posts will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Search -->
+                    <div class="search-container">
+                        <h5><i class="fas fa-search me-2"></i>Поиск постов</h5>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="search-input" placeholder="Введите поисковый запрос...">
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select" id="region-filter">
+                                    <option value="">Все регионы</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary w-100" onclick="searchPosts()">
+                                    <i class="fas fa-search me-2"></i>Поиск
+                                </button>
+                            </div>
+                        </div>
+                        <div id="search-results" class="mt-3">
+                            <!-- Search results will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let statusChart, platformChart;
+        
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                showLoading();
+                
+                const response = await fetch('/api/analytics/dashboard');
+                if (!response.ok) throw new Error('Ошибка загрузки данных');
+                
+                const data = await response.json();
+                updateDashboard(data);
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showError('Ошибка загрузки данных: ' + error.message);
+            }
+        }
+        
+        function updateDashboard(data) {
+            // Update statistics
+            document.getElementById('total-posts').textContent = data.overview.total_posts;
+            document.getElementById('total-groups').textContent = data.overview.total_groups;
+            document.getElementById('total-users').textContent = data.overview.total_users;
+            document.getElementById('total-schedules').textContent = data.overview.total_schedules;
+            
+            // Update charts
+            updateStatusChart(data.post_statuses);
+            updatePlatformChart(data.platform_stats);
+            
+            // Update regions
+            updateRegions(data.region_stats);
+            
+            // Update recent posts
+            updateRecentPosts(data.recent_posts);
+            
+            // Update region filter
+            updateRegionFilter(data.region_stats);
+        }
+        
+        function updateStatusChart(statusData) {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            
+            if (statusChart) statusChart.destroy();
+            
+            statusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: statusData.map(item => item.status),
+                    datasets: [{
+                        data: statusData.map(item => item.count),
+                        backgroundColor: [
+                            '#ff6b6b',
+                            '#4ecdc4',
+                            '#45b7d1',
+                            '#f9ca24',
+                            '#f0932b'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+        
+        function updatePlatformChart(platformData) {
+            const ctx = document.getElementById('platformChart').getContext('2d');
+            
+            if (platformChart) platformChart.destroy();
+            
+            platformChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: platformData.map(item => item.platform),
+                    datasets: [{
+                        label: 'Количество',
+                        data: platformData.map(item => item.count),
+                        backgroundColor: '#667eea'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        function updateRegions(regionData) {
+            const container = document.getElementById('regions-list');
+            container.innerHTML = regionData.map(region => 
+                `<span class="region-badge">${region.region} (${region.count})</span>`
+            ).join('');
+        }
+        
+        function updateRecentPosts(posts) {
+            const container = document.getElementById('recent-posts');
+            container.innerHTML = posts.map(post => `
+                <div class="post-item">
+                    <h6>${post.title}</h6>
+                    <small class="text-muted">
+                        <i class="fas fa-map-marker-alt me-1"></i>${post.region || 'Не указан'} | 
+                        <i class="fas fa-tag me-1"></i>${post.status} | 
+                        <i class="fas fa-clock me-1"></i>${new Date(post.created_at).toLocaleDateString()}
+                    </small>
+                </div>
+            `).join('');
+        }
+        
+        function updateRegionFilter(regionData) {
+            const select = document.getElementById('region-filter');
+            select.innerHTML = '<option value="">Все регионы</option>' + 
+                regionData.map(region => 
+                    `<option value="${region.region}">${region.region} (${region.count})</option>`
+                ).join('');
+        }
+        
+        async function searchPosts() {
+            const query = document.getElementById('search-input').value;
+            const region = document.getElementById('region-filter').value;
+            
+            if (!query.trim()) {
+                alert('Введите поисковый запрос');
+                return;
+            }
+            
+            try {
+                const params = new URLSearchParams({ q: query });
+                if (region) params.append('region', region);
+                
+                const response = await fetch(`/api/analytics/search?${params}`);
+                if (!response.ok) throw new Error('Ошибка поиска');
+                
+                const data = await response.json();
+                displaySearchResults(data);
+                
+            } catch (error) {
+                console.error('Error searching posts:', error);
+                showError('Ошибка поиска: ' + error.message);
+            }
+        }
+        
+        function displaySearchResults(data) {
+            const container = document.getElementById('search-results');
+            container.innerHTML = `
+                <h6>Результаты поиска (${data.total})</h6>
+                ${data.results.map(post => `
+                    <div class="post-item">
+                        <h6>${post.title}</h6>
+                        <p>${post.content}</p>
+                        <small class="text-muted">
+                            <i class="fas fa-map-marker-alt me-1"></i>${post.region || 'Не указан'} | 
+                            <i class="fas fa-tag me-1"></i>${post.status} | 
+                            <i class="fas fa-clock me-1"></i>${new Date(post.created_at).toLocaleDateString()}
+                        </small>
+                    </div>
+                `).join('')}
+            `;
+        }
+        
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('dashboard-content').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'block';
+        }
+        
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'none';
+        }
+        
+        function refreshData() {
+            loadDashboard();
+        }
+        
+        // Initialize dashboard on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+        });
+    </script>
+</body>
+</html>
