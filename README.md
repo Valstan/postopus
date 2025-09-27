@@ -1,23 +1,25 @@
-# Postopus - Система автоматической публикации контента
+# Postopus - Automated Social Media Content Management System
 
 ![Postopus Logo](https://img.shields.io/badge/Postopus-2.0-blue)
 ![Python](https://img.shields.io/badge/Python-3.11-green)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.104-red)
-![Vue.js](https://img.shields.io/badge/Vue.js-3-green)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.117-red)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
 
-## 🌟 Описание
+## 🌟 Overview
 
-Postopus - это современная система автоматической публикации контента в социальных сетях с веб-интерфейсом управления. Система автоматически парсит контент, фильтрует его и публикует в VK, Telegram и других платформах по заданному расписанию.
+Postopus is a modern, production-ready automated social media content management system with a comprehensive web interface. The system automatically parses content, filters it intelligently, and publishes to VK, Telegram, and other platforms across **15 regional groups** on a scheduled basis.
 
-## ✨ Возможности
+## ✨ Key Features
 
-- 🎛️ **Веб-интерфейс** - управление с любого устройства
-- ⚡ **Автоматизация** - выполнение задач по расписанию
-- 📊 **Мониторинг** - статистика и графики
-- 🔒 **Безопасность** - защита секретов и аутентификация
-- 🚀 **Масштабируемость** - готовность к росту
-- 📱 **Мобильная адаптация** - работает на телефонах
+- 🎛️ **Modern Web Interface** - FastAPI-based dashboard with real-time analytics
+- ⚡ **Complete Automation** - Scheduled task execution with Celery
+- 📊 **Advanced Analytics** - Regional statistics and performance monitoring  
+- 🔒 **Enterprise Security** - JWT authentication and secret management
+- 🚀 **Production Ready** - Docker containers and scalable architecture
+- 📱 **Regional Management** - Support for 15 distinct geographical areas
+- 🔄 **Data Migration** - MongoDB to PostgreSQL migration tools
+- 🐳 **DevOps Ready** - Complete Docker infrastructure
 
 ## 🏗️ Архитектура
 
