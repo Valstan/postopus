@@ -255,4 +255,7 @@ if __name__ == "__main__":
     host = os.environ.get("HOST", "0.0.0.0")
     
     print(f"🚀 Starting Postopus on {host}:{port}")
-    uvicorn.run(app, host=host, port=port)
+    print(f"📁 Working directory: {os.getcwd()}")
+    print(f"🐍 Python path: {sys.path}")
+    
+    uvicorn.run(app, host=host, port=port, log_level="info")
