@@ -12,14 +12,31 @@ from contextlib import asynccontextmanager
 from .routers import auth, dashboard, posts, settings, scheduler
 from .database import get_database
 from .auth import get_current_user
-from config import Config
+import sys
+from pathlib import Path
+
+# Добавляем путь к корневой директории
+sys.path.append(str(Path(__file__).parent.parent.parent))
+
+try:
+    from src.models.config import AppConfig
+except ImportError:
+    # Fallback класс для случаев, когда конфигурация недоступна
+    class AppConfig:
+        @classmethod
+        def from_env(cls):
+            return cls()
 
 # Настраиваем логирование
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Глобальная конфигурация
-config = AppConfig.from_env()
+try:
+    config = AppConfig.from_env()
+except Exception as e:
+    logger.warning(f"Could not load configuration: {e}")
+    config = AppConfig()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

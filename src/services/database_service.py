@@ -7,11 +7,19 @@ import os
 from typing import Dict, Any, Optional
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure
+from pathlib import Path
 
-# Добавляем путь к модулю config
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Добавляем путь к модулям
+sys.path.append(str(Path(__file__).parent.parent.parent))
 
-from config import Config
+try:
+    from src.models.config import AppConfig
+except ImportError:
+    # Fallback для легаси кода
+    class AppConfig:
+        def __init__(self):
+            self.database = type('obj', (object,), {'mongo_client': os.getenv("MONGO_CLIENT", "mongodb://localhost:27017/")})
+            self.work = {}
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +27,8 @@ logger = logging.getLogger(__name__)
 class DatabaseService:
     """Сервис для работы с базой данных."""
     
-    def __init__(self):
+    def __init__(self, config: Optional[AppConfig] = None):
+        self.config = config or AppConfig()
         self.client: Optional[MongoClient] = None
         self.database = None
     
@@ -31,7 +40,7 @@ class DatabaseService:
             True если подключение успешно
         """
         try:
-            self.client = MongoClient(Config.MONGO_CLIENT)
+            self.client = MongoClient(self.config.database.mongo_client)
             self.database = self.client["postopus"]
             
             # Тестируем соединение

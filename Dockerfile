@@ -1,42 +1,66 @@
-FROM python:3.11-slim
+# Multi-stage build for Postopus
+FROM python:3.11-slim as base
 
-# Устанавливаем системные зависимости
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    libffi-dev \
-    libssl-dev \
-    libjpeg-dev \
-    libpng-dev \
-    libtiff-dev \
-    libwebp-dev \
-    libopenjp2-7-dev \
-    libtesseract-dev \
-    tesseract-ocr \
-    tesseract-ocr-rus \
+    curl \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
-# Создаем рабочую директорию
+# Create app directory
 WORKDIR /app
 
-# Копируем requirements
-COPY requirements_new.txt .
+# Copy requirements first for better caching
+COPY requirements_web.txt .
+COPY requirements.txt .
 
-# Устанавливаем Python зависимости
-RUN pip install --no-cache-dir -r requirements_new.txt
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements_web.txt
 
-# Копируем исходный код
-COPY src/ ./src/
-COPY tests/ ./tests/
+# Development stage
+FROM base as development
 
-# Создаем необходимые директории
-RUN mkdir -p logs temp_images
+# Install development dependencies
+RUN pip install --no-cache-dir watchdog
 
-# Устанавливаем права доступа
-RUN chmod -R 755 /app
+# Copy source code
+COPY . .
 
-# Открываем порт
+# Create non-root user
+RUN useradd --create-home --shell /bin/bash postopus && \
+    chown -R postopus:postopus /app
+USER postopus
+
+# Expose port
 EXPOSE 8000
 
-# Команда по умолчанию
-CMD ["python", "-m", "uvicorn", "src.web.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Development command with hot reload
+CMD ["uvicorn", "src.web.simple_main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+# Production stage
+FROM base as production
+
+# Copy source code
+COPY . .
+
+# Create non-root user
+RUN useradd --create-home --shell /bin/bash postopus && \
+    chown -R postopus:postopus /app
+USER postopus
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Production command
+CMD ["uvicorn", "src.web.simple_main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]

@@ -1,184 +1,121 @@
 #!/bin/bash
 
-# Скрипт для развертывания Postopus на сервере
+# Postopus Deployment Script
+# This script deploys Postopus to a production environment
 
-set -e
+set -e  # Exit on any error
 
-echo "🚀 Начинаем развертывание Postopus..."
+echo "🚀 Starting Postopus Deployment..."
 
-# Проверяем, что Docker установлен
-if ! command -v docker &> /dev/null; then
-    echo "❌ Docker не установлен. Установите Docker и попробуйте снова."
+# Configuration
+ENVIRONMENT=${1:-production}
+DOCKER_REGISTRY=${DOCKER_REGISTRY:-""}
+IMAGE_TAG=${2:-latest}
+
+echo "📋 Deployment Configuration:"
+echo "   Environment: $ENVIRONMENT"
+echo "   Image Tag: $IMAGE_TAG"
+echo "   Registry: ${DOCKER_REGISTRY:-"local"}"
+
+# Validate environment
+if [[ ! "$ENVIRONMENT" =~ ^(development|staging|production)$ ]]; then
+    echo "❌ Error: Environment must be 'development', 'staging', or 'production'"
     exit 1
 fi
 
-if ! command -v docker-compose &> /dev/null; then
-    echo "❌ Docker Compose не установлен. Установите Docker Compose и попробуйте снова."
-    exit 1
-fi
+# Check dependencies
+echo "🔍 Checking dependencies..."
+command -v docker >/dev/null 2>&1 || { echo "❌ Docker is required but not installed. Aborting." >&2; exit 1; }
+command -v docker-compose >/dev/null 2>&1 || { echo "❌ Docker Compose is required but not installed. Aborting." >&2; exit 1; }
 
-# Создаем необходимые директории
-echo "📁 Создаем директории..."
+# Create necessary directories
+echo "📁 Creating directories..."
 mkdir -p logs
 mkdir -p temp_images
-mkdir -p backups
-mkdir -p nginx/ssl
+mkdir -p scripts
+mkdir -p data/mongo
+mkdir -p data/postgres
+mkdir -p data/redis
 
-# Создаем .env файл если его нет
+# Environment-specific configuration
+case $ENVIRONMENT in
+    "development")
+        COMPOSE_FILE="docker-compose.yml"
+        echo "🔧 Using development configuration"
+        ;;
+    "staging")
+        COMPOSE_FILE="docker-compose.staging.yml"
+        echo "🔧 Using staging configuration"
+        ;;
+    "production")
+        COMPOSE_FILE="docker-compose.prod.yml"
+        echo "🔧 Using production configuration"
+        ;;
+esac
+
+# Check if .env file exists
 if [ ! -f .env ]; then
-    echo "📝 Создаем .env файл..."
-    cp env.example .env
-    echo "⚠️  Отредактируйте .env файл с вашими настройками перед запуском!"
-    echo "   nano .env"
-    read -p "Нажмите Enter после редактирования .env файла..."
+    echo "⚠️  .env file not found. Creating from template..."
+    if [ -f .env.example ]; then
+        cp .env.example .env
+        echo "✅ Created .env from .env.example"
+        echo "📝 Please edit .env file with your configuration before continuing"
+        read -p "Press Enter to continue after editing .env file..."
+    else
+        echo "❌ Error: .env.example not found. Please create .env file manually."
+        exit 1
+    fi
 fi
 
-# Создаем конфигурацию Nginx
-echo "🌐 Настраиваем Nginx..."
-cat > nginx/nginx.conf << 'EOF'
-events {
-    worker_connections 1024;
-}
+# Pull latest images (if using registry)
+if [ -n "$DOCKER_REGISTRY" ]; then
+    echo "📥 Pulling latest images..."
+    docker-compose -f $COMPOSE_FILE pull
+fi
 
-http {
-    upstream postopus_web {
-        server postopus-web:8000;
-    }
+# Build and start services
+echo "🏗️  Building and starting services..."
+docker-compose -f $COMPOSE_FILE up --build -d
 
-    server {
-        listen 80;
-        server_name _;
+# Wait for services to be healthy
+echo "⏳ Waiting for services to start..."
+sleep 10
 
-        location / {
-            proxy_pass http://postopus_web;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-        }
+# Check service health
+echo "🏥 Checking service health..."
+services=("web" "mongo" "redis")
 
-        location /static/ {
-            alias /app/web/static/;
-        }
+for service in "${services[@]}"; do
+    if docker-compose -f $COMPOSE_FILE ps $service | grep -q "Up"; then
+        echo "✅ $service is running"
+    else
+        echo "❌ $service failed to start"
+        docker-compose -f $COMPOSE_FILE logs $service
+        exit 1
+    fi
+done
 
-        location /flower/ {
-            proxy_pass http://postopus-flower:5555;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-        }
-    }
-}
-EOF
+# Database initialization
+echo "🗄️  Initializing database..."
+# Run migrations if needed
+# docker-compose -f $COMPOSE_FILE exec web python -m alembic upgrade head
 
-# Создаем инициализационный скрипт для MongoDB
-echo "🗄️ Настраиваем MongoDB..."
-mkdir -p mongo-init
-cat > mongo-init/init.js << 'EOF'
-// Инициализация базы данных Postopus
-db = db.getSiblingDB('postopus');
-
-// Создаем коллекции
-db.createCollection('users');
-db.createCollection('posts');
-db.createCollection('tasks');
-db.createCollection('task_executions');
-db.createCollection('settings');
-db.createCollection('sessions');
-db.createCollection('logs');
-db.createCollection('statistics');
-db.createCollection('health_checks');
-
-// Создаем индексы
-db.posts.createIndex({ "id": 1 }, { unique: true });
-db.posts.createIndex({ "status": 1 });
-db.posts.createIndex({ "published_at": 1 });
-db.posts.createIndex({ "created_at": 1 });
-
-db.tasks.createIndex({ "id": 1 }, { unique: true });
-db.tasks.createIndex({ "enabled": 1 });
-db.tasks.createIndex({ "session_name": 1 });
-
-db.task_executions.createIndex({ "task_id": 1 });
-db.task_executions.createIndex({ "started_at": 1 });
-
-db.users.createIndex({ "username": 1 }, { unique: true });
-
-// Создаем пользователя по умолчанию
-db.users.insertOne({
-    username: "admin",
-    email: "admin@postopus.local",
-    hashed_password: "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8Qz8K2", // password: admin
-    is_active: true,
-    created_at: new Date()
-});
-
-print("База данных Postopus инициализирована успешно!");
-EOF
-
-# Создаем systemd сервис для автозапуска
-echo "⚙️ Настраиваем автозапуск..."
-sudo tee /etc/systemd/system/postopus.service > /dev/null << EOF
-[Unit]
-Description=Postopus - Система автоматической публикации контента
-Requires=docker.service
-After=docker.service
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-WorkingDirectory=$(pwd)
-ExecStart=/usr/bin/docker-compose up -d
-ExecStop=/usr/bin/docker-compose down
-TimeoutStartSec=0
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Перезагружаем systemd
-sudo systemctl daemon-reload
-
-# Собираем и запускаем контейнеры
-echo "🔨 Собираем и запускаем контейнеры..."
-docker-compose down --remove-orphans
-docker-compose build --no-cache
-docker-compose up -d
-
-# Ждем запуска сервисов
-echo "⏳ Ждем запуска сервисов..."
-sleep 30
-
-# Проверяем статус контейнеров
-echo "📊 Проверяем статус контейнеров..."
-docker-compose ps
-
-# Проверяем логи
-echo "📋 Проверяем логи..."
-docker-compose logs --tail=20
-
-# Включаем автозапуск
-echo "🔄 Включаем автозапуск..."
-sudo systemctl enable postopus.service
-
-echo "✅ Развертывание завершено!"
+# Display service URLs
 echo ""
-echo "🌐 Веб-интерфейс доступен по адресу: http://your-server-ip"
-echo "📊 Мониторинг задач: http://your-server-ip/flower"
+echo "🎉 Deployment completed successfully!"
 echo ""
-echo "🔑 Логин по умолчанию:"
-echo "   Пользователь: admin"
-echo "   Пароль: admin"
+echo "📊 Service URLs:"
+echo "   Web Interface: http://localhost:8000"
+echo "   API Documentation: http://localhost:8000/docs"
+echo "   Flower (Celery): http://localhost:5555"
+echo "   MongoDB: localhost:27017"
+echo "   PostgreSQL: localhost:5432"
+echo "   Redis: localhost:6379"
 echo ""
-echo "📝 Полезные команды:"
-echo "   Просмотр логов: docker-compose logs -f"
-echo "   Перезапуск: docker-compose restart"
-echo "   Остановка: docker-compose down"
-echo "   Обновление: ./deploy.sh"
+echo "📝 Useful commands:"
+echo "   View logs: docker-compose -f $COMPOSE_FILE logs -f"
+echo "   Stop services: docker-compose -f $COMPOSE_FILE down"
+echo "   Restart service: docker-compose -f $COMPOSE_FILE restart <service>"
+echo "   Access shell: docker-compose -f $COMPOSE_FILE exec web bash"
 echo ""
-echo "⚠️  Не забудьте:"
-echo "   1. Настроить SSL сертификаты в nginx/ssl/"
-echo "   2. Изменить пароль администратора"
-echo "   3. Настроить брандмауэр для портов 80 и 443"
-echo "   4. Настроить резервное копирование"
+echo "✅ Postopus is now running!"
