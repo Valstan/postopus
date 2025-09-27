@@ -6,7 +6,19 @@ import logging
 from datetime import datetime
 from typing import List, Dict, Any
 
-from .celery_app import celery_app
+# Make Celery import optional to avoid startup issues
+try:
+    from .celery_app import celery_app
+except ImportError:
+    # If Celery is not available, create a dummy object
+    class DummyCelery:
+        def task(self, *args, **kwargs):
+            def decorator(func):
+                return func
+            return decorator
+    
+    celery_app = DummyCelery()
+    logging.warning("Celery not available, tasks will not function")
 
 logger = logging.getLogger(__name__)
 

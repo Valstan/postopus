@@ -6,8 +6,8 @@ services:
     plan: free
     buildCommand: |
       pip install --upgrade pip
-      pip install -r requirements_web.txt
-    startCommand: python main.py
+      pip install -r requirements_web_only.txt
+    startCommand: python web_only.py
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0

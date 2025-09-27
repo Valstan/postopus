@@ -14,7 +14,7 @@ celery_app = Celery(
     "postopus",
     broker=broker_url,
     backend=result_backend,
-    include=["src.tasks.simple_tasks"]  # Используем только простые задачи для стабильности
+    include=["tasks.simple_tasks"]  # Убираем префикс src для совместимости с Render
 )
 
 # Настройки Celery (упрощенные)
