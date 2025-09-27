@@ -1,12 +1,12 @@
 services:
-  # Main Web Application - Simplified for production
+  # Web Service Only - No Background Workers
   - type: web
-    name: postopus-web
+    name: postopus-web-only
     env: python
     plan: free
     buildCommand: |
       pip install --upgrade pip
-      pip install -r requirements_web_only.txt
+      pip install -r requirements_render.txt
     startCommand: python web_only.py
     envVars:
       - key: PYTHON_VERSION
@@ -17,8 +17,6 @@ services:
         generateValue: true
       - key: LOG_LEVEL
         value: INFO
-      - key: MONGO_CLIENT
-        value: mongodb+srv://demo:demo@cluster.mongodb.net/postopus
     healthCheckPath: /health
 
 # Optional services for later (disabled for initial deployment)
