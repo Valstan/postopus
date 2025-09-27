@@ -1,81 +1,46 @@
 """
-Настройка Celery для фоновых задач.
+Настройка Celery для фоновых задач (упрощенная версия).
 """
 import os
 from celery import Celery
-from celery.schedules import crontab
+
+# Получаем URL Redis из переменных окружения
+redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+broker_url = os.environ.get('CELERY_BROKER_URL', redis_url)
+result_backend = os.environ.get('CELERY_RESULT_BACKEND', redis_url)
 
 # Создаем экземпляр Celery
 celery_app = Celery(
     "postopus",
-    broker=os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0"),
-    backend=os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/0"),
-    include=["tasks.post_tasks", "tasks.scheduler_tasks"]
+    broker=broker_url,
+    backend=result_backend,
+    include=["src.tasks.simple_tasks"]  # Используем только простые задачи для стабильности
 )
 
-# Настройки Celery
+# Настройки Celery (упрощенные)
 celery_app.conf.update(
     task_serializer="json",
     accept_content=["json"],
     result_serializer="json",
-    timezone="Europe/Moscow",
+    timezone="UTC",
     enable_utc=True,
-    result_expires=3600,
     task_track_started=True,
-    task_time_limit=30 * 60,  # 30 минут
-    task_soft_time_limit=25 * 60,  # 25 минут
+    task_time_limit=300,  # 5 минут
+    task_soft_time_limit=240,  # 4 минуты
     worker_prefetch_multiplier=1,
     worker_max_tasks_per_child=1000,
+    # Отключаем периодические задачи для упрощения
+    # beat_schedule={},
 )
 
-# Периодические задачи
-celery_app.conf.beat_schedule = {
-    # Задача каждые 30 минут
-    "parse-posts-every-30-minutes": {
-        "task": "tasks.post_tasks.parse_posts_task",
-        "schedule": crontab(minute="*/30"),
-        "args": ("novost",)
-    },
-    
-    # Задача каждый час
-    "parse-posts-every-hour": {
-        "task": "tasks.post_tasks.parse_posts_task",
-        "schedule": crontab(minute=0),
-        "args": ("reklama",)
-    },
-    
-    # Задача каждый день в 9:00
-    "daily-posts-9am": {
-        "task": "tasks.post_tasks.parse_posts_task",
-        "schedule": crontab(hour=9, minute=0),
-        "args": ("sosed",)
-    },
-    
-    # Задача каждый день в 18:00
-    "daily-posts-6pm": {
-        "task": "tasks.post_tasks.parse_posts_task",
-        "schedule": crontab(hour=18, minute=0),
-        "args": ("kultura",)
-    },
-    
-    # Очистка логов каждую неделю
-    "cleanup-logs-weekly": {
-        "task": "tasks.scheduler_tasks.cleanup_logs_task",
-        "schedule": crontab(hour=2, minute=0, day_of_week=1),  # Понедельник в 2:00
-    },
-    
-    # Резервное копирование каждый день в 3:00
-    "backup-daily": {
-        "task": "tasks.scheduler_tasks.backup_database_task",
-        "schedule": crontab(hour=3, minute=0),
-    },
-}
-
-# Настройки для мониторинга
-celery_app.conf.update(
-    worker_send_task_events=True,
-    task_send_sent_event=True,
-)
+# Настройки для production
+if os.environ.get('ENVIRONMENT') == 'production':
+    celery_app.conf.update(
+        worker_log_level='INFO',
+        worker_hijack_root_logger=False,
+        task_acks_late=True,
+        worker_prefetch_multiplier=1,
+    )
 
 if __name__ == "__main__":
     celery_app.start()
