@@ -19,6 +19,13 @@ aiohttp>=3.8.0
 pymongo>=4.0.0
 motor>=3.0.0
 
+# Task Queue
+celery>=5.3.0
+redis>=4.5.0
+
+# VK API
+vk-api>=11.9.9
+
 # Utilities
 requests>=2.28.0
 pillow>=10.0.0
