@@ -1,30 +1,146 @@
 services:
-  # Web Service Only - No Background Workers
+  # Основное веб-приложение
   - type: web
-    name: postopus-web-only
+    name: postopus-web
     env: python
     plan: free
-    buildCommand: |
-      pip install --upgrade pip
-      pip install -r requirements_render.txt
-    startCommand: python web_only.py
+    buildCommand: pip install -r requirements_render.txt
+    startCommand: python -m uvicorn src.web.main_render:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
-      - key: ENVIRONMENT
-        value: production
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: mikrokredit-db
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: mikrokredit-db
+          property: port
+      - key: POSTGRES_DB
+        fromDatabase:
+          name: mikrokredit-db
+          property: database
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: mikrokredit-db
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: mikrokredit-db
+          property: password
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: LOG_LEVEL
         value: INFO
-    healthCheckPath: /health
 
-# Optional services for later (disabled for initial deployment)
-# - type: redis
-#   name: postopus-redis
-#   plan: free
-#   ipAllowList: []
+  # Celery Worker (как Web Service, так как Background Workers недоступны на бесплатном плане)
+  - type: worker
+    name: postopus-worker
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements_render.txt
+    startCommand: cd src && celery -A tasks.celery_app worker --loglevel=info
+    envVars:
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: mikrokredit-db
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: mikrokredit-db
+          property: port
+      - key: POSTGRES_DB
+        fromDatabase:
+          name: mikrokredit-db
+          property: database
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: mikrokredit-db
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: mikrokredit-db
+          property: password
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
 
-# databases:
-#   - name: postopus-db
-#     plan: free
+  # Celery Beat Scheduler (как Background Worker)
+  - type: worker
+    name: postopus-scheduler
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements_render.txt
+    startCommand: cd src && celery -A tasks.celery_app beat --loglevel=info
+    envVars:
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: mikrokredit-db
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: mikrokredit-db
+          property: port
+      - key: POSTGRES_DB
+        fromDatabase:
+          name: mikrokredit-db
+          property: database
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: mikrokredit-db
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: mikrokredit-db
+          property: password
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+
+  # Redis сервис
+  - type: redis
+    name: postopus-redis
+    plan: free
+    ipAllowList: []
+
+databases:
+  - name: mikrokredit-db
+    plan: free
