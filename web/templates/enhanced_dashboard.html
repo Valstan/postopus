@@ -284,9 +284,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let statusChart, platformChart;
+        let lastDashboardUpdate = 0;
+        const DASHBOARD_UPDATE_INTERVAL = 5000; // 5 секунд между обновлениями
         
         // Load dashboard data
-        async function loadDashboard() {
+        async function loadDashboard(force = false) {
+            const now = Date.now();
+            if (!force && (now - lastDashboardUpdate) < DASHBOARD_UPDATE_INTERVAL) {
+                return; // Пропускаем обновление если прошло меньше 5 секунд
+            }
+            lastDashboardUpdate = now;
             try {
                 showLoading();
                 
@@ -397,11 +404,21 @@
         }
         
         function updateStatusChart(statusData) {
-            const ctx = document.getElementById('statusChart').getContext('2d');
+            const ctx = document.getElementById('statusChart');
+            if (!ctx) return;
             
-            if (statusChart) statusChart.destroy();
+            const canvasCtx = ctx.getContext('2d');
             
-            statusChart = new Chart(ctx, {
+            // Если график уже существует, обновляем данные вместо пересоздания
+            if (statusChart) {
+                statusChart.data.labels = statusData.map(item => item.status);
+                statusChart.data.datasets[0].data = statusData.map(item => item.count);
+                statusChart.update('none'); // Обновляем без анимации
+                return;
+            }
+            
+            // Создаем график только если его еще нет
+            statusChart = new Chart(canvasCtx, {
                 type: 'doughnut',
                 data: {
                     labels: statusData.map(item => item.status),
@@ -418,17 +435,28 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false
+                    maintainAspectRatio: false,
+                    animation: false // Отключаем анимации
                 }
             });
         }
         
         function updatePlatformChart(platformData) {
-            const ctx = document.getElementById('platformChart').getContext('2d');
+            const ctx = document.getElementById('platformChart');
+            if (!ctx) return;
             
-            if (platformChart) platformChart.destroy();
+            const canvasCtx = ctx.getContext('2d');
             
-            platformChart = new Chart(ctx, {
+            // Если график уже существует, обновляем данные вместо пересоздания
+            if (platformChart) {
+                platformChart.data.labels = platformData.map(item => item.platform);
+                platformChart.data.datasets[0].data = platformData.map(item => item.count);
+                platformChart.update('none'); // Обновляем без анимации
+                return;
+            }
+            
+            // Создаем график только если его еще нет
+            platformChart = new Chart(canvasCtx, {
                 type: 'bar',
                 data: {
                     labels: platformData.map(item => item.platform),
@@ -441,6 +469,12 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: false, // Отключаем анимации
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true
@@ -541,7 +575,7 @@
         }
         
         function refreshData() {
-            loadDashboard();
+            loadDashboard(true); // Принудительное обновление
         }
         
         // Initialize dashboard on page load
