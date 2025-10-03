@@ -14,12 +14,14 @@ logger = logging.getLogger(__name__)
 # Получение параметров подключения к PostgreSQL
 POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost")
 POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
-POSTGRES_DB = os.getenv("POSTGRES_DB", "mikrokredit")
-POSTGRES_USER = os.getenv("POSTGRES_USER", "mikrokredit_user")
-POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "")
+POSTGRES_DB = os.getenv("POSTGRES_DB", "postopus")
+POSTGRES_USER = os.getenv("POSTGRES_USER", "postopus")
+POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postopus_password")
 
-# Формирование URL подключения
-DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+# Формирование URL подключения - приоритет DATABASE_URL для Render.com
+DATABASE_URL = os.getenv('DATABASE_URL')
+if not DATABASE_URL:
+    DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
 # Создание движка SQLAlchemy
 engine = create_engine(DATABASE_URL, echo=False)

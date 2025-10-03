@@ -1,30 +1,69 @@
+# render.yaml - Render.com Blueprint Configuration
 services:
-  # Web Service Only - No Background Workers
+  # Main Web Application
   - type: web
-    name: postopus-web-only
+    name: postopus-web
     env: python
-    plan: free
-    buildCommand: |
-      pip install --upgrade pip
-      pip install -r requirements_render.txt
-    startCommand: python web_only.py
+    plan: starter
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn src.web.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"
+    healthCheckPath: "/health"
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
-      - key: ENVIRONMENT
-        value: production
+        value: "3.11.6"
+      - key: PYTHONPATH
+        value: "/opt/render/project/src"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postopus-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
       - key: SECRET_KEY
         generateValue: true
-      - key: LOG_LEVEL
-        value: INFO
-    healthCheckPath: /health
+      - key: VK_API_VERSION
+        value: "5.131"
+      - key: ENVIRONMENT
+        value: "production"
+      - key: DEBUG
+        value: "false"
 
-# Optional services for later (disabled for initial deployment)
-# - type: redis
-#   name: postopus-redis
-#   plan: free
-#   ipAllowList: []
+  # PostgreSQL Database
+  - type: pserv
+    name: postopus-db
+    env: postgresql
+    plan: starter
+    databases:
+      - name: postopus
+        user: postopus_user
 
-# databases:
-#   - name: postopus-db
-#     plan: free
+  # Redis for Celery/Caching
+  - type: redis
+    name: postopus-redis
+    plan: starter
+    maxmemoryPolicy: allkeys-lru
+
+  # Background Worker (Celery)
+  - type: worker
+    name: postopus-worker
+    env: python
+    plan: starter
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A src.tasks.celery_app worker --loglevel=info"
+    envVars:
+      - key: PYTHONPATH
+        value: "/opt/render/project/src"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postopus-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: ENVIRONMENT
+        value: "production"

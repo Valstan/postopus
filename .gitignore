@@ -1,12 +1,8 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -20,56 +16,31 @@ parts/
 sdist/
 var/
 wheels/
-pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-
-# Virtual environments
+# Environment variables
+.env
+.env.local
+.env.production
+.venv/
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
 
-# Environment variables
-.env
-.env.local
-.env.development
-.env.production
-
-# IDEs
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS generated files
+# OS
 .DS_Store
 .DS_Store?
 ._*
@@ -78,42 +49,47 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
 # Logs
 logs/
 *.log
-
-# Database
-*.db
-*.sqlite3
+log.txt
 
 # Temporary files
-temp_images/
 tmp/
+temp/
+uploads/
+static/uploads/
 
-# Docker
-.dockerignore
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
 
-# Node.js (if frontend is added)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Documentation
+docs/_build/
 
-# Celery
-celerybeat-schedule
-celerybeat.pid
+# Render-specific
+.render/
 
-# Redis dump
-dump.rdb
+# Local development
+local_settings.py
+test_settings.py
 
-# MongoDB data
-data/
+# Secrets (ensure these are never committed)
+secrets.json
+config/secrets.py
+*.pem
+*.key
+*.crt
 
 # Backup files
 *.bak
 *.backup
-
-# Secret files
-secrets/
-*.key
-*.pem
+*.old
