@@ -75,7 +75,20 @@ class PostopusDataManager:
             
         except Exception as e:
             logger.error(f"Error getting real dashboard stats: {e}")
+            # Rollback транзакции в случае ошибки
+            try:
+                self.db.rollback()
+            except Exception as rollback_error:
+                logger.error(f"Error during rollback: {rollback_error}")
             return self._get_fallback_stats()
+    
+    def _handle_database_error(self, error: Exception, context: str = ""):
+        """Обрабатывает ошибки базы данных с rollback"""
+        logger.error(f"Database error {context}: {error}")
+        try:
+            self.db.rollback()
+        except Exception as rollback_error:
+            logger.error(f"Error during rollback: {rollback_error}")
     
     def _get_fallback_stats(self) -> Dict:
         """Возвращает fallback статистику при ошибке"""

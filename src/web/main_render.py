@@ -149,20 +149,6 @@ async def get_posts_by_status(status: str):
             "limit": 20
         }
 
-@app.get("/api/public/analytics")
-async def get_public_analytics(days: int = 7):
-    """Получить данные аналитики."""
-    try:
-        analytics_data = data_manager.get_analytics_data(days)
-        return analytics_data
-    except Exception as e:
-        logger.error(f"Error getting analytics data: {e}")
-        return {
-            "daily_stats": [],
-            "region_stats": [],
-            "theme_stats": [],
-            "period_days": days
-        }
 
 @app.get("/api/public/groups-status")
 async def get_groups_status():

@@ -19,7 +19,6 @@ class Post(Base):
     status = Column(String(50), default="draft")  # draft, published, scheduled, archived
     region = Column(String(100), nullable=True, index=True)  # Regional support
     theme = Column(String(50), nullable=False, index=True, default="novost")  # novost, sosed, kino, music, prikol, reklama
-    source_collection = Column(String(100), nullable=True)
     vk_group_id = Column(String(100), nullable=True)
     telegram_chat_id = Column(String(100), nullable=True)
     priority = Column(Integer, default=0)  # -1=low, 0=normal, 1=high
