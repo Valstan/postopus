@@ -11,7 +11,7 @@ services:
     healthCheckPath: "/health"
     envVars:
       - key: PYTHON_VERSION
-        value: "3.11.6"
+        value: "3.11.0"
       - key: PYTHONPATH
         value: "/opt/render/project"
       # Using existing mikrokredit database - EXACT URLs from your Render dashboard
