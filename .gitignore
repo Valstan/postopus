@@ -140,7 +140,6 @@ POSTGRESQL_*.md
 # Duplicate main files
 main.py
 start*.py
-web_only.py
 celery_worker.py
 deserter.py
 init_*.py
