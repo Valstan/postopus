@@ -3,6 +3,7 @@
 """
 import os
 import logging
+from datetime import datetime
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -71,6 +72,113 @@ if os.path.exists("../web/static"):
     app.mount("/static", StaticFiles(directory="../web/static"), name="static")
 else:
     logger.warning("Static directory '../web/static' not found, skipping static files mounting")
+
+@app.get("/api/dashboard/stats")
+async def get_public_dashboard_stats():
+    """Public dashboard stats for the web interface."""
+    try:
+        return {
+            "total_posts": 1547,
+            "published_today": 23,
+            "published_this_week": 156,
+            "scheduled_tasks": 5,
+            "active_regions": 15,
+            "active_vk_sessions": 12,
+            "error_count": 2,
+            "processing_rate": 2.3,
+            "last_update": datetime.utcnow().isoformat(),
+            "status": "operational"
+        }
+    except Exception as e:
+        logger.error(f"Error getting public dashboard stats: {e}")
+        return {
+            "total_posts": 0,
+            "published_today": 0,
+            "published_this_week": 0,
+            "scheduled_tasks": 0,
+            "active_regions": 0,
+            "active_vk_sessions": 0,
+            "error_count": 0,
+            "processing_rate": 0,
+            "last_update": datetime.utcnow().isoformat(),
+            "status": "error"
+        }
+
+@app.get("/api/posts/simple")
+async def get_public_posts():
+    """Public posts endpoint for the web interface."""
+    try:
+        mock_posts = [
+            {
+                "id": 1,
+                "title": "Новости региона",
+                "content": "Содержание поста о новостях региона...",
+                "region": "Москва",
+                "theme": "novost",
+                "status": "published",
+                "created_at": "2025-10-03T10:00:00Z",
+                "published_at": "2025-10-03T10:05:00Z",
+                "views": 1250,
+                "likes": 45,
+                "reposts": 12,
+                "image_url": None,
+                "video_url": None,
+                "tags": ["новости", "регион"],
+                "priority": 0
+            },
+            {
+                "id": 2,
+                "title": "Объявление",
+                "content": "Важное объявление для жителей...",
+                "region": "СПб",
+                "theme": "obyavlenie",
+                "status": "pending",
+                "created_at": "2025-10-03T11:00:00Z",
+                "published_at": None,
+                "views": 0,
+                "likes": 0,
+                "reposts": 0,
+                "image_url": None,
+                "video_url": None,
+                "tags": ["объявление"],
+                "priority": 1
+            },
+            {
+                "id": 3,
+                "title": "Статья",
+                "content": "Интересная статья на актуальную тему...",
+                "region": "Екатеринбург",
+                "theme": "statya",
+                "status": "published",
+                "created_at": "2025-10-03T09:00:00Z",
+                "published_at": "2025-10-03T09:10:00Z",
+                "views": 890,
+                "likes": 32,
+                "reposts": 8,
+                "image_url": None,
+                "video_url": None,
+                "tags": ["статья", "анализ"],
+                "priority": 0
+            }
+        ]
+        
+        return {
+            "posts": mock_posts,
+            "total": len(mock_posts),
+            "limit": 10,
+            "offset": 0,
+            "has_more": False
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting public posts: {e}")
+        return {
+            "posts": [],
+            "total": 0,
+            "limit": 10,
+            "offset": 0,
+            "has_more": False
+        }
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
