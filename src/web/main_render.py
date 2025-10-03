@@ -547,7 +547,7 @@ async def read_root():
         // Dashboard functions
         async function loadDashboardData() {
             try {
-                const response = await fetch('/api/public/dashboard');
+                const response = await fetch('/api/public/dashboard-stats');
                 const data = await response.json();
                 
                 updateDashboardStats(data);
@@ -559,11 +559,9 @@ async def read_root():
         }
 
         function updateDashboardStats(data) {
-            if (data.overview) {
-                document.getElementById('total-posts').textContent = data.overview.total_posts || '-';
-                document.getElementById('active-regions').textContent = data.overview.total_groups || '-';
-                document.getElementById('processing-rate').textContent = '2.3'; // Mock data
-            }
+            document.getElementById('total-posts').textContent = data.total_posts || '-';
+            document.getElementById('active-regions').textContent = data.active_regions || '-';
+            document.getElementById('processing-rate').textContent = data.processing_rate || '-';
         }
 
         async function loadSystemStatus() {
