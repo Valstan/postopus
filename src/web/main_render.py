@@ -65,8 +65,12 @@ app.include_router(scheduler.router, prefix="/api/scheduler", tags=["scheduler"]
 app.include_router(analytics.router, prefix="/api/analytics", tags=["analytics"])
 app.include_router(public.router, prefix="/api/public", tags=["public"])
 
-# Статические файлы для фронтенда
-app.mount("/static", StaticFiles(directory="web/static"), name="static")
+# Static files for frontend (only if directory exists)
+import os
+if os.path.exists("web/static"):
+    app.mount("/static", StaticFiles(directory="web/static"), name="static")
+else:
+    logger.warning("Static directory 'web/static' not found, skipping static files mounting")
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
