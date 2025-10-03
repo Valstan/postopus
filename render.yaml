@@ -204,19 +204,13 @@ services:
         value: "3.11.6"
       - key: PYTHONPATH
         value: "/opt/render/project/src"
-      # Using existing mikrokredit database - set these manually in Render dashboard
+      # Using existing mikrokredit database - UPDATE WITH YOUR EXACT DATABASE URL
       - key: DATABASE_URL
-        value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-ctlcj5pu0jms73a6qfvg-a.oregon-postgres.render.com/mikrokredit"
-      - key: POSTGRES_HOST
-        value: "dpg-ctlcj5pu0jms73a6qfvg-a.oregon-postgres.render.com"
-      - key: POSTGRES_PORT
-        value: "5432"
+        value: "UPDATE_THIS_WITH_YOUR_EXACT_DATABASE_URL_FROM_RENDER_DASHBOARD"
       - key: POSTGRES_DB
         value: "mikrokredit"
       - key: POSTGRES_USER
         value: "mikrokredit_user"
-      - key: POSTGRES_PASSWORD
-        value: "6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv"
       - key: REDIS_URL
         fromService:
           type: redis
@@ -255,17 +249,11 @@ services:
         value: "/opt/render/project/src"
       # Using existing mikrokredit database - same as web service
       - key: DATABASE_URL
-        value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-ctlcj5pu0jms73a6qfvg-a.oregon-postgres.render.com/mikrokredit"
-      - key: POSTGRES_HOST
-        value: "dpg-ctlcj5pu0jms73a6qfvg-a.oregon-postgres.render.com"
-      - key: POSTGRES_PORT
-        value: "5432"
+        value: "UPDATE_THIS_WITH_YOUR_EXACT_DATABASE_URL_FROM_RENDER_DASHBOARD"
       - key: POSTGRES_DB
         value: "mikrokredit"
       - key: POSTGRES_USER
         value: "mikrokredit_user"
-      - key: POSTGRES_PASSWORD
-        value: "6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv"
       - key: REDIS_URL
         fromService:
           type: redis

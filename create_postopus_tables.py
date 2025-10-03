@@ -12,8 +12,8 @@ from datetime import datetime
 async def create_postopus_tables():
     """Create Postopus-specific tables in the existing mikrokredit database."""
     
-    # Database connection
-    DATABASE_URL = "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-ctlcj5pu0jms73a6qfvg-a.oregon-postgres.render.com/mikrokredit"
+    # Database connection with SSL
+    DATABASE_URL = "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-ctlcj5pu0jms73a6qfvg-a.oregon-postgres.render.com/mikrokredit?sslmode=require"
     
     print("🔗 Connecting to mikrokredit database...")
     

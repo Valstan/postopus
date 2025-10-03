@@ -9,7 +9,7 @@ from .database import Base
 
 class Post(Base):
     """Enhanced post model with regional and metadata support."""
-    __tablename__ = "posts"
+    __tablename__ = "postopus_posts"
     
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False)
@@ -18,9 +18,11 @@ class Post(Base):
     video_url = Column(String(500), nullable=True)
     status = Column(String(50), default="draft")  # draft, published, scheduled, archived
     region = Column(String(100), nullable=True, index=True)  # Regional support
+    theme = Column(String(50), nullable=False, index=True, default="novost")  # novost, sosed, kino, music, prikol, reklama
     source_collection = Column(String(100), nullable=True)
     vk_group_id = Column(String(100), nullable=True)
     telegram_chat_id = Column(String(100), nullable=True)
+    priority = Column(Integer, default=0)  # -1=low, 0=normal, 1=high
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     scheduled_at = Column(DateTime, nullable=True, index=True)
@@ -32,7 +34,7 @@ class Post(Base):
 
 class Group(Base):
     """Enhanced group model with platform and regional support."""
-    __tablename__ = "groups"
+    __tablename__ = "postopus_groups"
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
@@ -48,7 +50,7 @@ class Group(Base):
 
 class Schedule(Base):
     """Enhanced schedule model for Celery tasks."""
-    __tablename__ = "schedules"
+    __tablename__ = "postopus_schedules"
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
@@ -67,24 +69,48 @@ class Schedule(Base):
 
 class User(Base):
     """Enhanced user model with role-based access."""
-    __tablename__ = "users"
+    __tablename__ = "postopus_users"
     
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(100), unique=True, nullable=False, index=True)
-    email = Column(String(255), unique=True, nullable=False, index=True)
+    username = Column(String(50), unique=True, nullable=False, index=True)
+    email = Column(String(100), unique=True, nullable=False, index=True)
     hashed_password = Column(String(255), nullable=False)
-    full_name = Column(String(255), nullable=True)
+    full_name = Column(String(100), nullable=True)
+    role = Column(String(20), default='editor')  # admin, editor, viewer
     is_active = Column(Boolean, default=True, index=True)
-    is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     last_login = Column(DateTime, nullable=True)
-    permissions = Column(JSON, nullable=True, default=lambda: {})  # User permissions
-    settings = Column(JSON, nullable=True, default=lambda: {})  # User settings
+
+class Setting(Base):
+    """System settings model."""
+    __tablename__ = "postopus_settings"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String(100), unique=True, nullable=False, index=True)
+    value = Column(Text, nullable=False)
+    category = Column(String(50), default='general', index=True)
+    description = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class VKToken(Base):
+    """VK API tokens model for regional management."""
+    __tablename__ = "postopus_vk_tokens"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    region = Column(String(20), unique=True, nullable=False, index=True)
+    token = Column(String(500), nullable=False)
+    group_id = Column(String(50), nullable=False)
+    description = Column(Text, nullable=True)
+    is_active = Column(Boolean, default=True, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    last_used = Column(DateTime, nullable=True)
 
 class Migration(Base):
     """Migration tracking model."""
-    __tablename__ = "migrations"
+    __tablename__ = "postopus_migrations"
     
     id = Column(Integer, primary_key=True, index=True)
     version = Column(String(50), nullable=False)
