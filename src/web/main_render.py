@@ -72,27 +72,78 @@ app.mount("/static", StaticFiles(directory="web/static"), name="static")
 async def read_root():
     """Главная страница."""
     try:
-        with open("web/templates/enhanced_dashboard.html", "r", encoding="utf-8") as f:
+        with open("web/templates/index.html", "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read())
     except FileNotFoundError:
-        try:
-            with open("web/templates/index.html", "r", encoding="utf-8") as f:
-                return HTMLResponse(content=f.read())
-        except FileNotFoundError:
-            return HTMLResponse(content="""
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Postopus</title>
-                <meta charset="utf-8">
-            </head>
-            <body>
-                <h1>Postopus Web Interface</h1>
-                <p>Система автоматической публикации контента</p>
-                <p>Веб-интерфейс загружается...</p>
-            </body>
-            </html>
-            """)
+        # Возвращаем встроенный HTML если файл не найден
+        html_content = """
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postopus - Система автоматической публикации</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 800px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .status {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 25px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🚀 Postopus</div>
+        <div class="status">✅ Система запущена и готова к работе</div>
+        <p>Система автоматической публикации контента в социальные сети</p>
+        <div>
+            <a href="/docs" class="btn">📖 API Documentation</a>
+            <a href="/health" class="btn">🔧 Health Check</a>
+        </div>
+        <p style="margin-top: 30px; color: #666; font-size: 0.9em;">
+            Postopus v2.0.0 | Deployed on Render.com | PostgreSQL + Redis
+        </p>
+    </div>
+</body>
+</html>
+        """
+        return HTMLResponse(content=html_content)
 
 @app.get("/test", response_class=HTMLResponse)
 async def test_page():
