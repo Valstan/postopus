@@ -1,0 +1,81 @@
+# Render deployment ignore file - exclude unnecessary files from deployment
+
+# Documentation files (not needed for runtime)
+*.md
+!README.md
+
+# Legacy scripts and bins (not needed for web app)
+bin/
+service/
+
+# AI models and large files
+*.h5
+*.pickle
+*.model
+
+# Test files
+test_*.py
+tests/
+*_test.py
+
+# Migration scripts (run once, not needed in deployment)
+migrate_*.py
+*migration*.py
+*migrate*.py
+analyze_*.py
+export_*.py
+import_*.py
+smart_*.py
+simple_*.py
+improved_migration.py
+create_postopus_tables.py
+
+# Multiple main files (keep only src/web/main.py)
+main.py
+start*.py
+web_only.py
+celery_worker.py
+deserter.py
+init_*.py
+check_*.py
+fix_*.py
+prepare_*.py
+
+# JSON data files
+*.json
+!package.json
+
+# Multiple requirements files (keep only requirements.txt)
+requirements_*.txt
+!requirements.txt
+
+# Legacy config files
+config.py
+
+# Deployment scripts and batch files
+*.bat
+*.sh
+deploy.*
+
+# Docker files (using Render's built-in)
+Dockerfile*
+docker-compose.yml
+
+# Environment examples
+.env.*
+env.example
+
+# Backup and utility scripts
+backup*.py
+auto_*.py
+copy_*.py
+reposter_*.py
+pip_*.py
+
+# Text files
+*.txt
+!requirements.txt
+
+# Web templates (if using API only)
+web/templates/
+web/static/
