@@ -29,6 +29,8 @@ celery_app.conf.update(
     task_soft_time_limit=240,  # 4 минуты
     worker_prefetch_multiplier=1,
     worker_max_tasks_per_child=1000,
+    # Исправляем предупреждение о broker_connection_retry
+    broker_connection_retry_on_startup=True,
     # Отключаем периодические задачи для упрощения
     # beat_schedule={},
 )
