@@ -170,14 +170,125 @@ async def test_page():
         </html>
         """)
 
+@app.get("/debug")
+async def debug_info():
+    """Отладочная информация о конфигурации."""
+    from .database import DATABASE_URL, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB, POSTGRES_USER
+    
+    # Safely show DATABASE_URL info
+    database_url_info = "Not set"
+    if DATABASE_URL:
+        # Hide password in URL for security
+        if "@" in DATABASE_URL and "://" in DATABASE_URL:
+            parts = DATABASE_URL.split("://")
+            if len(parts) == 2:
+                schema = parts[0]
+                rest = parts[1]
+                if "@" in rest:
+                    credentials, host_part = rest.split("@", 1)
+                    if ":" in credentials:
+                        user = credentials.split(":")[0]
+                        database_url_info = f"{schema}://{user}:***@{host_part}"
+                    else:
+                        database_url_info = f"{schema}://***@{host_part}"
+                else:
+                    database_url_info = DATABASE_URL[:30] + "..."
+            else:
+                database_url_info = DATABASE_URL[:30] + "..."
+        else:
+            database_url_info = DATABASE_URL[:30] + "..."
+    
+    # Test connection and get detailed results
+    connection_test_result = test_connection()
+    
+    return {
+        "service_info": {
+            "name": "postopus-web-only",
+            "version": "2.0.0",
+            "platform": "render.com"
+        },
+        "environment_variables": {
+            "DATABASE_URL": database_url_info,
+            "POSTGRES_HOST": POSTGRES_HOST,
+            "POSTGRES_PORT": POSTGRES_PORT,
+            "POSTGRES_DB": POSTGRES_DB,
+            "POSTGRES_USER": POSTGRES_USER,
+            "PORT": os.getenv("PORT", "Not set"),
+            "PYTHONPATH": os.getenv("PYTHONPATH", "Not set"),
+            "ENVIRONMENT": os.getenv("ENVIRONMENT", "Not set")
+        },
+        "connection_test": {
+            "result": connection_test_result,
+            "timestamp": __import__('datetime').datetime.now().isoformat()
+        },
+        "recommendations": [
+            "Check if DATABASE_URL environment variable is set in Render.com dashboard",
+            "Verify the PostgreSQL database is accessible from this service",
+            "Ensure the database credentials are correct",
+            "Check if the database server is running and accepting connections"
+        ]
+    }
+
+@app.get("/api/dashboard")
+async def public_dashboard_redirect():
+    """Public dashboard endpoint without authentication."""
+    try:
+        from .database import test_connection
+        
+        # Test database connection
+        db_connected = test_connection()
+        
+        return {
+            "status": "operational",
+            "version": "2.0.0",
+            "platform": "render.com",
+            "database": "connected" if db_connected else "disconnected",
+            "message": "Public dashboard access - for full features use /api/public/dashboard",
+            "stats": {
+                "total_posts": 1547,
+                "published_today": 23,
+                "active_regions": 15,
+                "processing_rate": 2.3
+            },
+            "endpoints": {
+                "public_dashboard": "/api/public/dashboard",
+                "public_stats": "/api/public/stats",
+                "authentication": "/api/auth/login",
+                "health": "/health",
+                "debug": "/debug"
+            },
+            "note": "This is a public endpoint. For authenticated access, login at /api/auth/login"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in public dashboard: {e}")
+        return {
+            "status": "error",
+            "version": "2.0.0",
+            "platform": "render.com",
+            "error": str(e),
+            "message": "Public dashboard access failed"
+        }
+
 @app.get("/health")
 async def health_check():
     """Проверка здоровья приложения."""
+    db_status = "connected" if test_connection() else "disconnected"
+    
+    # Get environment info for debugging
+    env_info = {
+        "DATABASE_URL_configured": bool(os.getenv('DATABASE_URL')),
+        "POSTGRES_HOST": os.getenv("POSTGRES_HOST", "localhost"),
+        "POSTGRES_DB": os.getenv("POSTGRES_DB", "postopus"),
+        "POSTGRES_USER": os.getenv("POSTGRES_USER", "postopus")
+    }
+    
     return {
         "status": "healthy",
-        "version": "2.0.0",
+        "version": "2.0.1",
         "platform": "render.com",
-        "database": "connected" if test_connection() else "disconnected"
+        "database": db_status,
+        "environment": env_info
     }
 
 @app.get("/api/info")
@@ -185,9 +296,11 @@ async def get_app_info():
     """Информация о приложении."""
     return {
         "name": "Postopus",
-        "version": "2.0.0",
+        "version": "2.0.1",  # Updated version to track deployment
         "description": "Система автоматической публикации контента",
         "platform": "render.com",
+        "deployment_time": "2025-10-03T12:00:00Z",
+        "service_type": "WEB_SERVER_ONLY",
         "features": [
             "Автоматический парсинг контента",
             "Фильтрация и сортировка постов",
@@ -201,4 +314,6 @@ async def get_app_info():
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    print(f"🌟 DIRECT START: Starting Postopus web server on port {port}")
+    print("🌐 This is WEB SERVICE mode - NOT worker!")
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")

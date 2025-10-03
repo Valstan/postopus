@@ -97,12 +97,34 @@ def get_db():
 def test_connection():
     """Тестирование подключения к базе данных"""
     try:
+        # Log connection details for debugging
+        logger.info(f"Testing database connection...")
+        logger.info(f"DATABASE_URL configured: {'Yes' if DATABASE_URL else 'No'}")
+        logger.info(f"Host: {POSTGRES_HOST}")
+        logger.info(f"Port: {POSTGRES_PORT}")
+        logger.info(f"Database: {POSTGRES_DB}")
+        logger.info(f"User: {POSTGRES_USER}")
+        
+        # Log partial connection string for debugging (without password)
+        if DATABASE_URL:
+            if "@" in DATABASE_URL:
+                parts = DATABASE_URL.split("@")
+                if len(parts) >= 2:
+                    logger.info(f"Connection host: {parts[1]}")
+            else:
+                logger.info(f"DATABASE_URL format: {DATABASE_URL[:20]}...")
+        
         with engine.connect() as connection:
             result = connection.execute(text("SELECT 1"))
             logger.info("✅ Подключение к PostgreSQL успешно!")
             return True
     except SQLAlchemyError as e:
         logger.error(f"❌ Ошибка подключения к PostgreSQL: {e}")
+        logger.error(f"Connection string being used: {DATABASE_URL[:50] if DATABASE_URL else 'None'}...")
+        return False
+    except Exception as e:
+        logger.error(f"❌ Неожиданная ошибка при подключении к БД: {e}")
+        logger.error(f"Engine URL: {engine.url}")
         return False
 
 def init_db():

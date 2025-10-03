@@ -1,0 +1,40 @@
+# render_web_only.yaml - Web-only deployment for Postopus
+# This is specifically for the postopus-web-only service
+services:
+  # Web-only Application (without worker)
+  - type: web
+    name: postopus-web-only
+    env: python
+    plan: free
+    runtime: python-3.11.0
+    buildCommand: "python --version && pip install -r requirements_render.txt"
+    startCommand: "python web_only.py"
+    healthCheckPath: "/health"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+      - key: PYTHONPATH
+        value: "/opt/render/project"
+      # Using existing mikrokredit database - EXACT URLs from your Render dashboard
+      - key: DATABASE_URL
+        value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com/mikrokredit"
+      - key: POSTGRES_HOST
+        value: "dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com"
+      - key: POSTGRES_PORT
+        value: "5432"
+      - key: POSTGRES_DB
+        value: "mikrokredit"
+      - key: POSTGRES_USER
+        value: "mikrokredit_user"
+      - key: POSTGRES_PASSWORD
+        value: "6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: VK_API_VERSION
+        value: "5.131"
+      - key: ENVIRONMENT
+        value: "production"
+      - key: DEBUG
+        value: "false"
+      - key: LOG_LEVEL
+        value: "INFO"

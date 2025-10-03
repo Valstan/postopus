@@ -1,0 +1,25 @@
+# Simple render.yaml for web-only service
+services:
+  - type: web
+    name: postopus-web-only
+    env: python
+    plan: free
+    runtime: python-3.11.0
+    buildCommand: "pip install -r requirements_render.txt"
+    startCommand: "python run_web.py"
+    healthCheckPath: "/health"
+    envVars:
+      - key: PYTHONPATH
+        value: "/opt/render/project"
+      - key: DATABASE_URL
+        value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com/mikrokredit"
+      - key: POSTGRES_HOST
+        value: "dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com"
+      - key: POSTGRES_DB
+        value: "mikrokredit"
+      - key: POSTGRES_USER
+        value: "mikrokredit_user"
+      - key: POSTGRES_PASSWORD
+        value: "6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv"
+      - key: ENVIRONMENT
+        value: "production"
