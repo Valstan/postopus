@@ -20,6 +20,11 @@ class HealthCheckHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.end_headers()
             self.wfile.write(b'{"status": "healthy", "service": "celery-worker"}')
+        elif parsed_path.path == '/':
+            # Redirect root to health check
+            self.send_response(302)
+            self.send_header('Location', '/health')
+            self.end_headers()
         else:
             self.send_response(404)
             self.end_headers()
@@ -47,19 +52,28 @@ def main():
     # Get port from environment variable
     port = int(os.environ.get('PORT', 8000))
     
+    print(f"Starting worker server on port {port}")
+    
     # Start health server in background thread
     health_thread = threading.Thread(target=start_health_server, args=(port,), daemon=True)
     health_thread.start()
     
     # Give health server time to start
-    time.sleep(1)
+    time.sleep(2)
     
     # Start Celery worker
     celery_command = ' '.join(sys.argv[1:])
     print(f"Starting Celery worker: {celery_command}")
     
-    # Execute Celery command
-    os.system(celery_command)
+    try:
+        # Execute Celery command
+        exit_code = os.system(celery_command)
+        if exit_code != 0:
+            print(f"Celery worker exited with code {exit_code}")
+    except KeyboardInterrupt:
+        print("Received interrupt signal, shutting down...")
+    except Exception as e:
+        print(f"Error running Celery worker: {e}")
 
 if __name__ == '__main__':
     main()
