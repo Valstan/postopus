@@ -757,7 +757,7 @@
         // Dashboard functions
         async function loadDashboardData() {
             try {
-                const response = await fetch('/api/dashboard/stats');
+                const response = await fetch('/api/public/dashboard-stats');
                 const data = await response.json();
                 
                 updateDashboardStats(data);
@@ -843,7 +843,7 @@
         // Posts functions
         async function loadPosts() {
             try {
-                const response = await fetch('/api/posts/simple');
+                const response = await fetch('/api/public/posts-simple');
                 const data = await response.json();
                 
                 posts = data.posts || [];

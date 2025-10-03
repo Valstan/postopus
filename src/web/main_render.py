@@ -74,7 +74,7 @@ else:
     logger.warning("Static directory '../web/static' not found, skipping static files mounting")
 
 # Публичные API endpoints (должны быть после роутеров)
-@app.get("/api/dashboard/stats")
+@app.get("/api/public/dashboard-stats")
 async def get_public_dashboard_stats():
     """Public dashboard stats for the web interface."""
     try:
@@ -105,7 +105,7 @@ async def get_public_dashboard_stats():
             "status": "error"
         }
 
-@app.get("/api/posts/simple")
+@app.get("/api/public/posts-simple")
 async def get_public_posts():
     """Public posts endpoint for the web interface."""
     try:
