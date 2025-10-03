@@ -68,10 +68,12 @@ app.include_router(public.router, prefix="/api/public", tags=["public"])
 
 # Static files for frontend (only if directory exists)
 import os
-if os.path.exists(os.path.join(os.path.dirname(os.path.dirname(__file__)), "web", "static")):
-    app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(os.path.dirname(__file__)), "web", "static")), name="static")
+static_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "web", "static")
+if os.path.exists(static_path):
+    app.mount("/static", StaticFiles(directory=static_path), name="static")
+    logger.info(f"Static files mounted from: {static_path}")
 else:
-    logger.warning("Static directory not found, skipping static files mounting")
+    logger.warning(f"Static directory not found at: {static_path}, skipping static files mounting")
 
 # Публичные API endpoints (должны быть после роутеров)
 @app.get("/api/public/dashboard-stats")

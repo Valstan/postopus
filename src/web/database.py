@@ -29,6 +29,9 @@ engine = create_engine(DATABASE_URL, echo=False)
 # Создание сессии
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# Экспорт Session для совместимости
+Session = SessionLocal
+
 # Базовый класс для моделей
 Base = declarative_base()
 
