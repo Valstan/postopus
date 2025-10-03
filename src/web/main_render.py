@@ -67,16 +67,16 @@ app.include_router(public.router, prefix="/api/public", tags=["public"])
 
 # Static files for frontend (only if directory exists)
 import os
-if os.path.exists("web/static"):
-    app.mount("/static", StaticFiles(directory="web/static"), name="static")
+if os.path.exists("../web/static"):
+    app.mount("/static", StaticFiles(directory="../web/static"), name="static")
 else:
-    logger.warning("Static directory 'web/static' not found, skipping static files mounting")
+    logger.warning("Static directory '../web/static' not found, skipping static files mounting")
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
     """Главная страница - перенаправляем на dashboard."""
     try:
-        with open("web/templates/dashboard.html", "r", encoding="utf-8") as f:
+        with open("../web/templates/dashboard.html", "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read())
     except FileNotFoundError:
         # Возвращаем встроенный HTML если файл не найден
