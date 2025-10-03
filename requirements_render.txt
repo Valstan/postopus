@@ -1,15 +1,16 @@
-# Postopus Production Deployment Requirements
+# Postopus Production Deployment Requirements  
 # For Render.com deployment - optimized for Python 3.11
+# Using only packages with pre-compiled wheels
 
 # Core FastAPI and Web Framework
-fastapi==0.109.0
-uvicorn[standard]==0.27.0
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
 gunicorn==21.2.0
 
 # Database Dependencies
 asyncpg==0.29.0
-sqlalchemy[asyncio]==2.0.25
-alembic==1.13.0
+sqlalchemy[asyncio]==2.0.23
+alembic==1.12.1
 
 # Authentication & Security
 python-jose[cryptography]==3.3.0
@@ -19,12 +20,12 @@ email-validator==2.1.0
 PyJWT==2.8.0
 
 # HTTP Client for VK API
-httpx==0.26.0
+httpx==0.25.2
 aiohttp==3.9.1
 
-# Data Processing & Validation
-pydantic==2.5.2
-pydantic-settings==2.1.0
+# Data Processing & Validation - Using older stable versions
+pydantic==1.10.12
+pydantic-settings==2.0.3
 
 # Background Tasks
 celery==5.3.4
