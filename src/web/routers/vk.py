@@ -8,8 +8,8 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from pydantic import BaseModel
 
-from ..web.database import get_database
-from ..web.models import Post, Group, VKToken
+from ..database import get_database
+from ..models import Post, Group, VKToken
 from ..services.modern_vk_service import ModernVKService
 from ..tasks.vk_tasks import (
     fetch_posts_from_region_task,
