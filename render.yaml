@@ -13,7 +13,7 @@ services:
       - key: PYTHON_VERSION
         value: "3.11.6"
       - key: PYTHONPATH
-        value: "/opt/render/project/src"
+        value: "/opt/render/project"
       # Using existing mikrokredit database - EXACT URLs from your Render dashboard
       - key: DATABASE_URL
         value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com/mikrokredit"
@@ -56,7 +56,7 @@ services:
     startCommand: "celery -A src.tasks.celery_app worker --loglevel=info"
     envVars:
       - key: PYTHONPATH
-        value: "/opt/render/project/src"
+        value: "/opt/render/project"
       # Using existing mikrokredit database - same as web service
       - key: DATABASE_URL
         value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com/mikrokredit"
