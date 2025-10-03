@@ -12,8 +12,8 @@ from datetime import datetime
 async def create_postopus_tables():
     """Create Postopus-specific tables in the existing mikrokredit database."""
     
-    # Database connection with SSL
-    DATABASE_URL = "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-ctlcj5pu0jms73a6qfvg-a.oregon-postgres.render.com/mikrokredit?sslmode=require"
+    # Database connection with SSL - EXACT URL from your Render dashboard
+    DATABASE_URL = "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com/mikrokredit?sslmode=require"
     
     print("🔗 Connecting to mikrokredit database...")
     
@@ -127,6 +127,7 @@ async def create_postopus_tables():
         
         # Insert default admin user (password: admin)
         hashed_admin_password = "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewgPajMkxmksOI5u"  # bcrypt hash of "admin"
+        hashed_editor_password = "$2b$12$6RNDz5gB8XzPyBQY8G9jQeJ8dZr5mI5CQ1L9n3xM8lY6Kj3Ej5KjG"  # bcrypt hash of "editor123"
         
         await conn.execute("""
             INSERT INTO postopus_users (username, email, hashed_password, full_name, role, is_active)
@@ -138,7 +139,7 @@ async def create_postopus_tables():
             INSERT INTO postopus_users (username, email, hashed_password, full_name, role, is_active)
             VALUES ($1, $2, $3, $4, $5, $6)
             ON CONFLICT (username) DO NOTHING;
-        """, "editor", "$2b$12$6RNDz5gB8XzPyBQY8G9jQeJ8dZr5mI5CQ1L9n3xM8lY6Kj3Ej5KjG", "Content Editor", "editor", True)
+        """, "editor", "editor@postopus.ru", hashed_editor_password, "Content Editor", "editor", True)
         
         print("✅ Created default users (admin/admin, editor/editor123)")
         
@@ -208,7 +209,7 @@ if __name__ == "__main__":
     print("🚀 Setting up Postopus tables in mikrokredit database...")
     print("📍 Database: mikrokredit")
     print("👤 User: mikrokredit_user")
-    print("🏠 Host: dpg-ctlcj5pu0jms73a6qfvg-a.oregon-postgres.render.com")
+    print("🏠 Host: dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com")
     print()
     
     success = asyncio.run(create_postopus_tables())

@@ -204,9 +204,9 @@ services:
         value: "3.11.6"
       - key: PYTHONPATH
         value: "/opt/render/project/src"
-      # Using existing mikrokredit database - UPDATE WITH YOUR EXACT DATABASE URL
+      # Using existing mikrokredit database - EXACT URLs from your Render dashboard
       - key: DATABASE_URL
-        value: "UPDATE_THIS_WITH_YOUR_EXACT_DATABASE_URL_FROM_RENDER_DASHBOARD"
+        value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com/mikrokredit"
       - key: POSTGRES_DB
         value: "mikrokredit"
       - key: POSTGRES_USER
@@ -249,7 +249,7 @@ services:
         value: "/opt/render/project/src"
       # Using existing mikrokredit database - same as web service
       - key: DATABASE_URL
-        value: "UPDATE_THIS_WITH_YOUR_EXACT_DATABASE_URL_FROM_RENDER_DASHBOARD"
+        value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com/mikrokredit"
       - key: POSTGRES_DB
         value: "mikrokredit"
       - key: POSTGRES_USER
