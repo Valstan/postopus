@@ -73,6 +73,7 @@ if os.path.exists("../web/static"):
 else:
     logger.warning("Static directory '../web/static' not found, skipping static files mounting")
 
+# Публичные API endpoints (должны быть после роутеров)
 @app.get("/api/dashboard/stats")
 async def get_public_dashboard_stats():
     """Public dashboard stats for the web interface."""
