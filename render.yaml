@@ -5,7 +5,7 @@ services:
     name: postopus-web-only
     env: python
     plan: free
-    buildCommand: "pip install -r requirements_render.txt"
+    buildCommand: "python -m pip install --upgrade pip && pip install --no-cache-dir -r requirements_render.txt"
     startCommand: "python -m src.web.main_render"
     healthCheckPath: "/health"
     envVars:
@@ -48,7 +48,7 @@ services:
     name: postopus-worker
     env: python
     plan: free
-    buildCommand: "pip install -r requirements_render.txt"
+    buildCommand: "python -m pip install --upgrade pip && pip install --no-cache-dir -r requirements_render.txt"
     startCommand: "python src/worker_server.py 'cd src && celery -A tasks.celery_app worker --loglevel=info'"
     healthCheckPath: "/health"
     envVars:
@@ -83,7 +83,7 @@ services:
     name: postopus-scheduler
     env: python
     plan: free
-    buildCommand: "pip install -r requirements_render.txt"
+    buildCommand: "python -m pip install --upgrade pip && pip install --no-cache-dir -r requirements_render.txt"
     startCommand: "python src/worker_server.py 'cd src && celery -A tasks.celery_app beat --loglevel=info'"
     healthCheckPath: "/health"
     envVars:
