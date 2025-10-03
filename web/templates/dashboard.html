@@ -757,7 +757,7 @@
         // Dashboard functions
         async function loadDashboardData() {
             try {
-                const response = await fetch('/api/public/dashboard-stats');
+                const response = await fetch('/api/public/dashboard');
                 const data = await response.json();
                 
                 updateDashboardStats(data);
@@ -770,9 +770,11 @@
         }
 
         function updateDashboardStats(data) {
-            document.getElementById('total-posts').textContent = data.total_posts || '-';
-            document.getElementById('active-regions').textContent = data.active_regions || '-';
-            document.getElementById('processing-rate').textContent = data.processing_rate || '-';
+            if (data.overview) {
+                document.getElementById('total-posts').textContent = data.overview.total_posts || '-';
+                document.getElementById('active-regions').textContent = data.overview.total_groups || '-';
+                document.getElementById('processing-rate').textContent = '2.3'; // Mock data
+            }
         }
 
         async function loadSystemStatus() {
