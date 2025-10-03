@@ -75,11 +75,15 @@ class ModernVKService:
     async def _load_tokens_from_db(self):
         """Load VK tokens from database."""
         try:
-            session = self.db
-            tokens = session.query(VKToken).filter(VKToken.is_active == True).all()
-            for token in tokens:
-                self.tokens[token.region] = token
-            logger.info(f"Loaded {len(tokens)} VK tokens from database")
+            from ..web.database import SessionLocal
+            session = SessionLocal()
+            try:
+                tokens = session.query(VKToken).filter(VKToken.is_active == True).all()
+                for token in tokens:
+                    self.tokens[token.region] = token
+                logger.info(f"Loaded {len(tokens)} VK tokens from database")
+            finally:
+                session.close()
         except Exception as e:
             logger.error(f"Error loading tokens from database: {e}")
     
