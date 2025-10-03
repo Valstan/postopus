@@ -74,9 +74,9 @@ else:
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
-    """Главная страница."""
+    """Главная страница - перенаправляем на dashboard."""
     try:
-        with open("web/templates/index.html", "r", encoding="utf-8") as f:
+        with open("web/templates/dashboard.html", "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read())
     except FileNotFoundError:
         # Возвращаем встроенный HTML если файл не найден

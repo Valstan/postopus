@@ -629,6 +629,38 @@ async def get_dashboard_overview(current_user: dict = Depends(get_current_user))
         logger.error(f"Error getting dashboard overview: {e}")
         raise HTTPException(status_code=500, detail="Error getting dashboard overview")
 
+@router.get("/stats")
+async def get_dashboard_stats_simple():
+    """Simple dashboard stats for the web interface."""
+    try:
+        # Return mock data for now - will be replaced with real data later
+        return {
+            "total_posts": 1547,
+            "published_today": 23,
+            "published_this_week": 156,
+            "scheduled_tasks": 5,
+            "active_regions": 15,
+            "active_vk_sessions": 12,
+            "error_count": 2,
+            "processing_rate": 2.3,
+            "last_update": datetime.utcnow().isoformat(),
+            "status": "operational"
+        }
+    except Exception as e:
+        logger.error(f"Error getting simple dashboard stats: {e}")
+        return {
+            "total_posts": 0,
+            "published_today": 0,
+            "published_this_week": 0,
+            "scheduled_tasks": 0,
+            "active_regions": 0,
+            "active_vk_sessions": 0,
+            "error_count": 0,
+            "processing_rate": 0,
+            "last_update": datetime.utcnow().isoformat(),
+            "status": "error"
+        }
+
 
 def _calculate_health_score(system_status: SystemStatus, vk_status: VKConnectionStatus, stats: DashboardStats) -> float:
     """Calculate overall system health score (0-100)."""

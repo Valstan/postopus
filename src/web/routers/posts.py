@@ -649,3 +649,80 @@ async def bulk_delete_posts(
     except Exception as e:
         logger.error(f"Error bulk deleting posts: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to bulk delete: {str(e)}")
+
+@router.get("/simple")
+async def get_posts_simple():
+    """Simple posts endpoint for the web interface."""
+    try:
+        # Return mock data for now - will be replaced with real data later
+        mock_posts = [
+            {
+                "id": 1,
+                "title": "Новости региона",
+                "content": "Содержание поста о новостях региона...",
+                "region": "Москва",
+                "theme": "novost",
+                "status": "published",
+                "created_at": "2025-10-03T10:00:00Z",
+                "published_at": "2025-10-03T10:05:00Z",
+                "views": 1250,
+                "likes": 45,
+                "reposts": 12,
+                "image_url": None,
+                "video_url": None,
+                "tags": ["новости", "регион"],
+                "priority": 0
+            },
+            {
+                "id": 2,
+                "title": "Объявление",
+                "content": "Важное объявление для жителей...",
+                "region": "СПб",
+                "theme": "obyavlenie",
+                "status": "pending",
+                "created_at": "2025-10-03T11:00:00Z",
+                "published_at": None,
+                "views": 0,
+                "likes": 0,
+                "reposts": 0,
+                "image_url": None,
+                "video_url": None,
+                "tags": ["объявление"],
+                "priority": 1
+            },
+            {
+                "id": 3,
+                "title": "Статья",
+                "content": "Интересная статья на актуальную тему...",
+                "region": "Екатеринбург",
+                "theme": "statya",
+                "status": "published",
+                "created_at": "2025-10-03T09:00:00Z",
+                "published_at": "2025-10-03T09:10:00Z",
+                "views": 890,
+                "likes": 32,
+                "reposts": 8,
+                "image_url": None,
+                "video_url": None,
+                "tags": ["статья", "анализ"],
+                "priority": 0
+            }
+        ]
+        
+        return {
+            "posts": mock_posts,
+            "total": len(mock_posts),
+            "limit": 10,
+            "offset": 0,
+            "has_more": False
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting simple posts: {e}")
+        return {
+            "posts": [],
+            "total": 0,
+            "limit": 10,
+            "offset": 0,
+            "has_more": False
+        }
