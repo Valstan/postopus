@@ -9,7 +9,7 @@ from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from pydantic import BaseModel
 
-from ..database import SessionLocal
+from ..database import get_database, SessionLocal
 from ..models import Post, Group, VKToken
 from ...services.modern_vk_service import ModernVKService
 from ...tasks.vk_tasks import (
@@ -50,76 +50,77 @@ class VKRegionSyncRequest(BaseModel):
 @router.get("/tokens")
 async def get_vk_tokens():
     """Получить список VK токенов."""
-    session = SessionLocal()
     try:
-        tokens = session.query(VKToken).all()
-        return {
-            "tokens": [
-                {
-                    "id": token.id,
-                    "region": token.region,
-                    "group_id": token.group_id,
-                    "description": token.description,
-                    "is_active": token.is_active,
-                    "created_at": token.created_at.isoformat(),
-                    "last_used": token.last_used.isoformat() if token.last_used else None
-                }
-                for token in tokens
-            ],
-            "total": len(tokens)
-        }
+        session = SessionLocal()
+        try:
+            tokens = session.query(VKToken).all()
+            return {
+                "tokens": [
+                    {
+                        "id": token.id,
+                        "region": token.region,
+                        "group_id": token.group_id,
+                        "description": token.description,
+                        "is_active": token.is_active,
+                        "created_at": token.created_at.isoformat(),
+                        "last_used": token.last_used.isoformat() if token.last_used else None
+                    }
+                    for token in tokens
+                ],
+                "total": len(tokens)
+            }
+        finally:
+            session.close()
     except Exception as e:
         logger.error(f"Error getting VK tokens: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        session.close()
 
 @router.post("/tokens")
 async def create_vk_token(token_data: VKTokenCreate):
     """Создать новый VK токен."""
-    session = SessionLocal()
     try:
-        # Проверяем, существует ли уже токен для этого региона
-        existing_token = session.query(VKToken).filter(VKToken.region == token_data.region).first()
-        if existing_token:
-            raise HTTPException(status_code=400, detail=f"Token for region {token_data.region} already exists")
-        
-        # Создаем новый токен
-        new_token = VKToken(
-            region=token_data.region,
-            token=token_data.token,
-            group_id=token_data.group_id,
-            description=token_data.description,
-            is_active=True
-        )
-        
-        session.add(new_token)
-        session.commit()
-        session.refresh(new_token)
-        
-        return {
-            "id": new_token.id,
-            "region": new_token.region,
-            "group_id": new_token.group_id,
-            "description": new_token.description,
-            "is_active": new_token.is_active,
-            "created_at": new_token.created_at.isoformat()
-        }
+        session = SessionLocal()
+        try:
+            # Проверяем, существует ли уже токен для этого региона
+            existing_token = session.query(VKToken).filter(VKToken.region == token_data.region).first()
+            if existing_token:
+                raise HTTPException(status_code=400, detail=f"Token for region {token_data.region} already exists")
+            
+            # Создаем новый токен
+            new_token = VKToken(
+                region=token_data.region,
+                token=token_data.token,
+                group_id=token_data.group_id,
+                description=token_data.description,
+                is_active=True
+            )
+            
+            session.add(new_token)
+            session.commit()
+            session.refresh(new_token)
+            
+            return {
+                "id": new_token.id,
+                "region": new_token.region,
+                "group_id": new_token.group_id,
+                "description": new_token.description,
+                "is_active": new_token.is_active,
+                "created_at": new_token.created_at.isoformat()
+            }
+        finally:
+            session.close()
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error creating VK token: {e}")
-        session.rollback()
         raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        session.close()
 
 @router.put("/tokens/{token_id}")
 async def update_vk_token(token_id: int, token_data: VKTokenUpdate):
     """Обновить VK токен."""
-    session = SessionLocal()
     try:
-        token = session.query(VKToken).filter(VKToken.id == token_id).first()
+        db = get_database()
+        token = db.query(VKToken).filter(VKToken.id == token_id).first()
         
         if not token:
             raise HTTPException(status_code=404, detail="Token not found")
@@ -134,8 +135,8 @@ async def update_vk_token(token_id: int, token_data: VKTokenUpdate):
         if token_data.is_active is not None:
             token.is_active = token_data.is_active
         
-        session.commit()
-        session.refresh(token)
+        db.commit()
+        db.refresh(token)
         
         return {
             "id": token.id,
@@ -149,33 +150,29 @@ async def update_vk_token(token_id: int, token_data: VKTokenUpdate):
         raise
     except Exception as e:
         logger.error(f"Error updating VK token: {e}")
-        session.rollback()
+        db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        session.close()
 
 @router.delete("/tokens/{token_id}")
 async def delete_vk_token(token_id: int):
     """Удалить VK токен."""
-    session = SessionLocal()
     try:
-        token = session.query(VKToken).filter(VKToken.id == token_id).first()
+        db = get_database()
+        token = db.query(VKToken).filter(VKToken.id == token_id).first()
         
         if not token:
             raise HTTPException(status_code=404, detail="Token not found")
         
-        session.delete(token)
-        session.commit()
+        db.delete(token)
+        db.commit()
         
         return {"message": "Token deleted successfully"}
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error deleting VK token: {e}")
-        session.rollback()
+        db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        session.close()
 
 # VK API Operations
 @router.get("/test-connections")
@@ -271,9 +268,9 @@ async def process_scheduled_posts(background_tasks: BackgroundTasks):
 @router.get("/groups")
 async def get_vk_groups():
     """Получить список VK групп."""
-    session = SessionLocal()
     try:
-        groups = session.query(Group).filter(Group.platform == "vk").all()
+        db = get_database()
+        groups = db.query(Group).filter(Group.platform == "vk").all()
         
         return {
             "groups": [
@@ -292,8 +289,6 @@ async def get_vk_groups():
     except Exception as e:
         logger.error(f"Error getting VK groups: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        session.close()
 
 @router.get("/groups/{group_id}/info")
 async def get_vk_group_info(group_id: str):
@@ -316,19 +311,20 @@ async def get_vk_group_info(group_id: str):
 @router.get("/statistics")
 async def get_vk_statistics():
     """Получить статистику VK интеграции."""
-    session = SessionLocal()
     try:
+        db = get_database()
+        
         # Статистика токенов
-        total_tokens = session.query(VKToken).count()
-        active_tokens = session.query(VKToken).filter(VKToken.is_active == True).count()
+        total_tokens = db.query(VKToken).count()
+        active_tokens = db.query(VKToken).filter(VKToken.is_active == True).count()
         
         # Статистика групп
-        total_groups = session.query(Group).filter(Group.platform == "vk").count()
-        active_groups = session.query(Group).filter(Group.platform == "vk", Group.is_active == True).count()
+        total_groups = db.query(Group).filter(Group.platform == "vk").count()
+        active_groups = db.query(Group).filter(Group.platform == "vk", Group.is_active == True).count()
         
         # Статистика постов
-        total_posts = session.query(Post).count()
-        published_posts = session.query(Post).filter(Post.status == "published").count()
+        total_posts = db.query(Post).count()
+        published_posts = db.query(Post).filter(Post.status == "published").count()
         
         return {
             "tokens": {
@@ -347,8 +343,6 @@ async def get_vk_statistics():
     except Exception as e:
         logger.error(f"Error getting VK statistics: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        session.close()
 
 @router.get("/tasks/{task_id}/status")
 async def get_task_status(task_id: str):
