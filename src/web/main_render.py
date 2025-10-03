@@ -13,6 +13,7 @@ from contextlib import asynccontextmanager
 from .routers import auth, dashboard, posts, settings, scheduler, analytics, public
 from .database import get_database, init_db, test_connection
 from .routers.auth import get_current_user
+from .data_manager import data_manager
 
 # Настраиваем логирование
 logging.basicConfig(level=logging.INFO)
@@ -30,6 +31,12 @@ async def lifespan(app: FastAPI):
         # Инициализируем базу данных (создаем таблицы)
         if init_db():
             logger.info("✅ Database tables created successfully")
+            # Создаем примеры данных если база пустая
+            try:
+                data_manager.create_sample_data()
+                logger.info("✅ Sample data created successfully")
+            except Exception as e:
+                logger.warning(f"Could not create sample data: {e}")
         else:
             logger.error("❌ Failed to create database tables")
     else:
@@ -80,18 +87,8 @@ else:
 async def get_public_dashboard_stats():
     """Public dashboard stats for the web interface."""
     try:
-        return {
-            "total_posts": 1547,
-            "published_today": 23,
-            "published_this_week": 156,
-            "scheduled_tasks": 5,
-            "active_regions": 15,
-            "active_vk_sessions": 12,
-            "error_count": 2,
-            "processing_rate": 2.3,
-            "last_update": datetime.utcnow().isoformat(),
-            "status": "operational"
-        }
+        # Используем реальные данные из базы
+        return data_manager.get_real_dashboard_stats()
     except Exception as e:
         logger.error(f"Error getting public dashboard stats: {e}")
         return {
@@ -111,66 +108,14 @@ async def get_public_dashboard_stats():
 async def get_public_posts():
     """Public posts endpoint for the web interface."""
     try:
-        mock_posts = [
-            {
-                "id": 1,
-                "title": "Новости региона",
-                "content": "Содержание поста о новостях региона...",
-                "region": "Москва",
-                "theme": "novost",
-                "status": "published",
-                "created_at": "2025-10-03T10:00:00Z",
-                "published_at": "2025-10-03T10:05:00Z",
-                "views": 1250,
-                "likes": 45,
-                "reposts": 12,
-                "image_url": None,
-                "video_url": None,
-                "tags": ["новости", "регион"],
-                "priority": 0
-            },
-            {
-                "id": 2,
-                "title": "Объявление",
-                "content": "Важное объявление для жителей...",
-                "region": "СПб",
-                "theme": "obyavlenie",
-                "status": "pending",
-                "created_at": "2025-10-03T11:00:00Z",
-                "published_at": None,
-                "views": 0,
-                "likes": 0,
-                "reposts": 0,
-                "image_url": None,
-                "video_url": None,
-                "tags": ["объявление"],
-                "priority": 1
-            },
-            {
-                "id": 3,
-                "title": "Статья",
-                "content": "Интересная статья на актуальную тему...",
-                "region": "Екатеринбург",
-                "theme": "statya",
-                "status": "published",
-                "created_at": "2025-10-03T09:00:00Z",
-                "published_at": "2025-10-03T09:10:00Z",
-                "views": 890,
-                "likes": 32,
-                "reposts": 8,
-                "image_url": None,
-                "video_url": None,
-                "tags": ["статья", "анализ"],
-                "priority": 0
-            }
-        ]
-        
+        # Используем реальные данные из базы
+        posts = data_manager.get_recent_posts(limit=10)
         return {
-            "posts": mock_posts,
-            "total": len(mock_posts),
+            "posts": posts,
+            "total": len(posts),
             "limit": 10,
             "offset": 0,
-            "has_more": False
+            "has_more": len(posts) >= 10
         }
         
     except Exception as e:
@@ -183,10 +128,63 @@ async def get_public_posts():
             "has_more": False
         }
 
+@app.get("/api/public/posts-by-status/{status}")
+async def get_posts_by_status(status: str):
+    """Получить посты по статусу."""
+    try:
+        posts = data_manager.get_posts_by_status(status, limit=20)
+        return {
+            "posts": posts,
+            "status": status,
+            "total": len(posts),
+            "limit": 20
+        }
+    except Exception as e:
+        logger.error(f"Error getting posts by status {status}: {e}")
+        return {
+            "posts": [],
+            "status": status,
+            "total": 0,
+            "limit": 20
+        }
+
+@app.get("/api/public/analytics")
+async def get_public_analytics(days: int = 7):
+    """Получить данные аналитики."""
+    try:
+        analytics_data = data_manager.get_analytics_data(days)
+        return analytics_data
+    except Exception as e:
+        logger.error(f"Error getting analytics data: {e}")
+        return {
+            "daily_stats": [],
+            "region_stats": [],
+            "theme_stats": [],
+            "period_days": days
+        }
+
+@app.get("/api/public/groups-status")
+async def get_groups_status():
+    """Получить статус групп."""
+    try:
+        groups = data_manager.get_groups_status()
+        return {
+            "groups": groups,
+            "total": len(groups),
+            "active_count": len([g for g in groups if g["is_active"]])
+        }
+    except Exception as e:
+        logger.error(f"Error getting groups status: {e}")
+        return {
+            "groups": [],
+            "total": 0,
+            "active_count": 0
+        }
+
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
     """Главная страница - простой dashboard."""
-    html_content = """
+        html_content = """
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -682,12 +680,12 @@ async def read_root():
                     <button class="btn btn-secondary" onclick="window.open('/health', '_blank')">
                         <i class="fas fa-heartbeat"></i> Health Check
                     </button>
-                    <button class="btn btn-secondary" onclick="window.open('/api/public/dashboard', '_blank')">
-                        <i class="fas fa-chart-line"></i> Dashboard API
-                    </button>
-                    <button class="btn btn-secondary" onclick="window.open('/api/public/stats', '_blank')">
-                        <i class="fas fa-chart-bar"></i> Статистика
-                    </button>
+                       <button class="btn btn-secondary" onclick="window.open('/api/public/analytics', '_blank')">
+                           <i class="fas fa-chart-line"></i> Аналитика
+                       </button>
+                       <button class="btn btn-secondary" onclick="window.open('/api/public/groups-status', '_blank')">
+                           <i class="fas fa-users"></i> Статус групп
+                       </button>
                 </div>
             </div>
         </section>
@@ -974,10 +972,40 @@ async def read_root():
                 
                 posts = data.posts || [];
                 renderPosts();
+                
+                // Обновляем счетчики
+                updatePostCounters();
             } catch (error) {
                 console.error('Error loading posts:', error);
                 document.getElementById('posts-list').innerHTML = '<div class="error">Ошибка загрузки постов</div>';
             }
+        }
+        
+        function updatePostCounters() {
+            const totalPosts = posts.length;
+            const publishedPosts = posts.filter(p => p.status === 'published').length;
+            const pendingPosts = posts.filter(p => p.status === 'pending').length;
+            const errorPosts = posts.filter(p => p.status === 'error').length;
+            
+            // Обновляем счетчики в интерфейсе
+            const counters = document.querySelectorAll('.post-counter');
+            counters.forEach(counter => {
+                const type = counter.dataset.type;
+                switch(type) {
+                    case 'total':
+                        counter.textContent = totalPosts;
+                        break;
+                    case 'published':
+                        counter.textContent = publishedPosts;
+                        break;
+                    case 'pending':
+                        counter.textContent = pendingPosts;
+                        break;
+                    case 'error':
+                        counter.textContent = errorPosts;
+                        break;
+                }
+            });
         }
 
         function renderPosts() {
@@ -1122,32 +1150,29 @@ async def read_root():
         // Analytics functions
         async function loadAnalytics() {
             try {
-                // Simulate loading analytics data
-                const mockRegions = [
-                    { name: 'Москва', posts: 45 },
-                    { name: 'СПб', posts: 32 },
-                    { name: 'Екатеринбург', posts: 28 },
-                    { name: 'Новосибирск', posts: 25 },
-                    { name: 'Казань', posts: 22 }
-                ];
-
-                const regionsHtml = mockRegions.map(region => `
-                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
-                        <span>${region.name}</span>
-                        <span style="font-weight: 600;">${region.posts}</span>
-                    </div>
-                `).join('');
-
-                document.getElementById('top-regions').innerHTML = regionsHtml;
+                const response = await fetch('/api/public/analytics?days=7');
+                const data = await response.json();
+                
+                updateAnalytics(data);
             } catch (error) {
+                console.error('Error loading analytics:', error);
                 document.getElementById('top-regions').innerHTML = '<div class="error">Ошибка загрузки аналитики</div>';
             }
         }
-
-        function updateAnalytics() {
-            const period = document.getElementById('analytics-period').value;
-            console.log('Updating analytics for period:', period);
-            loadAnalytics();
+        
+        function updateAnalytics(data) {
+            if (data.region_stats && data.region_stats.length > 0) {
+                const regionsHtml = data.region_stats.map(region => `
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <span>${region.region}</span>
+                        <span style="font-weight: 600;">${region.posts_count} постов</span>
+                    </div>
+                `).join('');
+                
+                document.getElementById('top-regions').innerHTML = regionsHtml;
+            } else {
+                document.getElementById('top-regions').innerHTML = '<div class="no-data">Нет данных для отображения</div>';
+            }
         }
 
         // Settings functions
