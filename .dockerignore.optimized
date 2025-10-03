@@ -1,0 +1,122 @@
+# Optimized .dockerignore for Postopus
+# Excludes unnecessary files from Docker build context
+
+# Git and version control
+.git
+.gitignore
+.gitattributes
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+logs/
+temp/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Documentation and markdown files
+*.md
+docs/
+README*
+
+# Test files
+tests/
+test_*.py
+*_test.py
+
+# Development files
+dev/
+development/
+scripts/
+bin/
+
+# Monitoring and deployment files
+monitor_*.py
+postopus_monitor.py
+quick_monitor.py
+real_render_monitor.py
+render_log_monitor.py
+test_monitoring.py
+
+# Build scripts (keep only optimized ones)
+build.sh
+build_optimized.sh
+
+# Old requirements files
+requirements.txt
+requirements_web.txt
+requirements_web_only.txt
+requirements_new.txt
+
+# Old Docker files
+Dockerfile
+Dockerfile.db
+Dockerfile.web
+
+# Old render configs
+render.yaml
+
+# Migration and analysis files
+migrate_*.py
+analyze_*.py
+export_*.py
+import_*.py
+*_analysis_*.json
+*_export_*.json
+migration_*.json
+
+# Legacy files
+legacy/
+old/
+backup/

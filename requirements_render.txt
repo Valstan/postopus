@@ -1,41 +1,40 @@
-# Postopus Production Deployment Requirements  
+# Postopus Production Deployment Requirements - OPTIMIZED
 # For Render.com deployment - optimized for Python 3.11
-# Using compatible versions that work together
+# Minimal dependencies for faster deployment
 
-# Core FastAPI and Web Framework
+# Core FastAPI and Web Framework (ESSENTIAL)
 fastapi==0.95.2
 uvicorn[standard]==0.22.0
 gunicorn==21.2.0
 
-# Database Dependencies
+# Database Dependencies (ESSENTIAL)
 asyncpg==0.30.0
 psycopg2-binary==2.9.9
 sqlalchemy[asyncio]==2.0.23
 alembic==1.12.1
 
-# Authentication & Security
+# Authentication & Security (ESSENTIAL)
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 python-multipart==0.0.6
 email-validator>=2.1.1
 PyJWT==2.8.0
 
-# HTTP Client for VK API
+# HTTP Client for VK API (ESSENTIAL)
 httpx==0.24.1
-aiohttp==3.9.5
 
-# Data Processing & Validation - Pydantic v1 compatible stack
+# Data Processing & Validation (ESSENTIAL)
 pydantic==1.10.12
 
-# Background Tasks
+# Background Tasks (ESSENTIAL)
 celery==5.3.4
 redis==5.0.1
 
-# Monitoring & Logging
+# Monitoring & Logging (ESSENTIAL)
 structlog==23.2.0
 sentry-sdk[fastapi]==1.32.0
 
-# Utility Libraries
+# Utility Libraries (ESSENTIAL)
 python-dotenv==1.0.0
 click==8.1.7
 pytz==2023.3

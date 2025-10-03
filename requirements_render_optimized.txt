@@ -1,0 +1,87 @@
+# Postopus Production Deployment Requirements - OPTIMIZED
+# For Render.com deployment - optimized for Python 3.11
+# Minimal dependencies for faster deployment
+
+# Core FastAPI and Web Framework (ESSENTIAL)
+fastapi==0.95.2
+uvicorn[standard]==0.22.0
+gunicorn==21.2.0
+
+# Database Dependencies (ESSENTIAL)
+asyncpg==0.30.0
+psycopg2-binary==2.9.9
+sqlalchemy[asyncio]==2.0.23
+alembic==1.12.1
+
+# Authentication & Security (ESSENTIAL)
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+email-validator>=2.1.1
+PyJWT==2.8.0
+
+# HTTP Client for VK API (ESSENTIAL)
+httpx==0.24.1
+# aiohttp==3.9.5  # REMOVED: Not used in current implementation
+
+# Data Processing & Validation (ESSENTIAL)
+pydantic==1.10.12
+
+# Background Tasks (ESSENTIAL)
+celery==5.3.4
+redis==5.0.1
+
+# Monitoring & Logging (ESSENTIAL)
+structlog==23.2.0
+sentry-sdk[fastapi]==1.32.0
+
+# Utility Libraries (ESSENTIAL)
+python-dotenv==1.0.0
+click==8.1.7
+pytz==2023.3
+
+# REMOVED DEPENDENCIES (not used in current implementation):
+# - aiohttp (replaced by httpx)
+# - watchfiles (dev dependency)
+# - prompt-toolkit (dev dependency)
+# - click-plugins (dev dependency)
+# - click-didyoumean (dev dependency)
+# - click-repl (dev dependency)
+# - propcache (not used)
+# - dnspython (not used)
+# - ecdsa (not used)
+# - frozenlist (not used)
+# - greenlet (not used)
+# - httptools (not used)
+# - h11 (not used)
+# - httpcore (not used)
+# - idna (not used)
+# - kombu (not used)
+# - multidict (not used)
+# - packaging (not used)
+# - pyasn1 (not used)
+# - pycparser (not used)
+# - python-dateutil (not used)
+# - rsa (not used)
+# - six (not used)
+# - sniffio (not used)
+# - starlette (not used)
+# - typing-extensions (not used)
+# - tzdata (not used)
+# - urllib3 (not used)
+# - websockets (not used)
+# - yarl (not used)
+# - billiard (not used)
+# - certifi (not used)
+# - cffi (not used)
+# - mako (not used)
+# - markupsafe (not used)
+# - wcwidth (not used)
+# - vine (not used)
+# - amqp (not used)
+# - anyio (not used)
+# - async-timeout (not used)
+# - attrs (not used)
+# - bcrypt (not used)
+# - cryptography (not used - security risk)
+# - pyyaml (not used)

@@ -1,11 +1,11 @@
-# Render.com Blueprint Configuration for Postopus
+# Render.com Blueprint Configuration for Postopus - OPTIMIZED
 services:
-  # Main Web Application
+  # Main Web Application - OPTIMIZED
   - type: web
     name: postopus-web-only
     env: python
     plan: free
-    buildCommand: "python -m pip install --upgrade pip && pip install --cache-dir ~/.cache/pip -r requirements_render.txt"
+    buildCommand: "chmod +x build_optimized.sh && ./build_optimized.sh"
     startCommand: "python -m src.web.main_render"
     healthCheckPath: "/health"
     envVars:
@@ -42,13 +42,18 @@ services:
         value: "false"
       - key: LOG_LEVEL
         value: "INFO"
+      # Optimization environment variables
+      - key: PIP_CACHE_DIR
+        value: "/opt/render/project/.cache/pip"
+      - key: PIP_NO_CACHE_DIR
+        value: "false"
 
-  # Celery Worker (Web Service for free plan)
+  # Celery Worker - OPTIMIZED
   - type: web
     name: postopus-worker
     env: python
     plan: free
-    buildCommand: "python -m pip install --upgrade pip && pip install --cache-dir ~/.cache/pip -r requirements_render.txt"
+    buildCommand: "chmod +x build_optimized.sh && ./build_optimized.sh"
     startCommand: "python src/worker_server.py 'cd src && celery -A tasks.celery_app worker --loglevel=info'"
     healthCheckPath: "/health"
     envVars:
@@ -77,13 +82,18 @@ services:
           property: connectionString
       - key: ENVIRONMENT
         value: "production"
+      # Optimization environment variables
+      - key: PIP_CACHE_DIR
+        value: "/opt/render/project/.cache/pip"
+      - key: PIP_NO_CACHE_DIR
+        value: "false"
 
-  # Celery Beat Scheduler (Web Service for free plan)
+  # Celery Beat Scheduler - OPTIMIZED
   - type: web
     name: postopus-scheduler
     env: python
     plan: free
-    buildCommand: "python -m pip install --upgrade pip && pip install --cache-dir ~/.cache/pip -r requirements_render.txt"
+    buildCommand: "chmod +x build_optimized.sh && ./build_optimized.sh"
     startCommand: "python src/worker_server.py 'cd src && celery -A tasks.celery_app beat --loglevel=info'"
     healthCheckPath: "/health"
     envVars:
@@ -112,6 +122,11 @@ services:
           property: connectionString
       - key: ENVIRONMENT
         value: "production"
+      # Optimization environment variables
+      - key: PIP_CACHE_DIR
+        value: "/opt/render/project/.cache/pip"
+      - key: PIP_NO_CACHE_DIR
+        value: "false"
 
   # Redis Service
   - type: redis
