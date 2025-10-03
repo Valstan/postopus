@@ -1,12 +1,13 @@
-# render.yaml - Render.com Blueprint Configuration
-# This explicitly defines the web service
+# Render.com Blueprint Configuration for Postopus
 services:
+  # Main Web Application
   - type: web
     name: postopus-web-only
     env: python
     plan: free
     buildCommand: "pip install -r requirements_render.txt"
     startCommand: "python -m src.web.main_render"
+    healthCheckPath: "/health"
     envVars:
       - key: PYTHONPATH
         value: "/opt/render/project/src"
@@ -16,6 +17,21 @@ services:
         value: "mikrokredit"
       - key: POSTGRES_USER
         value: "mikrokredit_user"
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: VK_API_VERSION
@@ -26,3 +42,78 @@ services:
         value: "false"
       - key: LOG_LEVEL
         value: "INFO"
+
+  # Celery Worker
+  - type: worker
+    name: postopus-worker
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements_render.txt"
+    startCommand: "celery -A src.tasks.celery_app worker --loglevel=info"
+    envVars:
+      - key: PYTHONPATH
+        value: "/opt/render/project/src"
+      - key: DATABASE_URL
+        value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com/mikrokredit"
+      - key: POSTGRES_DB
+        value: "mikrokredit"
+      - key: POSTGRES_USER
+        value: "mikrokredit_user"
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: ENVIRONMENT
+        value: "production"
+
+  # Celery Beat Scheduler
+  - type: worker
+    name: postopus-scheduler
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements_render.txt"
+    startCommand: "celery -A src.tasks.celery_app beat --loglevel=info"
+    envVars:
+      - key: PYTHONPATH
+        value: "/opt/render/project/src"
+      - key: DATABASE_URL
+        value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com/mikrokredit"
+      - key: POSTGRES_DB
+        value: "mikrokredit"
+      - key: POSTGRES_USER
+        value: "mikrokredit_user"
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: postopus-redis
+          property: connectionString
+      - key: ENVIRONMENT
+        value: "production"
+
+  # Redis Service
+  - type: redis
+    name: postopus-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
