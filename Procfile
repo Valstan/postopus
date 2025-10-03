@@ -1,1 +1,1 @@
-web: python web_only.py
+web: python -m src.web.main_render

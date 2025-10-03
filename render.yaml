@@ -1,42 +1,21 @@
-# render.yaml - Render.com Blueprint Configuration for Postopus
-# Using existing mikrokredit database
+# render.yaml - Render.com Blueprint Configuration
+# This explicitly defines the web service
 services:
-  # Main Web Application
   - type: web
-    name: postopus-web
+    name: postopus-web-only
     env: python
     plan: free
-    runtime: python-3.11.0
-    buildCommand: "python --version && pip install -r requirements_render.txt"
-    startCommand: "gunicorn src.web.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"
-    healthCheckPath: "/health"
+    buildCommand: "pip install -r requirements_render.txt"
+    startCommand: "python -m src.web.main_render"
     envVars:
-      - key: PYTHON_VERSION
-        value: "3.11.0"
       - key: PYTHONPATH
-        value: "/opt/render/project"
-      # Using existing mikrokredit database - EXACT URLs from your Render dashboard
+        value: "/opt/render/project/src"
       - key: DATABASE_URL
         value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com/mikrokredit"
       - key: POSTGRES_DB
         value: "mikrokredit"
       - key: POSTGRES_USER
         value: "mikrokredit_user"
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: postopus-redis
-          property: connectionString
-      - key: CELERY_BROKER_URL
-        fromService:
-          type: redis
-          name: postopus-redis
-          property: connectionString
-      - key: CELERY_RESULT_BACKEND
-        fromService:
-          type: redis
-          name: postopus-redis
-          property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: VK_API_VERSION
@@ -47,48 +26,3 @@ services:
         value: "false"
       - key: LOG_LEVEL
         value: "INFO"
-
-  # Celery Worker
-  - type: worker
-    name: postopus-worker
-    env: python
-    plan: free
-    runtime: python-3.11.0
-    buildCommand: "python --version && pip install -r requirements_render.txt"
-    startCommand: "celery -A src.tasks.celery_app worker --loglevel=info"
-    envVars:
-      - key: PYTHONPATH
-        value: "/opt/render/project"
-      # Using existing mikrokredit database - same as web service
-      - key: DATABASE_URL
-        value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-d308623e5dus73dfrrsg-a.oregon-postgres.render.com/mikrokredit"
-      - key: POSTGRES_DB
-        value: "mikrokredit"
-      - key: POSTGRES_USER
-        value: "mikrokredit_user"
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: postopus-redis
-          property: connectionString
-      - key: CELERY_BROKER_URL
-        fromService:
-          type: redis
-          name: postopus-redis
-          property: connectionString
-      - key: CELERY_RESULT_BACKEND
-        fromService:
-          type: redis
-          name: postopus-redis
-          property: connectionString
-      - key: ENVIRONMENT
-        value: "production"
-
-  # Redis Service
-  - type: redis
-    name: postopus-redis
-    plan: free
-    maxmemoryPolicy: allkeys-lru
-    ipAllowList: []
-
-# Note: Using existing mikrokredit database - no new database creation needed
