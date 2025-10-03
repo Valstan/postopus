@@ -137,9 +137,6 @@ FINAL_*.md
 MIKROKREDIT_*.md
 POSTGRESQL_*.md
 
-# Multiple requirements files (keep only requirements.txt)
-requirements_*.txt
-
 # Duplicate main files
 main.py
 start*.py
@@ -166,10 +163,6 @@ docker-compose.yml
 # Environment examples
 .env.*
 env.example
-
-# Text files
-*.txt
-!requirements.txt
 
 # Utility scripts
 backup*.py
