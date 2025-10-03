@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
 
-from .routers import auth, dashboard, posts, settings, scheduler, analytics, public
+from .routers import auth, dashboard, posts, settings, scheduler, analytics, public, vk
 from .database import get_database, init_db, test_connection
 from .routers.auth import get_current_user
 from .data_manager import data_manager
@@ -72,6 +72,7 @@ app.include_router(settings.router, prefix="/api/settings", tags=["settings"])
 app.include_router(scheduler.router, prefix="/api/scheduler", tags=["scheduler"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["analytics"])
 app.include_router(public.router, prefix="/api/public", tags=["public"])
+app.include_router(vk.router, prefix="/api/vk", tags=["vk"])
 
 # Static files for frontend (only if directory exists)
 import os

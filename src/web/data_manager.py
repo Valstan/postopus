@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 
 from .database import SessionLocal
-from .models import Post, Group
+from .models import Post, Group, VKToken
 
 logger = logging.getLogger(__name__)
 
@@ -368,6 +368,67 @@ class PostopusDataManager:
         except Exception as e:
             logger.error(f"Error getting groups status: {e}")
             return []
+    
+    def get_vk_tokens_status(self) -> List[Dict]:
+        """Получает статус VK токенов"""
+        try:
+            tokens = self.db.query(VKToken).all()
+            return [
+                {
+                    "id": token.id,
+                    "region": token.region,
+                    "group_id": token.group_id,
+                    "is_active": token.is_active,
+                    "description": token.description,
+                    "created_at": token.created_at.isoformat() if token.created_at else None,
+                    "last_used": token.last_used.isoformat() if token.last_used else None
+                }
+                for token in tokens
+            ]
+        except Exception as e:
+            logger.error(f"Error getting VK tokens status: {e}")
+            return []
+    
+    def get_vk_statistics(self) -> Dict:
+        """Получает статистику VK интеграции"""
+        try:
+            # Статистика токенов
+            total_tokens = self.db.query(VKToken).count()
+            active_tokens = self.db.query(VKToken).filter(VKToken.is_active == True).count()
+            
+            # Статистика групп
+            total_groups = self.db.query(Group).count()
+            active_groups = self.db.query(Group).filter(Group.is_active == True).count()
+            
+            # Статистика постов по регионам
+            region_stats = self.db.query(
+                Post.region,
+                self.db.func.count(Post.id).label('count')
+            ).group_by(Post.region).all()
+            
+            return {
+                "tokens": {
+                    "total": total_tokens,
+                    "active": active_tokens,
+                    "inactive": total_tokens - active_tokens
+                },
+                "groups": {
+                    "total": total_groups,
+                    "active": active_groups,
+                    "inactive": total_groups - active_groups
+                },
+                "posts_by_region": [
+                    {"region": region, "count": count}
+                    for region, count in region_stats
+                ]
+            }
+        except Exception as e:
+            logger.error(f"Error getting VK statistics: {e}")
+            return {
+                "tokens": {"total": 0, "active": 0, "inactive": 0},
+                "groups": {"total": 0, "active": 0, "inactive": 0},
+                "posts_by_region": []
+            }
 
 # Глобальный экземпляр менеджера данных
 data_manager = PostopusDataManager()
