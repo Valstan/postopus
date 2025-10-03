@@ -332,8 +332,9 @@ class EnhancedPostProcessor:
         
         if region in self.regions:
             region_name = self.regions[region]
-            hashtags.append(f"#{region_name.replace(' ', '_').replace('\'', '')}")
-        
+            # Clean region name for hashtag
+            clean_name = region_name.replace(' ', '_').replace("'", '')
+            hashtags.append(f"#{clean_name}")
         # Add common hashtags
         hashtags.extend(["#новости", "#регион", "#местныеновости"])
         
