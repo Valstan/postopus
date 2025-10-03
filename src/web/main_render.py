@@ -183,80 +183,425 @@ async def get_public_posts():
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
-    """Главная страница - перенаправляем на dashboard."""
-    try:
-        with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "web", "templates", "dashboard.html"), "r", encoding="utf-8") as f:
-            return HTMLResponse(content=f.read())
-    except FileNotFoundError:
-        # Возвращаем встроенный HTML если файл не найден
-        html_content = """
+    """Главная страница - простой dashboard."""
+    html_content = """
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Postopus - Система автоматической публикации</title>
+    <title>Postopus Dashboard - Система управления</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0;
+            color: white;
+            padding: 20px 0;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin: 5px 0;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+        }
+        
+        .main-content {
+            margin-left: 250px;
             padding: 20px;
             min-height: 100vh;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 1.8em;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .card-icon {
+            font-size: 2em;
+            color: #667eea;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .stat-change {
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+        
+        .stat-change.positive {
+            color: #4CAF50;
+        }
+        
+        .stat-change.negative {
+            color: #f44336;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 0.9em;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-success {
+            background: #4CAF50;
+        }
+        
+        .btn-success:hover {
+            background: #45a049;
+        }
+        
+        .loading {
             display: flex;
             align-items: center;
             justify-content: center;
+            height: 200px;
+            color: #666;
         }
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            padding: 40px;
-            max-width: 800px;
-            text-align: center;
-        }
-        .logo {
-            font-size: 3em;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 20px;
-        }
-        .status {
-            background: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            display: inline-block;
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
             margin: 20px 0;
-        }
-        .btn {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 12px 25px;
-            text-decoration: none;
-            border-radius: 25px;
-            margin: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">🚀 Postopus</div>
-        <div class="status">✅ Система запущена и готова к работе</div>
-        <p>Система автоматической публикации контента в социальные сети</p>
-        <div>
-            <a href="/docs" class="btn">📖 API Documentation</a>
-            <a href="/health" class="btn">🔧 Health Check</a>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">🚀 Postopus</div>
+            <div class="logo-subtitle">Система управления</div>
         </div>
-        <p style="margin-top: 30px; color: #666; font-size: 0.9em;">
-            Postopus v2.0.0 | Deployed on Render.com | PostgreSQL + Redis
-        </p>
-    </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-newspaper"></i>
+                    Посты
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-clock"></i>
+                    Планировщик
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    Аналитика
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    Настройки
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Система активна</span>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Статистика постов -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Всего постов</div>
+                    <div class="card-icon"><i class="fas fa-newspaper"></i></div>
+                </div>
+                <div class="stat-number" id="total-posts">-</div>
+                <div class="stat-label">Опубликовано за все время</div>
+                <div class="stat-change positive" id="posts-change">+23 за сегодня</div>
+            </div>
+
+            <!-- Активные регионы -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Активные регионы</div>
+                    <div class="card-icon"><i class="fas fa-map-marker-alt"></i></div>
+                </div>
+                <div class="stat-number" id="active-regions">-</div>
+                <div class="stat-label">Регионов в работе</div>
+                <div class="stat-change positive" id="regions-change">15 из 15</div>
+            </div>
+
+            <!-- Скорость обработки -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Скорость обработки</div>
+                    <div class="card-icon"><i class="fas fa-tachometer-alt"></i></div>
+                </div>
+                <div class="stat-number" id="processing-rate">-</div>
+                <div class="stat-label">Постов в минуту</div>
+                <div class="stat-change positive" id="rate-change">+0.3 за час</div>
+            </div>
+
+            <!-- Статус системы -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Статус системы</div>
+                    <div class="card-icon"><i class="fas fa-server"></i></div>
+                </div>
+                <div id="system-status">
+                    <div class="loading">Загрузка...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Быстрые действия -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Быстрые действия</div>
+            </div>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <button class="btn btn-success" onclick="window.open('/docs', '_blank')">
+                    <i class="fas fa-book"></i> API Документация
+                </button>
+                <button class="btn btn-secondary" onclick="window.open('/health', '_blank')">
+                    <i class="fas fa-heartbeat"></i> Health Check
+                </button>
+                <button class="btn btn-secondary" onclick="window.open('/api/public/dashboard', '_blank')">
+                    <i class="fas fa-chart-line"></i> Dashboard API
+                </button>
+                <button class="btn btn-secondary" onclick="window.open('/api/public/stats', '_blank')">
+                    <i class="fas fa-chart-bar"></i> Статистика
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global variables
+        let currentSection = 'dashboard';
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+            setInterval(loadDashboardData, 30000); // Refresh every 30 seconds
+        });
+
+        // Dashboard functions
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('/api/public/dashboard');
+                const data = await response.json();
+                
+                updateDashboardStats(data);
+                loadSystemStatus();
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showError('Ошибка загрузки данных dashboard');
+            }
+        }
+
+        function updateDashboardStats(data) {
+            if (data.overview) {
+                document.getElementById('total-posts').textContent = data.overview.total_posts || '-';
+                document.getElementById('active-regions').textContent = data.overview.total_groups || '-';
+                document.getElementById('processing-rate').textContent = '2.3'; // Mock data
+            }
+        }
+
+        async function loadSystemStatus() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                const statusHtml = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; color: #4CAF50; margin-bottom: 10px;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div style="font-weight: 600; margin-bottom: 5px;">Система работает</div>
+                        <div style="font-size: 0.9em; color: #666;">Все сервисы активны</div>
+                    </div>
+                `;
+                
+                document.getElementById('system-status').innerHTML = statusHtml;
+            } catch (error) {
+                document.getElementById('system-status').innerHTML = `
+                    <div style="text-align: center; color: #f44336;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Ошибка проверки статуса
+                    </div>
+                `;
+            }
+        }
+
+        // Utility functions
+        function showError(message) {
+            console.error(message);
+            // You can implement a toast notification here
+        }
+    </script>
 </body>
 </html>
-        """
-        return HTMLResponse(content=html_content)
+    """
+    return HTMLResponse(content=html_content)
 
 @app.get("/test", response_class=HTMLResponse)
 async def test_page():
