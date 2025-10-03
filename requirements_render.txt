@@ -8,7 +8,7 @@ uvicorn[standard]==0.22.0
 gunicorn==21.2.0
 
 # Database Dependencies
-asyncpg==0.29.0
+asyncpg==0.30.0
 sqlalchemy[asyncio]==2.0.23
 alembic==1.12.1
 
@@ -21,7 +21,7 @@ PyJWT==2.8.0
 
 # HTTP Client for VK API
 httpx==0.24.1
-aiohttp==3.8.5
+aiohttp==3.9.5
 
 # Data Processing & Validation - Pydantic v1 compatible stack
 pydantic==1.10.12
