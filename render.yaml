@@ -189,6 +189,7 @@ databases:
     plan: free
 >>>>>>> 0d4d3c6753eb3574a2a7cb8d6f485194f04b1f21
 # render.yaml - Render.com Blueprint Configuration for Postopus
+# Using existing mikrokredit database
 services:
   # Main Web Application
   - type: web
@@ -203,10 +204,19 @@ services:
         value: "3.11.6"
       - key: PYTHONPATH
         value: "/opt/render/project/src"
+      # Using existing mikrokredit database - set these manually in Render dashboard
       - key: DATABASE_URL
-        fromDatabase:
-          name: postopus-db
-          property: connectionString
+        value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-ctlcj5pu0jms73a6qfvg-a.oregon-postgres.render.com/mikrokredit"
+      - key: POSTGRES_HOST
+        value: "dpg-ctlcj5pu0jms73a6qfvg-a.oregon-postgres.render.com"
+      - key: POSTGRES_PORT
+        value: "5432"
+      - key: POSTGRES_DB
+        value: "mikrokredit"
+      - key: POSTGRES_USER
+        value: "mikrokredit_user"
+      - key: POSTGRES_PASSWORD
+        value: "6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv"
       - key: REDIS_URL
         fromService:
           type: redis
@@ -243,10 +253,19 @@ services:
     envVars:
       - key: PYTHONPATH
         value: "/opt/render/project/src"
+      # Using existing mikrokredit database - same as web service
       - key: DATABASE_URL
-        fromDatabase:
-          name: postopus-db
-          property: connectionString
+        value: "postgresql://mikrokredit_user:6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv@dpg-ctlcj5pu0jms73a6qfvg-a.oregon-postgres.render.com/mikrokredit"
+      - key: POSTGRES_HOST
+        value: "dpg-ctlcj5pu0jms73a6qfvg-a.oregon-postgres.render.com"
+      - key: POSTGRES_PORT
+        value: "5432"
+      - key: POSTGRES_DB
+        value: "mikrokredit"
+      - key: POSTGRES_USER
+        value: "mikrokredit_user"
+      - key: POSTGRES_PASSWORD
+        value: "6xoKkR0wfL1Zc0YcmqcE4GSjBSXlQ8Rv"
       - key: REDIS_URL
         fromService:
           type: redis
@@ -272,10 +291,7 @@ services:
     maxmemoryPolicy: allkeys-lru
     ipAllowList: []
 
-# PostgreSQL Database
-databases:
-  - name: postopus-db
-    plan: free
+# Note: Using existing mikrokredit database - no new database creation needed
 =======
   # Основное веб-приложение
   - type: web
