@@ -68,10 +68,10 @@ app.include_router(public.router, prefix="/api/public", tags=["public"])
 
 # Static files for frontend (only if directory exists)
 import os
-if os.path.exists("../web/static"):
-    app.mount("/static", StaticFiles(directory="../web/static"), name="static")
+if os.path.exists(os.path.join(os.path.dirname(os.path.dirname(__file__)), "web", "static")):
+    app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(os.path.dirname(__file__)), "web", "static")), name="static")
 else:
-    logger.warning("Static directory '../web/static' not found, skipping static files mounting")
+    logger.warning("Static directory not found, skipping static files mounting")
 
 # Публичные API endpoints (должны быть после роутеров)
 @app.get("/api/public/dashboard-stats")
@@ -185,7 +185,7 @@ async def get_public_posts():
 async def read_root():
     """Главная страница - перенаправляем на dashboard."""
     try:
-        with open("../web/templates/dashboard.html", "r", encoding="utf-8") as f:
+        with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "web", "templates", "dashboard.html"), "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read())
     except FileNotFoundError:
         # Возвращаем встроенный HTML если файл не найден
