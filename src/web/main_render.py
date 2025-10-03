@@ -578,31 +578,31 @@ async def read_root():
         </div>
         <ul class="nav-menu">
             <li class="nav-item">
-                <a href="#" class="nav-link active" data-section="dashboard">
+                <a href="#" class="nav-link active" onclick="showSection('dashboard'); return false;">
                     <i class="fas fa-tachometer-alt"></i>
                     Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" data-section="posts">
+                <a href="#" class="nav-link" onclick="showSection('posts'); return false;">
                     <i class="fas fa-newspaper"></i>
                     Посты
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" data-section="scheduler">
+                <a href="#" class="nav-link" onclick="showSection('scheduler'); return false;">
                     <i class="fas fa-clock"></i>
                     Планировщик
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" data-section="analytics">
+                <a href="#" class="nav-link" onclick="showSection('analytics'); return false;">
                     <i class="fas fa-chart-bar"></i>
                     Аналитика
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" data-section="settings">
+                <a href="#" class="nav-link" onclick="showSection('settings'); return false;">
                     <i class="fas fa-cog"></i>
                     Настройки
                 </a>
@@ -877,14 +877,8 @@ async def read_root():
 
         // Navigation
         function initializeNavigation() {
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const section = this.getAttribute('data-section');
-                    showSection(section);
-                });
-            });
+            console.log('Navigation initialized - using onclick handlers');
+            // Navigation is now handled by onclick attributes in HTML
         }
 
         function showSection(sectionName) {
