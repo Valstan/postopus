@@ -518,6 +518,10 @@ async def read_root():
             z-index: 2000;
         }
         
+        .modal.hidden {
+            display: none !important;
+        }
+        
         .modal-content {
             background: white;
             border-radius: 15px;
@@ -807,8 +811,8 @@ async def read_root():
     </main>
 
     <!-- Create Post Modal -->
-    <div id="create-post-modal" class="modal hidden">
-        <div class="modal-content">
+    <div id="create-post-modal" class="modal hidden" onclick="hideCreatePostModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h3 class="modal-title">Создать новый пост</h3>
                 <button class="close-btn" onclick="hideCreatePostModal()">&times;</button>
@@ -860,6 +864,13 @@ async def read_root():
             initializeNavigation();
             loadDashboardData();
             setInterval(loadDashboardData, 30000); // Refresh every 30 seconds
+            
+            // Add keyboard event listener for ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    hideCreatePostModal();
+                }
+            });
         });
 
         // Navigation
@@ -1030,12 +1041,27 @@ async def read_root():
 
         // Modal functions
         function showCreatePostModal() {
-            document.getElementById('create-post-modal').classList.remove('hidden');
+            const modal = document.getElementById('create-post-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                // Focus on first input
+                const firstInput = modal.querySelector('input[type="text"]');
+                if (firstInput) {
+                    setTimeout(() => firstInput.focus(), 100);
+                }
+            }
         }
 
         function hideCreatePostModal() {
-            document.getElementById('create-post-modal').classList.add('hidden');
-            document.getElementById('create-post-form').reset();
+            const modal = document.getElementById('create-post-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                // Reset form
+                const form = document.getElementById('create-post-form');
+                if (form) {
+                    form.reset();
+                }
+            }
         }
 
         // Form handling
