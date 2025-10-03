@@ -864,6 +864,9 @@ async def read_root():
         // Global variables
         let currentSection = 'dashboard';
         let posts = [];
+        
+        // Force navigation update
+        console.log('Navigation system initialized');
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
