@@ -314,8 +314,9 @@ class EnhancedVKService:
         
         if region in self.regions:
             region_name = self.regions[region]
-            base_tags.append(f"#{region_name.replace(' ', '_').replace('\'', '')}")
-        
+            # Очищаем название региона для тега
+            clean_name = region_name.replace(' ', '_').replace("'", '')
+            base_tags.append(f"#{clean_name}")
         # Add common regional tags
         base_tags.extend(["#новости", "#регион", "#местныеновости"])
         
