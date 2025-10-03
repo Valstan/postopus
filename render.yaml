@@ -43,13 +43,14 @@ services:
       - key: LOG_LEVEL
         value: "INFO"
 
-  # Celery Worker
-  - type: worker
+  # Celery Worker (Web Service for free plan)
+  - type: web
     name: postopus-worker
     env: python
     plan: free
     buildCommand: "pip install -r requirements_render.txt"
-    startCommand: "cd src && celery -A tasks.celery_app worker --loglevel=info"
+    startCommand: "python src/worker_server.py 'cd src && celery -A tasks.celery_app worker --loglevel=info'"
+    healthCheckPath: "/health"
     envVars:
       - key: PYTHONPATH
         value: "/opt/render/project/src"
@@ -77,13 +78,14 @@ services:
       - key: ENVIRONMENT
         value: "production"
 
-  # Celery Beat Scheduler
-  - type: worker
+  # Celery Beat Scheduler (Web Service for free plan)
+  - type: web
     name: postopus-scheduler
     env: python
     plan: free
     buildCommand: "pip install -r requirements_render.txt"
-    startCommand: "cd src && celery -A tasks.celery_app beat --loglevel=info"
+    startCommand: "python src/worker_server.py 'cd src && celery -A tasks.celery_app beat --loglevel=info'"
+    healthCheckPath: "/health"
     envVars:
       - key: PYTHONPATH
         value: "/opt/render/project/src"
