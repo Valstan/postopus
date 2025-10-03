@@ -1215,7 +1215,7 @@ async def read_root():
 </body>
 </html>
         """
-        return HTMLResponse(content=html_content)
+    return HTMLResponse(content=html_content)
 
 @app.get("/test", response_class=HTMLResponse)
 async def test_page():
