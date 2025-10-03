@@ -10,8 +10,8 @@ from pydantic import BaseModel
 
 from ..database import get_database
 from ..models import Post, Group, VKToken
-from ..services.modern_vk_service import ModernVKService
-from ..tasks.vk_tasks import (
+from ...services.modern_vk_service import ModernVKService
+from ...tasks.vk_tasks import (
     fetch_posts_from_region_task,
     publish_post_to_vk_task,
     test_vk_connections_task,
