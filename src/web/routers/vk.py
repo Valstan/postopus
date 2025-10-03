@@ -273,7 +273,7 @@ async def get_vk_groups():
     """Получить список VK групп."""
     session = SessionLocal()
     try:
-        groups = session.query(Group).filter(Group.platform == "vk").all()
+        groups = session.query(Group).all()
         
         return {
             "groups": [
@@ -323,8 +323,8 @@ async def get_vk_statistics():
         active_tokens = session.query(VKToken).filter(VKToken.is_active == True).count()
         
         # Статистика групп
-        total_groups = session.query(Group).filter(Group.platform == "vk").count()
-        active_groups = session.query(Group).filter(Group.platform == "vk", Group.is_active == True).count()
+        total_groups = session.query(Group).count()
+        active_groups = session.query(Group).filter(Group.is_active == True).count()
         
         # Статистика постов
         total_posts = session.query(Post).count()
