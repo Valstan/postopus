@@ -186,7 +186,7 @@ async def get_public_posts():
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
     """Главная страница - простой dashboard."""
-        html_content = """
+    html_content = """
 <!DOCTYPE html>
 <html lang="ru">
 <head>
