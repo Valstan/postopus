@@ -4,8 +4,7 @@ from config import session
 
 
 def avtortut(msg, divider=""):
-    if session['name_base'] == "dran":
-        return msg['text']
+    # ДРАН удален из системы, теперь для всех добавляем авторство
     url = 'https://vk.com/wall' + str(msg['owner_id']) + '_' + str(msg['id'])
     if url not in msg['text']:
         podpis = random.choice(session["avtortut"])

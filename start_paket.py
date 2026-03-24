@@ -9,8 +9,8 @@ if len(argv) == 2:
 else:
     argument = input(" Нужно ввести аргумент типа detsad или novost и т.д. - ")
 
-names_regions = ['dran',
-                 'mi', 'klz', 'vp', 'ur',
+# ДРАН удален из системы, остались только mi и другие регионы
+names_regions = ['mi', 'klz', 'vp', 'ur',
                  'kukmor', 'bal',
                  'leb', 'nolinsk', 'nema',
                  'sovetsk', 'pizhanka', 'arbazh']
@@ -20,8 +20,6 @@ shuffle(names_regions)
 for name in names_regions:
 
     command = f"{name}_{argument}"
-    if command in 'dran_sosed':
-        continue
 
     try:
         start(command)
