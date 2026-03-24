@@ -17,14 +17,22 @@ def posting_post(msg_list):
     global session
 
     if session['name_base'] == "dran":
-        session['token'] = session[random.choice(session['names_tokens_dran_vk'])]
-        if not get_session_vk_api():
-            print("Токен ДРАН не работает!")
+        if session['names_tokens_dran_vk']:
+            session['token'] = session[random.choice(session['names_tokens_dran_vk'])]
+            if not get_session_vk_api():
+                print("Токен ДРАН не работает!")
+                quit()
+        else:
+            print("Нет доступных токенов для ДРАН! Добавьте токен в config.py")
             quit()
     else:
-        session['token'] = session[random.choice(session['names_tokens_post_vk'])]
-        if not get_session_vk_api():
-            print("Токены ПОСТИНГА в ВК не работают!")
+        if session['names_tokens_post_vk']:
+            session['token'] = session[random.choice(session['names_tokens_post_vk'])]
+            if not get_session_vk_api():
+                print("Токены ПОСТИНГА в ВК не работают!")
+                quit()
+        else:
+            print("Нет доступных токенов для постинга! Добавьте токен в config.py")
             quit()
 
     if session['name_session'] in session['zagolovki'].keys():
