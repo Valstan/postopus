@@ -16,24 +16,19 @@ session = config.session
 def posting_post(msg_list):
     global session
 
+    # ДРАН удален из системы, проверяем только для mi
     if session['name_base'] == "dran":
-        if session['names_tokens_dran_vk']:
-            session['token'] = session[random.choice(session['names_tokens_dran_vk'])]
-            if not get_session_vk_api():
-                print("Токен ДРАН не работает!")
-                quit()
-        else:
-            print("Нет доступных токенов для ДРАН! Добавьте токен в config.py")
+        print("ДРАН удален из системы! Задачи ДРАН отключены.")
+        quit()
+    
+    if session['names_tokens_post_vk']:
+        session['token'] = session[random.choice(session['names_tokens_post_vk'])]
+        if not get_session_vk_api():
+            print("Токены ПОСТИНГА в ВК не работают!")
             quit()
     else:
-        if session['names_tokens_post_vk']:
-            session['token'] = session[random.choice(session['names_tokens_post_vk'])]
-            if not get_session_vk_api():
-                print("Токены ПОСТИНГА в ВК не работают!")
-                quit()
-        else:
-            print("Нет доступных токенов для постинга! Добавьте токен в config.py")
-            quit()
+        print("Нет доступных токенов для постинга! Добавьте токен в config.py")
+        quit()
 
     if session['name_session'] in session['zagolovki'].keys():
         theme = 'novost'
