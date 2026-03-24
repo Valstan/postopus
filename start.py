@@ -12,8 +12,28 @@ from bin.utils.service_base import service_base
 session = config.session
 
 
-def start(arguments: str, bags: str = '0'):
+def start(arguments: str, bags: str = '0', stat_mode: bool = False):
+    """
+    Запускает обработку сессии.
+    
+    Args:
+        arguments: имя сессии (например, 'mi_novost')
+        bags: режим фильтров (0-5)
+        stat_mode: если True, собирает и возвращает статистику обработки
+    
+    Returns:
+        dict со статистикой если stat_mode=True, иначе None
+    """
     global session
+    
+    # Инициализация структуры для сбора статистики
+    stats_data = {
+        'success': False,
+        'success_groups': [],
+        'failed_groups': {},
+        'posts_count': 0,
+        'failed_posts': []
+    } if stat_mode else None
 
     if arguments == "100":
         print('Постопус запущен в автоматическом режиме.')
@@ -32,17 +52,27 @@ def start(arguments: str, bags: str = '0'):
         get_session(arguments, bags)
 
         # Перебираем токены пока не подключимся к АПИ ВК
-
         random.shuffle(session['names_tokens_read_vk'])
         for name_token in session['names_tokens_read_vk']:
             session['token'] = session[name_token]
             if get_session_vk_api():
                 break
             time.sleep(1)
+        
         # Отправляем на КПП который перенаправит нас в нужный скрипт-сценарий в зависимости от аргументов
-        control()
+        # Передаем флаг статистики в control()
+        result = control(stat_mode=stat_mode)
+        
+        # Если режим статистики, дополняем данные
+        if stat_mode:
+            if result:
+                stats_data.update(result)
+            return stats_data
+            
     else:
         print('Вы не ввели ни одного аргумента. Скрипт остановлен...')
+    
+    return None
 
 
 if __name__ == '__main__':

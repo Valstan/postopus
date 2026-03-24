@@ -18,21 +18,57 @@ from bin.utils.driver_tables import load_table
 session = config.session
 
 
-def control():
+def control(stat_mode: bool = False):
+    """
+    Управляющая функция, перенаправляющая на нужные скрипты.
+    
+    Args:
+        stat_mode: если True, собирает статистику обработки
+    
+    Returns:
+        dict со статистикой если stat_mode=True, иначе None
+    """
     global session
+    
+    # Структура для сбора статистики
+    stats_data = {
+        'success': False,
+        'success_groups': [],
+        'failed_groups': {},
+        'posts_count': 0,
+        'failed_posts': []
+    } if stat_mode else None
+    
+    # Определяем список групп для текущего региона/темы
+    current_groups = []
+    if session['name_session'] in session['zagolovki'].keys():
+        current_groups = list(session[session['name_session']].values())
+    elif session['name_session'] in session:
+        if isinstance(session[session['name_session']], dict):
+            current_groups = list(session[session['name_session']].values())
 
     if session['name_session'] in session['zagolovki'].keys():
         msg_list = parser()
         if msg_list:
             posting_post(msg_list)
-
+            if stat_mode:
+                stats_data['success'] = True
+                stats_data['success_groups'] = [str(g) for g in current_groups]
+                stats_data['posts_count'] = len(msg_list)
+        else:
+            if stat_mode:
+                stats_data['failed_posts'].append("Нет свежих новостей после фильтрации")
+                
     elif session['name_session'] == 'reklama':
         parser()
         post_bezfoto()
-
+        if stat_mode:
+            stats_data['success'] = True
+            stats_data['success_groups'] = [str(g) for g in current_groups]
+            
     elif session['name_session'] == 'addons':
         old_ruletka = ''
-
+        found = False
         for sample in range(5):
             random.shuffle(session['baraban'])
             session['name_session'] = random.choice(session['baraban'])
@@ -42,43 +78,70 @@ def control():
                 msg_list = parser()
                 if msg_list:
                     posting_post(msg_list)
+                    if stat_mode:
+                        stats_data['success'] = True
+                        stats_data['posts_count'] = len(msg_list)
+                    found = True
                     break
             old_ruletka = session['name_session']
+        
+        if stat_mode and not found:
+            stats_data['failed_posts'].append("Не найдено подходящих постов в режиме addons")
 
     elif session['name_session'] in 'repost_me':
         repost_me()
+        if stat_mode:
+            stats_data['success'] = True
 
     # elif session['name_session'] in 'malmigrus':
     #     public_malm_site()
 
     elif session['name_session'] == 'repost_reklama':
         repost_reklama()
+        if stat_mode:
+            stats_data['success'] = True
 
     elif session['name_session'] == 'karavan':
         karavan()
+        if stat_mode:
+            stats_data['success'] = True
 
     elif session['name_session'] == 'oblast_novost':
         oblast_novost()
+        if stat_mode:
+            stats_data['success'] = True
 
     # elif session['name_session'] == 'billboard':
     #     billboard()
 
     elif session['name_session'] == 'repost_oleny':
         repost_oleny()
+        if stat_mode:
+            stats_data['success'] = True
 
     # elif session['name_session'] in 'rpg':
     #     rpg()
 
     elif session['name_session'] == 'sosed':
         sosed()
+        if stat_mode:
+            stats_data['success'] = True
 
     elif session['name_session'] == 'repost_kultpodved':
         msg_list = repost_kultpodved()
         if msg_list:
             posting_post(msg_list)
+            if stat_mode:
+                stats_data['success'] = True
+                stats_data['posts_count'] = len(msg_list)
+        else:
+            if stat_mode:
+                stats_data['failed_posts'].append("Нет постов для repost_kultpodved")
 
     elif session['name_session'] in 'telegram':
         asyncio.run(post_to_telegram())
+        if stat_mode:
+            stats_data['success'] = True
 
     # elif session['name_session'] == 'instagram':
     #     instagram_mi()
@@ -87,4 +150,9 @@ def control():
     #     instagram_manual()
 
     else:
-        print('Аргументы запуска не совпадают ни с одним вариантов, проверь аргументы в коде скрипте.')
+        error_msg = 'Аргументы запуска не совпадают ни с одним вариантов, проверь аргументы в коде скрипте.'
+        print(error_msg)
+        if stat_mode:
+            stats_data['failed_posts'].append(error_msg)
+    
+    return stats_data
