@@ -48,13 +48,20 @@ def control(stat_mode: bool = False):
             current_groups = list(session[session['name_session']].values())
 
     if session['name_session'] in session['zagolovki'].keys():
-        msg_list = parser()
+        result = parser(stat_mode=stat_mode)
+        
+        # Если режим статистики, разбираем результат
+        if stat_mode and isinstance(result, dict):
+            msg_list = result.get('posts', [])
+            stats_data.update(result.get('stats', {}))
+        else:
+            msg_list = result
+        
         if msg_list:
             posting_post(msg_list)
             if stat_mode:
                 stats_data['success'] = True
-                stats_data['success_groups'] = [str(g) for g in current_groups]
-                stats_data['posts_count'] = len(msg_list)
+                # posts_count уже установлен из stats
         else:
             if stat_mode:
                 stats_data['failed_posts'].append("Нет свежих новостей после фильтрации")

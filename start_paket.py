@@ -20,14 +20,13 @@ names_regions = ['mi', 'klz', 'vp', 'ur',
                  'sovetsk', 'pizhanka', 'arbazh']
 shuffle(names_regions)
 
-# Словарь для сбора статистики
-stats = {
-    'success_groups': [],
-    'failed_groups': [],
-    'success_posts': [],
-    'failed_posts': [],
+# Словарь для сбора итоговой статистики
+total_stats = {
+    'success_regions': [],
+    'failed_regions': [],
+    'total_posts': 0,
     'total_groups': 0,
-    'processed_groups': 0
+    'failed_posts_reasons': []
 }
 
 
@@ -44,26 +43,57 @@ for name in names_regions:
         result = start(command, stat_mode=show_stat)
         
         if show_stat and result:
-            stats['processed_groups'] += 1
-            if result.get('success'):
-                stats['success_groups'].append({
-                    'region': name,
-                    'groups': result.get('success_groups', []),
-                    'posts_count': result.get('posts_count', 0)
-                })
-                stats['success_posts'].append(result.get('posts_count', 0))
-            if result.get('failed_groups'):
-                stats['failed_groups'].extend([
-                    {'region': name, 'group_id': g, 'reason': result['failed_groups'][g]} 
-                    for g in result['failed_groups']
-                ])
-            if result.get('failed_posts'):
-                stats['failed_posts'].extend(result['failed_posts'])
+            region_stat = {
+                'region': name,
+                'groups': result.get('success_groups', []),
+                'posts_count': result.get('posts_count', 0),
+                'failed_groups': result.get('failed_groups', {}),
+                'failed_posts': result.get('failed_posts', []),
+                'success': result.get('success', False)
+            }
+            
+            # Вывод статистики по текущему региону сразу после обработки
+            if region_stat['success']:
+                print(f"\n✅ РЕГИОН {name}: Обработано {len(region_stat['groups'])} групп, получено {region_stat['posts_count']} постов")
+                for group in region_stat['groups']:
+                    print(f"   ✓ Группа {group}")
+                
+                # Публикация дайджеста
+                if region_stat['posts_count'] > 0:
+                    print(f"\n📰 Собран и опубликован дайджест из {region_stat['posts_count']} постов")
+                    # Здесь можно добавить ссылку на пост, если она возвращается
+                else:
+                    print(f"\n⚠️  Посты найдены, но дайджест не опубликован (нет подходящих постов)")
+                
+                total_stats['success_regions'].append(region_stat)
+                total_stats['total_posts'] += region_stat['posts_count']
+                total_stats['total_groups'] += len(region_stat['groups'])
+            else:
+                print(f"\n❌ РЕГИОН {name}: Не удалось обработать")
+                if region_stat['failed_groups']:
+                    print(f"   Проблемные группы:")
+                    for group_id, reason in region_stat['failed_groups'].items():
+                        print(f"      ✗ Группа {group_id}: {reason}")
+                if region_stat['failed_posts']:
+                    print(f"   Причины неудачи:")
+                    for reason in region_stat['failed_posts']:
+                        print(f"      • {reason}")
+                    total_stats['failed_posts_reasons'].extend(region_stat['failed_posts'])
+                
+                total_stats['failed_regions'].append(region_stat)
                 
     except Exception as e:
         if show_stat:
-            print(f"❌ Ошибка обработки региона {name}: {e}")
-            stats['failed_groups'].append({'region': name, 'group_id': 'all', 'reason': str(e)})
+            print(f"\n❌ Ошибка обработки региона {name}: {e}")
+            print(f"   Причина: {str(e)}")
+            total_stats['failed_regions'].append({
+                'region': name,
+                'groups': [],
+                'posts_count': 0,
+                'failed_groups': {'all': str(e)},
+                'failed_posts': [str(e)],
+                'success': False
+            })
     
     time.sleep(5)
 
@@ -74,29 +104,26 @@ if show_stat:
     print(f"{'='*60}")
     print(f"📁 Тема: {argument}")
     print(f"🌍 Всего регионов: {len(names_regions)}")
-    print(f"✅ Обработано регионов: {stats['processed_groups']}")
+    print(f"✅ Успешно обработано: {len(total_stats['success_regions'])}")
+    print(f"❌ Не обработано: {len(total_stats['failed_regions'])}")
     
-    if stats['success_groups']:
+    if total_stats['success_regions']:
         print(f"\n✅ УСПЕШНО ОБРАБОТАННЫЕ РЕГИОНЫ:")
-        for item in stats['success_groups']:
+        for item in total_stats['success_regions']:
             print(f"   • {item['region']}: {len(item['groups'])} групп, {item['posts_count']} постов")
-            for group in item['groups']:
-                print(f"      ✓ Группа {group}")
     
-    if stats['failed_groups']:
-        print(f"\n⚠️  ПРОБЛЕМНЫЕ ГРУППЫ/РЕГИОНЫ:")
-        for item in stats['failed_groups']:
-            print(f"   • Регион {item['region']}, Группа {item['group_id']}: {item['reason']}")
+    if total_stats['failed_regions']:
+        print(f"\n❌ НЕ ОБРАБОТАННЫЕ РЕГИОНЫ:")
+        for item in total_stats['failed_regions']:
+            reasons = list(set(item['failed_posts']))
+            print(f"   • {item['region']}: {', '.join(reasons) if reasons else 'Ошибка обработки'}")
     
-    if stats['failed_posts']:
-        print(f"\n❌ НЕ ОПУБЛИКОВАННЫЕ ПОСТЫ:")
-        for post_info in stats['failed_posts']:
-            print(f"   • {post_info}")
+    if total_stats['failed_posts_reasons']:
+        unique_reasons = list(set(total_stats['failed_posts_reasons']))
+        print(f"\n⚠️  ПРИЧИНЫ НЕУДАЧ:")
+        for reason in unique_reasons:
+            print(f"   • {reason}")
     
-    total_posts = sum(stats['success_posts'])
-    print(f"\n📈 ВСЕГО ПОЛУЧЕНО ПОСТОВ: {total_posts}")
-    
-    if stats['failed_groups']:
-        print(f"⚠️  ВСЕГО ПРОБЛЕМНЫХ ГРУПП: {len(stats['failed_groups'])}")
-    
+    print(f"\n📈 ВСЕГО ПОЛУЧЕНО ПОСТОВ: {total_stats['total_posts']}")
+    print(f"📊 ВСЕГО ОПРОШЕНО ГРУПП: {total_stats['total_groups']}")
     print(f"{'='*60}\n")
