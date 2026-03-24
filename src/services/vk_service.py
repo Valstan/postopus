@@ -10,11 +10,12 @@ from datetime import datetime
 
 try:
     from vk_api import VkApi
-    from vk_api.exceptions import VkApiError
+    from vk_api.exceptions import VkApiError, ApiError
 except ImportError:
     # Graceful degradation if vk_api is not available
     VkApi = None
     VkApiError = Exception
+    ApiError = Exception
 
 try:
     from sqlalchemy.orm import Session
@@ -229,11 +230,41 @@ class EnhancedVKService:
                 offset=0
             )
             return response.get('items', [])
+        except ApiError as e:
+            error_code = getattr(e, 'code', 0) or (e.args[0] if e.args else 0)
+            if isinstance(error_code, dict):
+                error_code = error_code.get('error_code', 0)
+            
+            # Error code 5 = invalid access token, skip this group silently
+            if error_code == 5:
+                logger.warning(f"Group {group_id}: Invalid access token - skipping group")
+                return []
+            
+            # Error code 6 = too many requests, wait and retry
+            if error_code == 6:
+                logger.warning(f"Group {group_id}: Rate limit exceeded - waiting")
+                time.sleep(1)
+                return []
+            
+            # Error code 18 = content not found (group deleted/banned)
+            if error_code == 18:
+                logger.warning(f"Group {group_id}: Content not found - group may be deleted or banned")
+                return []
+            
+            # Error code 9 = flood control (too many similar requests)
+            if error_code == 9:
+                logger.warning(f"Group {group_id}: Flood control - waiting")
+                time.sleep(2)
+                return []
+            
+            # Other errors - log with details and continue
+            logger.error(f"VK API error for group {group_id} (code {error_code}): {e}")
+            return []
         except VkApiError as e:
             logger.error(f"VK API error fetching from group {group_id}: {e}")
             return []
         except Exception as e:
-            logger.error(f"Error fetching from group {group_id}: {e}")
+            logger.error(f"Unexpected error fetching from group {group_id}: {e}")
             return []
     
     def _format_post_text(self, post_data: Dict[str, Any]) -> str:

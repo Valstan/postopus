@@ -1,171 +1,69 @@
+```
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
+*.pyc
+*.pyo
+*.pyd
 .Python
+env/
+venv/
+.venv/
+.ENV
+.python-version
+
+# Build artifacts
 build/
-develop-eggs/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+
+# Logs
+*.log
 
 # Environment variables
 .env
 .env.local
-.env.production
-.venv/
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+*.env.*
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
 # OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Logs
-logs/
-*.log
-log.txt
-
-# Temporary files
-tmp/
-temp/
-uploads/
-static/uploads/
-
 # Testing
-.pytest_cache/
 .coverage
+coverage/
 htmlcov/
-.tox/
-.nox/
+.pytest_cache/
+.mypy_cache/
 
-# Documentation
-docs/_build/
+# Distribution / packaging
+*.tar.gz
+*.whl
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Render-specific
-.render/
-
-# Local development
-local_settings.py
-test_settings.py
-
-# Secrets (ensure these are never committed)
-secrets.json
-config/secrets.py
-*.pem
-*.key
-*.crt
-
-# Backup files
-*.bak
-*.backup
-*.old
-
-# CLEANUP: Large and unnecessary files for deployment
-# Legacy scripts
-bin/
-service/
-
-# AI models (too large for git)
-*.h5
-*.pickle
-*.model
-
-# Migration scripts (run once, don't need in git)
-migrate_*.py
-*migration*.py
-analyze_*.py
-export_*.py
-import_*.py
-create_postopus_tables.py
-
-# Test files
-test_*.py
-*_test.py
-
-# JSON data exports
-*.json
-!package.json
-
-# Multiple documentation files (keep only README.md)
-DASHBOARD_*.md
-DEPLOY*.md
-MIGRATION_*.md
-PHASE*.md
-POSTS_*.md
-PRODUCTION_*.md
-SETTINGS_*.md
-RENDER_*.md
-QUICK_*.md
-REFACTORING_*.md
-CONTINUED_*.md
-DEVELOPMENT_*.md
-FINAL_*.md
-MIKROKREDIT_*.md
-POSTGRESQL_*.md
-
-# Duplicate main files
-main.py
-start*.py
-celery_worker.py
-deserter.py
-init_*.py
-check_*.py
-fix_*.py
-prepare_*.py
-
-# Legacy config
-config.py
-
-# Deployment scripts
-*.bat
-*.sh
-deploy.*
-
-# Docker files (using Render)
-Dockerfile*
-docker-compose.yml
-
-# Environment examples
-.env.*
-env.example
-
-# Utility scripts
-backup*.py
-auto_*.py
-copy_*.py
-reposter_*.py
-pip_*.py
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+```
