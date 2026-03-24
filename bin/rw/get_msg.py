@@ -15,8 +15,10 @@ def get_msg(group, offset=0, count=1):
     except Exception as exc:
         # Логируем ошибку но не прерываем выполнение
         error_msg = str(exc)
-        if 'invalid access_token' in error_msg or 'User authorization failed' in error_msg:
-            # Токен не работает для этой группы - это нормально для некоторых закрытых сообществ
+        # Игнорируем ошибки доступа для закрытых групп - это нормально
+        if ('invalid access_token' in error_msg or 
+            'User authorization failed' in error_msg or
+            'Access denied: this wall available only for community members' in error_msg):
             pass
         else:
             send_error(__name__, exc, traceback.print_exc())
