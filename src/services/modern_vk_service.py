@@ -223,13 +223,39 @@ class ModernVKService:
                 data = response.json()
                 
                 if "error" in data:
-                    logger.error(f"VK API error: {data['error']}")
+                    error_code = data['error'].get('error_code', 0)
+                    error_msg = data['error'].get('error_msg', 'Unknown error')
+                    
+                    # Error code 5 = invalid access token, skip this group silently
+                    if error_code == 5:
+                        logger.warning(f"Group {group_id}: Invalid access token - skipping group")
+                        return []
+                    
+                    # Error code 6 = too many requests, wait and retry
+                    if error_code == 6:
+                        logger.warning(f"Group {group_id}: Rate limit exceeded - waiting")
+                        await asyncio.sleep(1)
+                        return []
+                    
+                    # Error code 18 = content not found (group deleted/banned)
+                    if error_code == 18:
+                        logger.warning(f"Group {group_id}: Content not found - group may be deleted or banned")
+                        return []
+                    
+                    # Error code 9 = flood control (too many similar requests)
+                    if error_code == 9:
+                        logger.warning(f"Group {group_id}: Flood control - waiting")
+                        await asyncio.sleep(2)
+                        return []
+                    
+                    # Other errors - log with details and continue
+                    logger.error(f"VK API error for group {group_id} (code {error_code}): {error_msg}")
                     return []
                 
                 return data.get('response', {}).get('items', [])
                 
         except Exception as e:
-            logger.error(f"Error fetching from group {group_id}: {e}")
+            logger.error(f"Unexpected error fetching from group {group_id}: {e}")
             return []
     
     async def _post_to_vk(self, token: str, group_id: str, text: str, attachments: str = "") -> Optional[Dict[str, Any]]:
