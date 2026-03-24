@@ -1,11 +1,52 @@
-/venv/
-/.idea/
-/vk_config.v2.json
-/config/
-/.pytest_cache/
-/image.jpg
-/insta_photo/
-/config.py
-/.editorconfig
-/test.py
-/primer.py
+```
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Compiled and build artifacts
+*.o
+*.obj
+*.out
+*.so
+*.dylib
+*.dll
+
+# Dependencies
+.venv/
+venv/
+env/
+.env
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Coverage
+.coverage
+coverage/
+htmlcov/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Environment specific
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated
+.DS_Store
+Thumbs.db
+```
