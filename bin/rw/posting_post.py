@@ -11,7 +11,7 @@ from bin.utils.send_error import send_error
 from bin.utils.url_of_post import url_of_post
 
 
-def posting_post(msg_list):
+def posting_post(msg_list, stat_mode: bool = False):
     global session
 
     # ДРАН удален из системы, проверяем только для mi
@@ -100,9 +100,17 @@ def posting_post(msg_list):
             text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}"
 
         try:
-            post_msg(session['post_group_vk'],
+            post_result = post_msg(session['post_group_vk'],
                      text_post,
                      attachments)
+            
+            # Сохраняем информацию о посте для статистики
+            if stat_mode and post_result:
+                # Возвращаем URL поста в вызывающую функцию через session
+                if 'last_post_url' not in session:
+                    session['last_post_url'] = []
+                session['last_post_url'].append(post_result['url'])
+            
             save_table(theme)
         except Exception as exc:
             send_error(__name__, exc, traceback.print_exc())

@@ -42,6 +42,19 @@ def parser(stat_mode: bool = False):
 
     get_del_msg_blacklist()
 
+    # Статистика для анализа причин отсева
+    stats_data = {
+        'total_groups_checked': len(current_groups),
+        'total_posts_scanned': 0,
+        'posts_filtered_old': 0,
+        'posts_filtered_duplicate_lip': 0,
+        'posts_filtered_black_id': 0,
+        'posts_filtered_no_region_words': 0,
+        'posts_filtered_duplicate_text': 0,
+        'posts_filtered_duplicate_foto': 0,
+        'posts_final_count': 0
+    } if stat_mode else None
+
     if theme in 'novost reklama':
         session['work']['bezfoto'] = load_table('bezfoto')
         session['work']['all_bezfoto'] = load_table('all_bezfoto')
@@ -67,8 +80,16 @@ def parser(stat_mode: bool = False):
 
     result_posts = []
     for sample in posts:
+        if stat_mode:
+            stats_data['total_posts_scanned'] += 1
+        
         # Первоначальная быстрая проверка на повторы и на старость
         if lip_of_post(sample) in session['work'][theme]['lip'] or not sort_old_date(sample):
+            if stat_mode:
+                if lip_of_post(sample) in session['work'][theme]['lip']:
+                    stats_data['posts_filtered_duplicate_lip'] += 1
+                if not sort_old_date(sample):
+                    stats_data['posts_filtered_old'] += 1
             continue
 
         # Вытаскиваем репосты
@@ -77,6 +98,11 @@ def parser(stat_mode: bool = False):
 
         # Фильтр на ПОВТОРЫ и ЗАПРЕЩЕННЫЕ ГРУППЫ И АККАУНТЫ
         if lip_of_post(sample) in session['work'][theme]['lip'] or abs(sample['owner_id']) in session['black_id']:
+            if stat_mode:
+                if abs(sample['owner_id']) in session['black_id']:
+                    stats_data['posts_filtered_black_id'] += 1
+                else:
+                    stats_data['posts_filtered_duplicate_lip'] += 1
             continue
 
         # Если режим СОСЕД - Ищем в тексте поста хештег с новостью, если нет, то не берем пост
@@ -109,6 +135,8 @@ def parser(stat_mode: bool = False):
             # Проверяются только определенные сообщества
             if abs(first_owher_id) in session['filter_group_by_region_words'].values():
                 if not search_text(session[f"{session['filter_region']}_words"], sample['text']):
+                    if stat_mode:
+                        stats_data['posts_filtered_no_region_words'] += 1
                     continue
 
             # Фильтр для БалтасиРу Балтаси Хезмәт и Кукмор-РТ на присутствие ссылки на сайт
@@ -122,6 +150,8 @@ def parser(stat_mode: bool = False):
         text_rafinad = text_to_rafinad(sample['text'])
         if search_text([text_rafinad[int(len(text_rafinad) * 0.2):int(len(text_rafinad) * 0.7)]],
                        old_novost_txt) or search_text(session['delete_msg_blacklist'], text_rafinad):
+            if stat_mode:
+                stats_data['posts_filtered_duplicate_text'] += 1
             continue
         else:
             old_novost_txt += text_rafinad
@@ -155,6 +185,8 @@ def parser(stat_mode: bool = False):
 
         # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
         if sort_po_foto(sample) and sort_po_video(sample):
+            if stat_mode:
+                stats_data['posts_filtered_duplicate_foto'] += 1
             continue
 
         # Если группа-источник запрещена, то ссылку на нее не ставлю
@@ -195,6 +227,9 @@ def parser(stat_mode: bool = False):
     if theme in 'reklama':
         save_table('reklama')
 
+    if stat_mode:
+        stats_data['posts_final_count'] = len(result_posts)
+
     # Формируем результат в зависимости от режима
     if stat_mode:
         # В режиме статистики возвращаем dict с данными
@@ -202,7 +237,8 @@ def parser(stat_mode: bool = False):
             'posts': result_posts if result_posts else [],
             'stats': {
                 'success_groups': [str(g) for g in current_groups] if result_posts else [],
-                'posts_count': len(result_posts) if result_posts else 0
+                'posts_count': len(result_posts) if result_posts else 0,
+                'detailed_stats': stats_data
             }
         }
 

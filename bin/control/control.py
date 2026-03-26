@@ -34,7 +34,8 @@ def control(stat_mode: bool = False):
         'success_groups': [],
         'failed_groups': {},
         'posts_count': 0,
-        'failed_posts': []
+        'failed_posts': [],
+        'detailed_stats': {}
     } if stat_mode else None
     
     # Определяем список групп для текущего региона/темы
@@ -52,14 +53,20 @@ def control(stat_mode: bool = False):
         if stat_mode and isinstance(result, dict):
             msg_list = result.get('posts', [])
             stats_data.update(result.get('stats', {}))
+            # Сохраняем детальную статистику
+            if 'detailed_stats' in result.get('stats', {}):
+                stats_data['detailed_stats'] = result['stats']['detailed_stats']
         else:
             msg_list = result
         
         if msg_list:
-            posting_post(msg_list)
+            posting_post(msg_list, stat_mode=stat_mode)
             if stat_mode:
                 stats_data['success'] = True
                 # posts_count уже установлен из stats
+                # Получаем URL поста из session если есть
+                if session.get('last_post_url'):
+                    stats_data['post_urls'] = session['last_post_url']
         else:
             if stat_mode:
                 stats_data['failed_posts'].append("Нет свежих новостей после фильтрации")

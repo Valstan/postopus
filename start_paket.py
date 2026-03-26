@@ -50,7 +50,9 @@ for name in names_regions:
                 'posts_count': result.get('posts_count', 0),
                 'failed_groups': result.get('failed_groups', {}),
                 'failed_posts': result.get('failed_posts', []),
-                'success': result.get('success', False)
+                'success': result.get('success', False),
+                'post_urls': result.get('post_urls', []),
+                'detailed_stats': result.get('detailed_stats', {})
             }
 
             # В режиме stat выводим информацию по каждому региону сразу
