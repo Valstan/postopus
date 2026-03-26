@@ -1,11 +1,10 @@
 from env_loader import session
 from bin.rw.get_mongo_base import get_mongo_base
 
-session = config.session
-
 
 # Изменять текст Блеклиста из базы нельзя, тоесть в монотекст превращать
 def optimization_delete_msg_blacklist():
+    # Инициализация сессии
     get_mongo_base('postopus')
     collection = session['MONGO_BASE']['config']
     session['config'] = collection.find_one({'title': 'config'}, {'_id': 0})

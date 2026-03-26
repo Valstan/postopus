@@ -10,14 +10,14 @@ from bin.rw.get_mongo_base import get_mongo_base
 from bin.rw.get_msg import get_msg
 from bin.utils.driver_tables import load_table
 
-session = config.session
-session.update({"token": session['VK_TOKEN_DRAN']})
-vk_session = VkApi(token=session['token'])
-session['vk_app'] = vk_session.get_api()
-get_mongo_base('postopus')
-
 
 def analiz_prosmotrov(name_base):
+    # Инициализация сессии и подключение к VK API
+    session.update({"token": session['VK_TOKEN_DRAN']})
+    vk_session = VkApi(token=session['token'])
+    session['vk_app'] = vk_session.get_api()
+    get_mongo_base('postopus')
+    
     result = ''
     # Берем имя базы с которой будем работать
     session['name_base'] = name_base

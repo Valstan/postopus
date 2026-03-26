@@ -42,7 +42,6 @@ def save_result():
 
 
 # Настройки раскрутки
-session = config.session  # Берем сессию из конфига
 session.update({"token": session['VK_TOKEN_VALSTAN']})  # Под каким токеном будем спамить
 black_list_groups = '-141273678-65070963'  # Черный список номеров групп в которые нельзя спамить
 name_file = f"Спам-реклама ВП Инфо 20 января.html"
