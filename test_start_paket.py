@@ -2,19 +2,36 @@ import time
 from random import shuffle
 from sys import argv
 
+from pymongo import MongoClient
 from start import start
+from env_loader import session
 
 if len(argv) == 2:
     argument = str(argv[1])
 else:
     argument = input("Нужно ввести аргумент типа detsad или novost и т.д. - ")
 
-names_regions = ['dran',
-                 'mi', 'klz', 'vp', 'ur',
-                 'kukmor', 'bal',
-                 'leb', 'nolinsk', 'nema',
-                 'sovetsk', 'pizhanka', 'arbazh']
+# Загружаем список регионов из базы данных (единый источник правды)
+client = MongoClient(session['MONGO_CLIENT'])
+mongo_base = client['postopus']
+collection = mongo_base['config']
+config_data = collection.find_one({'title': 'config'}, {'all_my_groups': 1})
+
+# Извлекаем уникальные префиксы регионов из ключей all_my_groups
+names_regions = []
+for key in config_data['all_my_groups'].keys():
+    if key.endswith('_groups'):
+        region_name = key[:-7]
+    else:
+        region_name = key
+    
+    if region_name not in ['all', 'common', 'global']:
+        names_regions.append(region_name)
+
+names_regions = list(set(names_regions))
 shuffle(names_regions)
+
+print(f"📍 Загружено {len(names_regions)} регионов из БД: {', '.join(sorted(names_regions))}")
 
 
 for name in names_regions:
