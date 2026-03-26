@@ -42,6 +42,19 @@ def get_session(arguments, bags="0"):
         session['post_group_vk'] = None
         print("⚠️ region_name или all_my_groups не установлены")
 
+    # Устанавливаем filter_region на основе названия региона
+    # Определяем регион для фильтра слов (kirov или tatar)
+    session['filter_region'] = None
+    if session.get('region_name'):
+        region_lower = session['region_name'].lower()
+        # Татарстан регионы
+        tatar_regions = ['балтаси', 'кукмор']
+        if any(t in region_lower for t in tatar_regions):
+            session['filter_region'] = 'tatar'
+        else:
+            # Кировские регионы по умолчанию
+            session['filter_region'] = 'kirov'
+
     session['bags'] = bags
 
     # И таблицу для работы, например novost

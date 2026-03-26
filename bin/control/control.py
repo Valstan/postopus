@@ -41,7 +41,11 @@ def control(stat_mode: bool = False):
     # Определяем список групп для текущего региона/темы
     current_groups = []
     if session['name_session'] in session['zagolovki'].keys():
-        current_groups = list(session[session['name_session']].values())
+        # Для novost и других тем из zagolovki используем post_group_vk
+        if session.get('post_group_vk'):
+            current_groups = [session['post_group_vk']]
+        elif session['name_session'] in session and isinstance(session[session['name_session']], dict):
+            current_groups = list(session[session['name_session']].values())
     elif session['name_session'] in session:
         if isinstance(session[session['name_session']], dict):
             current_groups = list(session[session['name_session']].values())

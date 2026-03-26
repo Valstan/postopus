@@ -106,24 +106,33 @@ for name in names_regions:
                 total_stats['total_posts'] += region_stat['posts_count']
                 total_stats['total_groups'] += len(region_stat['groups'])
             else:
+                # Добавляем регион в failed_regions с правильной статистикой
+                total_stats['failed_regions'].append(region_stat)
                 if not show_stat and region_stat['failed_posts']:
                     total_stats['failed_posts_reasons'].extend(region_stat['failed_posts'])
-                total_stats['failed_regions'].append(region_stat)
 
     except Exception as e:
         if show_stat:
             print(f"\n❌ Ошибка обработки региона {name}: {e}")
             print(f"   Причина: {str(e)}")
+        
+        # Определяем причину неудачи более точно
+        error_reason = str(e)
+        if 'result' in locals() and result and not result.get('success'):
+            failed_posts = result.get('failed_posts', [])
+            if failed_posts:
+                error_reason = '; '.join(failed_posts)
+        
         total_stats['failed_regions'].append({
             'region': name,
             'groups': [],
             'posts_count': 0,
             'failed_groups': {'all': str(e)},
-            'failed_posts': [str(e)],
+            'failed_posts': [error_reason],
             'success': False
         })
         if not show_stat:
-            total_stats['failed_posts_reasons'].append(str(e))
+            total_stats['failed_posts_reasons'].append(error_reason)
 
     time.sleep(5)
 
