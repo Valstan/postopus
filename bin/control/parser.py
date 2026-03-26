@@ -55,7 +55,12 @@ def parser(stat_mode: bool = False):
         'posts_final_count': 0
     } if stat_mode else None
 
-    if theme in 'novost reklama':
+    # Определяем тему для загрузки постов
+    # Если тема есть в zagolovki (novost, kultura, sport и т.д.), то используем соответствующую логику
+    is_novost_theme = theme in session['zagolovki'].keys()
+    
+    if is_novost_theme and theme == 'novost':
+        # Только для novost используем post_group_vk и special логику с bezfoto
         session['work']['bezfoto'] = load_table('bezfoto')
         session['work']['all_bezfoto'] = load_table('all_bezfoto')
         # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
@@ -65,12 +70,32 @@ def parser(stat_mode: bool = False):
         # В строке ниже session['name_session'] не менять
         posts = read_posts({session['region_name']: session['post_group_vk']}, 20)
 
+    elif is_novost_theme and theme != 'novost':
+        # Для тем типа kultura, sport, detsad и т.д. - перебираем ВСЕ группы темы по очереди
+        # пока не найдём хотя бы один подходящий пост
+        posts = []
+        if theme in session and isinstance(session[theme], dict) and len(session[theme]) > 0:
+            group_list = list(session[theme].items())
+            random.shuffle(group_list)  # Перемешиваем чтобы начинать с разной группы
+            
+            for group_name, group_id in group_list:
+                candidate_posts = get_msg(group_id, 0, 20)
+                # Проверяем есть ли среди постов хотя бы один неподходящий под фильтры
+                for sample in candidate_posts:
+                    if lip_of_post(sample) not in session['work'][theme]['lip'] and sort_old_date(sample):
+                        # Нашли потенциально подходящий пост, берём все посты из этой группы
+                        posts = candidate_posts
+                        break
+                if posts:
+                    break  # Выходим как только нашли группу с подходящими постами
+            
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
         posts = get_msg(random.choice(list(session[theme].values())), 0, 20)
 
     # Всетаки вернул проверку по тексту на уже опубликованные
-    old_novost = get_msg(session['post_group_vk'], 0, 100)
+    # Для тем типа kultura, sport и т.д. проверяем историю в целевой группе (post_group_vk)
+    old_novost = get_msg(session['post_group_vk'], 0, 100) if 'post_group_vk' in session else []
 
     old_novost_txt = ''
     for sample in old_novost:

@@ -1,22 +1,28 @@
-```
-# Python
+```gitignore
+# Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Dependencies
-venv/
-.venv/
+# Logs
+*.log
+
+# Environment files
 .env
 .env.local
 *.env.*
 
-# Logs and temp files
-*.log
+# Temporary files
 *.tmp
+*.swp
+*.swo
 
-# Editors
-.vscode/
-.idea/
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Dependencies
+venv/
+.venv/
 ```

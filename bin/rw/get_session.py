@@ -42,6 +42,47 @@ def get_session(arguments, bags="0"):
         session['post_group_vk'] = None
         print("⚠️ region_name или all_my_groups не установлены")
 
+    # Загружаем региональную коллекцию для получения данных по темам (kultura, sport и т.д.)
+    # Имя коллекции соответствует короткому коду региона (vp, malmig_info, nolinsk и т.д.)
+    if session.get('region_name'):
+        # Сопоставляем полное название региона с именем коллекции
+        region_to_collection = {
+            'ВП - Инфо': 'vp',
+            'Малмыж - Инфо': 'malmig_info',
+            'Уржум - Инфо': 'ur',
+            'Советск - Инфо': 'sovetsk',
+            'Нолинск - Инфо': 'nolinsk',
+            'Арбаж - Инфо': 'arbazh',
+            'Нема - Инфо': 'nema',
+            'Кильмезь - Инфо': 'klz',
+            'Пижанка - Инфо': 'pizhanka',
+            'Верхошижемье - Инфо': 'verhoshizhem',
+            'Лебяжье - Инфо': 'leb',
+            'Балтаси - Инфо': 'bal',
+            'Кукмор - Инфо': 'kukmor',
+            'Гоньба - жемчужина Вятки': 'gonba',
+            'Кировская область - Инфо': 'kirov_obl'
+        }
+        
+        collection_name = region_to_collection.get(session['region_name'])
+        if collection_name:
+            try:
+                # Переключаемся на региональную коллекцию для загрузки config
+                old_name_base = session['name_base']
+                session['name_base'] = collection_name
+                regional_config = load_table('config')
+                session['name_base'] = old_name_base  # Возвращаем обратно
+                
+                if regional_config:
+                    # Добавляем данные из региональной конфигурации в сессию
+                    # Это даст доступ к session['kultura'], session['sport'] и т.д.
+                    for key in ['kultura', 'sport', 'detsad', 'admin', 'union', 'novost']:
+                        if key in regional_config and isinstance(regional_config[key], dict):
+                            session[key] = regional_config[key]
+                    print(f"✅ Загружены данные тем из региональной коллекции '{collection_name}'")
+            except Exception as e:
+                print(f"⚠️ Не удалось загрузить региональную коллекцию '{collection_name}': {e}")
+
     # Устанавливаем filter_region на основе названия региона
     # Определяем регион для фильтра слов (kirov или tatar)
     session['filter_region'] = None
