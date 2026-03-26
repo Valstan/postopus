@@ -25,16 +25,21 @@ config_data = collection.find_one({'title': 'config'}, {'all_my_groups': 1})
 # Извлекаем уникальные префиксы регионов из ключей all_my_groups
 # Ключи имеют вид: 'mi_groups', 'klz_groups', 'vp_groups' и т.д.
 names_regions = []
-for key in config_data['all_my_groups'].keys():
-    # Убираем суффикс '_groups' если он есть
-    if key.endswith('_groups'):
-        region_name = key[:-7]  # удаляем '_groups'
-    else:
-        region_name = key
-    
-    # Пропускаем служебные ключи
-    if region_name not in ['all', 'common', 'global']:
-        names_regions.append(region_name)
+if config_data and 'all_my_groups' in config_data and config_data['all_my_groups']:
+    for key in config_data['all_my_groups'].keys():
+        # Убираем суффикс '_groups' если он есть
+        if key.endswith('_groups'):
+            region_name = key[:-7]  # удаляем '_groups'
+        else:
+            region_name = key
+        
+        # Пропускаем служебные ключи
+        if region_name not in ['all', 'common', 'global']:
+            names_regions.append(region_name)
+else:
+    print("❌ ОШИБКА: Не удалось загрузить данные о регионах из базы данных!")
+    print("   Проверьте наличие документа {'title': 'config'} с полем 'all_my_groups' в коллекции 'config'")
+    exit(1)
 
 # Убираем дубликаты и перемешиваем
 names_regions = list(set(names_regions))
