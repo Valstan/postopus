@@ -6,3 +6,5 @@ yadisk==1.3.4
 vk-api==11.9.9
 dnspython==2.6.1
 pytz==2024.1
+python-dotenv==1.0.1
+

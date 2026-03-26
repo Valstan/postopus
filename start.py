@@ -9,8 +9,6 @@ from bin.rw.get_session import get_session
 from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.utils.service_base import service_base
 
-session = config.session
-
 
 def start(arguments: str, bags: str = '0', stat_mode: bool = False):
     """

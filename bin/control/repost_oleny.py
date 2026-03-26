@@ -7,8 +7,6 @@ from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.url_of_post import url_of_post
 
-session = config.session
-
 
 def repost_oleny():
     global session

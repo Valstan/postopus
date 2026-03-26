@@ -5,49 +5,38 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
-env/
-.venv/
+env_loader.py
+
+# Virtual environments
 venv/
-ENV/
-
-# Logs
-*.log
-
-# Environment variables
+.venv/
 .env
 .env.local
 .env.*
 
-# IDE
-.vscode/
-.idea/
+# Logs
+*.log
+
+# Temporary files
+*.tmp
 *.swp
 *.swo
-*.tmp
 
-# Build artifacts
-dist/
-build/
-*.so
-*.dylib
-*.dll
-*.exe
-*.out
-
-# Testing
-.coverage
-htmlcov/
-.coverage.*
-.noserc
-.tox/
-
-# Dependencies
-node_modules/
-.mypy_cache/
-.pytest_cache/
-.hypothesis/
-
-# OS
+# OS generated files
 .DS_Store
 Thumbs.db
+
+# Coverage
+.coverage
+coverage/
+htmlcov/
+
+# MyPy
+.mypy_cache/
+
+# PyTest
+.pytest_cache/
+
+# Build artifacts from the changes shown
+env_loader.py
 ```
