@@ -4,39 +4,44 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-env_loader.py
 
-# Virtual environments
-venv/
+# Compiled and build artifacts
+*.o
+*.obj
+*.so
+*.a
+*.dll
+*.exe
+*.out
+
+# Dependencies
 .venv/
-.env
-.env.local
-.env.*
-
-# Logs
-*.log
-
-# Temporary files
-*.tmp
-*.swp
-*.swo
-
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Coverage
-.coverage
-coverage/
-htmlcov/
-
-# MyPy
+venv/
+node_modules/
 .mypy_cache/
-
-# PyTest
 .pytest_cache/
 
-# Build artifacts from the changes shown
-env_loader.py
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
 ```
