@@ -9,9 +9,7 @@ from bin.rw.get_attach import get_attach
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.search_text import search_text
 from bin.utils.url_of_post import url_of_post
-from config import session
-
-
+from env_loader import session
 def copy_to_all_setka():
     # Из этой ленты брать посты для рассылки
     lenta_copy_to_all_setka = -167381590

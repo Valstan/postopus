@@ -1,7 +1,6 @@
 from pymongo import MongoClient
 
-from config import session
-
+from env_loader import session
 client = MongoClient(session['MONGO_CLIENT'])
 mongo_base = client['postopus']
 collection = mongo_base['bal']

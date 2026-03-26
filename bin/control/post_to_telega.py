@@ -10,9 +10,7 @@ from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.driver_tables import save_table
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.search_text import search_text
-from config import session
-
-
+from env_loader import session
 async def send_text_post(text, post_group_telega, bot):
     await bot.send_message(post_group_telega, text)
 

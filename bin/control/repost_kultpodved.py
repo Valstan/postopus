@@ -10,9 +10,7 @@ from bin.utils.lip_of_post import lip_of_post
 from bin.utils.search_text import search_text
 from bin.utils.text_to_rafinad import text_to_rafinad
 from bin.utils.url_of_post import url_of_post
-from config import session
-
-
+from env_loader import session
 def repost_kultpodved():
     theme = session['name_session']
     session['post_group_vk'] = -217788511  # Дом Культуры Малмыж

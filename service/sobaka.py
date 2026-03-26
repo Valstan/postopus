@@ -1,10 +1,6 @@
 from vk_api import VkApi
 
-import config
-
-session = config.session
-
-
+from env_loader import session
 def del_delete_users(vk, group_id):
     members = vk.groups.getMembers(group_id=group_id)
     count_all = members['count']

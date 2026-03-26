@@ -4,12 +4,10 @@ import time
 from datetime import datetime
 from random import shuffle
 
-import config
+from env_loader import session
 from bin.rw.get_attach import get_attach
 from bin.rw.get_msg import get_msg
 from bin.utils.driver_tables import save_table
-
-session = config.session
 
 
 def save_result():

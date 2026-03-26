@@ -3,10 +3,8 @@ from time import sleep
 
 from pymongo import MongoClient
 
-import config
+from env_loader import session
 from bin.utils.send_error import send_error
-
-session = config.session
 
 
 def get_mongo_base(base='postopus'):

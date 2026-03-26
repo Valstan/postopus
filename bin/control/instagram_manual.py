@@ -1,6 +1,6 @@
 from PIL import Image
 # from instabot import Bot
-import config
+from env_loader import session
 from bin.rw.get_image import get_image
 from bin.rw.get_msg import get_msg
 from bin.utils.change_lp import change_lp
@@ -9,8 +9,6 @@ from bin.utils.clear_dir import clear_dir
 from bin.utils.draw_text import draw_text
 from bin.utils.resize_img import resize_img
 from bin.utils.white_board import white_board
-
-session = config.session
 
 
 def instagram_manual():

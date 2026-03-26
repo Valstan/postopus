@@ -14,9 +14,7 @@ from bin.utils.lip_of_post import lip_of_post
 from bin.utils.search_text import search_text
 from bin.utils.text_to_rafinad import text_to_rafinad
 from bin.utils.url_of_post import url_of_post
-from config import session
-
-
+from env_loader import session
 def parser():
     if session['name_session'] in session['zagolovki'].keys():
         theme = 'novost'

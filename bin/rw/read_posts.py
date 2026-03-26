@@ -2,9 +2,7 @@ import time
 
 import requests
 
-from config import session
-
-
+from env_loader import session
 def read_posts(group_dict, count):
     group_ids_str = ''
     get_posts = []

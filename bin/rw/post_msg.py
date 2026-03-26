@@ -1,9 +1,7 @@
 import traceback
 
 from bin.utils.send_error import send_error
-from config import session
-
-
+from env_loader import session
 def post_msg(group, text_send, attachments='', from_group=1, copy_right=''):
 
     try:

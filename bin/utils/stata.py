@@ -1,7 +1,5 @@
 from bin.utils.driver_tables import load_table, save_table
-from config import session
-
-
+from env_loader import session
 # Структура базы постов:
 # base[str(abs(post['owner_id']))] [ [0:id 1:date 2:from_id 3:views 4:likes 5:reposts 6:comments] ]
 

@@ -1,8 +1,6 @@
-import config
+from env_loader import session
 from bin.rw.get_mongo_base import get_mongo_base
 from bin.utils.driver_tables import load_table
-
-session = config.session
 
 
 def service_base():

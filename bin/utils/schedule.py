@@ -5,9 +5,7 @@ from bin.control.control import control
 from bin.rw.get_mongo_base import get_mongo_base
 from bin.rw.get_session import get_session
 from bin.rw.get_session_vk_api import get_session_vk_api
-from config import cron_schedule
-
-
+from env_loader import cron_schedule
 def schedule():
     min_interval = 1
     interval = 30

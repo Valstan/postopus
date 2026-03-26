@@ -1,8 +1,6 @@
 import requests
 
-from config import tb_url, tb_params, session
-
-
+from env_loader import tb_url, tb_params, session
 def send_error(modul_name='?', exception='?', traceback='?'):
     method = tb_url + session['TELEGA_TOKEN_VALSTANBOT'] + "/sendMessage"
 

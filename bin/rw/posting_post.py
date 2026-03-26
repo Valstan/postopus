@@ -1,7 +1,7 @@
 import random
 import traceback
 
-import config
+from env_loader import session
 from bin.rw.get_attach import get_attach
 from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.post_msg import post_msg
@@ -9,8 +9,6 @@ from bin.utils.driver_tables import save_table
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.send_error import send_error
 from bin.utils.url_of_post import url_of_post
-
-session = config.session
 
 
 def posting_post(msg_list):
@@ -27,7 +25,7 @@ def posting_post(msg_list):
             print("Токены ПОСТИНГА в ВК не работают!")
             quit()
     else:
-        print("Нет доступных токенов для постинга! Добавьте токен в config.py")
+        print("Нет доступных токенов для постинга! Добавьте токен в .env файле")
         quit()
 
     if session['name_session'] in session['zagolovki'].keys():

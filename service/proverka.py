@@ -1,7 +1,6 @@
 from pymongo import MongoClient
 
-from config import session
-
+from env_loader import session
 sample = {'text': """6
 Сельхозрынок и рынок Малмыжа и р-на
 -190688501

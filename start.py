@@ -2,7 +2,7 @@ import random
 import time
 from sys import argv
 
-import config
+from env_loader import session
 from bin.control.control import control
 from bin.rw.get_mongo_base import get_mongo_base
 from bin.rw.get_session import get_session

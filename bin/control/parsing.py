@@ -16,9 +16,7 @@ from bin.utils.search_text import search_text
 from bin.utils.text_framing import text_framing
 from bin.utils.text_to_rafinad import text_to_rafinad
 from bin.utils.url_of_post import url_of_post
-from config import session
-
-
+from env_loader import session
 def parsing():
     session['bezfoto'] = load_table('bezfoto')
     session['all_bezfoto'] = load_table('all_bezfoto')
