@@ -2,11 +2,9 @@ import hashlib
 
 from PIL import Image
 
-import config
+from env_loader import session
 from bin.rw.get_image import get_image
 from bin.rw.get_link_image_select_size import get_link_image_select_size
-
-session = config.session
 
 
 def sort_po_video(msg):

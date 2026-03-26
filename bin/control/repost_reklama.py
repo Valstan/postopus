@@ -5,9 +5,7 @@ from bin.rw.posting_post import posting_post
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.url_of_post import url_of_post
-from config import session
-
-
+from env_loader import session
 def repost_reklama():
     theme = session['name_session']
 

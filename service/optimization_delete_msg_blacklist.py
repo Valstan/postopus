@@ -1,4 +1,4 @@
-import config
+from env_loader import session
 from bin.rw.get_mongo_base import get_mongo_base
 
 session = config.session

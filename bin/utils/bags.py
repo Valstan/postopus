@@ -1,6 +1,4 @@
-from config import session
-
-
+from env_loader import session
 def bags(sample_text='', string='', url=''):
     if session['bags'] == "0":
         return

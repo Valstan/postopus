@@ -1,9 +1,6 @@
 import yadisk
 
-import config
-
-session = config.session
-
+from env_loader import session
 y = yadisk.YaDisk(token=session['YANDEX_DISK_TOKEN'])
 # print(y.check_token())  # Проверим токен
 

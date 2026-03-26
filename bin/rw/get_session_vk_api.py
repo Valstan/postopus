@@ -1,10 +1,6 @@
 from vk_api import VkApi
 
-import config
-
-session = config.session
-
-
+from env_loader import session
 def get_session_vk_api():
     global session
 

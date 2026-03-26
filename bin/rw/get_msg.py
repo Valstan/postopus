@@ -1,9 +1,7 @@
 import traceback
 
 from bin.utils.send_error import send_error
-from config import session
-
-
+from env_loader import session
 def get_msg(group, offset=0, count=1):
     """
     Получает посты из группы VK.

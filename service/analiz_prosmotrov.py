@@ -5,7 +5,7 @@ import time
 from vk_api import VkApi
 from datetime import datetime, timedelta
 
-import config
+from env_loader import session
 from bin.rw.get_mongo_base import get_mongo_base
 from bin.rw.get_msg import get_msg
 from bin.utils.driver_tables import load_table

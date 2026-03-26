@@ -4,9 +4,7 @@ from bin.rw.get_msg import get_msg
 from bin.rw.posting_post import posting_post
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.search_text import search_text
-from config import session
-
-
+from env_loader import session
 def sosed():
     # Выбираем соседа
     near = random.choice(session['sosed'].split(sep=",", maxsplit=-1))

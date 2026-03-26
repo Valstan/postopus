@@ -1,7 +1,5 @@
 from bin.utils.search_text import search_text
-from config import session
-
-
+from env_loader import session
 def load_table(name_table):
     collection = session['MONGO_BASE'][session['name_base']]
     if name_table in 'novost novosti':

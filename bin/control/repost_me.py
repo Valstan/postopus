@@ -7,11 +7,7 @@ from bin.utils.driver_tables import save_table
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.search_text import search_text
 from bin.utils.url_of_post import url_of_post
-import config
-
-session = config.session
-
-
+from env_loader import session
 def repost_me():
     global session
 

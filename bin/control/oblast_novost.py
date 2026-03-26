@@ -6,10 +6,8 @@ from bin.rw.posting_post import posting_post
 from bin.sort.sort_old_date import sort_old_date
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.search_text import search_text
-import config
+from env_loader import session
 from bin.utils.url_of_post import url_of_post
-
-session = config.session
 
 
 def oblast_novost():

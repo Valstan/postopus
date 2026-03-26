@@ -1,6 +1,6 @@
 from vk_api import VkApi
 
-import config
+from env_loader import session
 from bin.rw.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history
 

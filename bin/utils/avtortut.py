@@ -1,8 +1,6 @@
 import random
 
-from config import session
-
-
+from env_loader import session
 def avtortut(msg, divider=""):
     # ДРАН удален из системы, теперь для всех добавляем авторство
     url = 'https://vk.com/wall' + str(msg['owner_id']) + '_' + str(msg['id'])

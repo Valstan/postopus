@@ -5,7 +5,7 @@ from random import shuffle
 
 from vk_api import VkApi
 
-import config
+from env_loader import session
 from bin.rw.get_attach import get_attach
 from bin.rw.get_msg import get_msg
 from bin.rw.get_session_vk_api import get_session_vk_api

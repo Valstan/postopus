@@ -1,7 +1,7 @@
 import asyncio
 import random
 
-import config
+from env_loader import session
 from bin.control.karavan import karavan
 from bin.control.oblast_novost import oblast_novost
 from bin.control.parser import parser
@@ -14,8 +14,6 @@ from bin.control.sosed import sosed
 from bin.rw.post_bezfoto import post_bezfoto
 from bin.rw.posting_post import posting_post
 from bin.utils.driver_tables import load_table
-
-session = config.session
 
 
 def control(stat_mode: bool = False):

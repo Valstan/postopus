@@ -3,9 +3,7 @@ import time
 from pymongo import MongoClient
 from vk_api import VkApi
 
-from config import session
-
-
+from env_loader import session
 def deserter():
     vk_session = VkApi(token=session['VK_TOKEN_VALSTAN'])
     vk_app = vk_session.get_api()

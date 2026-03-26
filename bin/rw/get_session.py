@@ -1,9 +1,7 @@
 from datetime import datetime
 
-import config
+from env_loader import session
 from bin.utils.driver_tables import load_table
-
-session = config.session
 
 
 def get_session(arguments, bags="0"):

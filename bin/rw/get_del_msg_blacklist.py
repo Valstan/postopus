@@ -1,10 +1,8 @@
 import json
 import os
 
-import config
+from env_loader import session
 from bin.utils.text_to_rafinad import text_to_rafinad
-
-session = config.session
 
 
 def get_del_msg_blacklist():

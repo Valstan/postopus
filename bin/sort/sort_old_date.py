@@ -1,6 +1,4 @@
-from config import session
-
-
+from env_loader import session
 def sort_old_date(sample):
 
     difference = session['timestamp_now'] - sample['date']

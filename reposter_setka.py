@@ -4,8 +4,7 @@ import time
 from pymongo import MongoClient
 from vk_api import VkApi
 
-from config import session
-
+from env_loader import session
 address_repost = 'https://vk.com/wall-218877712_396'
 
 vk_session = VkApi(token=session['VK_TOKEN_VALSTAN'])

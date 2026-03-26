@@ -5,9 +5,7 @@ from datetime import datetime
 
 from vk_api import VkApi
 
-import config
-
-session = config.session
+from env_loader import session
 vk_session = VkApi(token=session['VK_TOKEN_DRAN'])
 vk = vk_session.get_api()
 

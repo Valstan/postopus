@@ -10,9 +10,7 @@ from bin.rw.post_msg import post_msg
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.search_text import search_text
 from bin.utils.send_error import send_error
-from config import session
-
-
+from env_loader import session
 def append_words_in_black_list(black_list):
     client = MongoClient(session['MONGO_CLIENT'])
     mongo_base = client['postopus']
