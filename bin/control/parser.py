@@ -15,11 +15,28 @@ from bin.utils.search_text import search_text
 from bin.utils.text_to_rafinad import text_to_rafinad
 from bin.utils.url_of_post import url_of_post
 from env_loader import session
-def parser():
+
+def parser(stat_mode: bool = False):
+    """
+    Функция парсинга постов из VK групп.
+
+    Args:
+        stat_mode: если True, возвращает статистику обработки
+
+    Returns:
+        list постов или dict со статистикой если stat_mode=True
+    """
     if session['name_session'] in session['zagolovki'].keys():
         theme = 'novost'
     else:
         theme = session['name_session']
+
+    # Для режима статистики сохраняем список текущих групп
+    current_groups = []
+    if theme in session and isinstance(session[theme], dict):
+        current_groups = list(session[theme].values())
+    elif theme == 'novost' and session['name_session'] in session:
+        current_groups = list(session[session['name_session']].values()) if isinstance(session[session['name_session']], dict) else []
 
     data_string = ''
 
@@ -177,6 +194,17 @@ def parser():
         save_table('bezfoto')
     if theme in 'reklama':
         save_table('reklama')
+
+    # Формируем результат в зависимости от режима
+    if stat_mode:
+        # В режиме статистики возвращаем dict с данными
+        return {
+            'posts': result_posts if result_posts else [],
+            'stats': {
+                'success_groups': [str(g) for g in current_groups] if result_posts else [],
+                'posts_count': len(result_posts) if result_posts else 0
+            }
+        }
 
     if result_posts:
         result_posts.sort(key=lambda x: x['views']['count'], reverse=True)
