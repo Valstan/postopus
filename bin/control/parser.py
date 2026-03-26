@@ -35,8 +35,8 @@ def parser(stat_mode: bool = False):
     current_groups = []
     if theme in session and isinstance(session[theme], dict):
         current_groups = list(session[theme].values())
-    elif theme == 'novost' and session['name_session'] in session:
-        current_groups = list(session[session['name_session']].values()) if isinstance(session[session['name_session']], dict) else []
+    elif theme == 'novost' and 'post_group_vk' in session:
+        current_groups = [session['post_group_vk']]
 
     data_string = ''
 
@@ -63,7 +63,7 @@ def parser(stat_mode: bool = False):
         data_string = "".join(session['work']['all_bezfoto']['lip']) + text_to_rafinad(
             "".join(session['work']['bezfoto']['lip']))
         # В строке ниже session['name_session'] не менять
-        posts = read_posts(session[session['name_session']], 20)
+        posts = read_posts({session['region_name']: session['post_group_vk']}, 20)
 
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
