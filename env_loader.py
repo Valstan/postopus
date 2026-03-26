@@ -6,6 +6,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from pymongo import MongoClient
 
 # Загружаем .env файл из корня проекта
 env_path = Path(__file__).parent / ".env"
@@ -68,6 +69,28 @@ TELEGA_TOKEN_VALSTANBOT = get_env("TELEGA_TOKEN_VALSTANBOT")
 TELEGA_TOKEN_AFONYA = get_env("TELEGA_TOKEN_AFONYA")
 YANDEX_DISK_TOKEN = get_env("YANDEX_DISK_TOKEN")
 
+# === Инициализация MongoDB ===
+if MONGO_CLIENT:
+    try:
+        mongo_client = MongoClient(MONGO_CLIENT, serverSelectionTimeoutMS=5000)
+        # Проверка подключения
+        mongo_client.admin.command('ping')
+        MONGO_CLIENT_OBJ = mongo_client
+        MONGO_BASE = mongo_client['postopus']
+        print(f"✅ MongoDB подключена: postopus")
+    except Exception as e:
+        print(f"⚠️ Ошибка подключения к MongoDB: {e}")
+        MONGO_CLIENT_OBJ = None
+        MONGO_BASE = None
+else:
+    MONGO_CLIENT_OBJ = None
+    MONGO_BASE = None
+    print("⚠️ MONGO_CLIENT не найден в .env файле")
+
+# === name_base по умолчанию (для driver_tables.py) ===
+# Будет переопределено в start_paket.py для каждого региона
+name_base_default = 'config'
+
 # === TELEGRAM ===
 tb_url = 'https://api.telegram.org/bot'
 tb_params = {'chat_id': -1001746966097}  # канал Тест-тест-тест2000
@@ -111,6 +134,9 @@ session = {
     "VK_TOKEN_MAMA": VK_TOKEN_MAMA,
     "VK_TOKEN_DRAN": VK_TOKEN_DRAN,
     "MONGO_CLIENT": MONGO_CLIENT,
+    "MONGO_CLIENT_OBJ": MONGO_CLIENT_OBJ,
+    "MONGO_BASE": MONGO_BASE,
+    "name_base": name_base_default,  # По умолчанию 'config'
     "TELEGA_TOKEN_VALSTANBOT": TELEGA_TOKEN_VALSTANBOT,
     "TELEGA_TOKEN_AFONYA": TELEGA_TOKEN_AFONYA,
     "YANDEX_DISK_TOKEN": YANDEX_DISK_TOKEN,

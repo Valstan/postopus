@@ -10,12 +10,11 @@ config_data = collection_config.find_one({'title': 'config'}, {'all_my_groups': 
 
 names_regions = []
 if config_data and 'all_my_groups' in config_data and config_data['all_my_groups']:
+    # Ключи в БД имеют вид: 'Малмыж - Инфо', 'Уржум - Инфо' и т.д. (полные названия)
     for key in config_data['all_my_groups'].keys():
-        if key.endswith('_groups'):
-            region_name = key.replace('_groups', '')
-            # Исключаем служебные ключи
-            if region_name not in ['all', 'common', 'global']:
-                names_regions.append(region_name)
+        # Пропускаем служебные ключи
+        if key.lower() not in ['all', 'common', 'global', 'all_my_groups']:
+            names_regions.append(key)
 else:
     print("❌ ОШИБКА: Не удалось загрузить данные о регионах из базы данных!")
     print("   Проверьте наличие документа {'title': 'config'} с полем 'all_my_groups' в коллекции 'config'")

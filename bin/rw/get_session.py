@@ -16,17 +16,37 @@ def get_session(arguments, bags="0"):
     # Выставляем текущее время в секундах timestamp_now
     session['timestamp_now'] = int(datetime.now().timestamp())
 
-    # Берем аргументы имени базы и таблицы сессии с которой будем работать
-    session['name_base'], session['name_session'] = arguments.split('_', 1)
-    # Из базы подтягиваем региональный конфиг
-    if session['name_base'] not in 'config':
+    # Берем аргументы имени региона и таблицы сессии с которой будем работать
+    # Формат аргумента: "Регион_тема" (например: "Малмыж - Инфо_kultura")
+    # name_base всегда остается 'config', так как все данные в одной коллекции
+    parts = arguments.split('_', 1)
+    if len(parts) == 2:
+        session['region_name'], session['name_session'] = parts
+    else:
+        # Если аргумент без подчеркивания, считаем что это тема, а регион будет определен позже
+        session['region_name'] = None
+        session['name_session'] = parts[0]
+    
+    # Из базы подтягиваем региональный конфиг (если нужно)
+    if session['name_session'] not in 'config':
         session.update(load_table('config'))
+
+    # Устанавливаем post_group_vk для текущего региона
+    if session.get('region_name') and session.get('all_my_groups'):
+        session['post_group_vk'] = session['all_my_groups'].get(session['region_name'])
+        if session['post_group_vk']:
+            print(f"✅ post_group_vk для '{session['region_name']}': {session['post_group_vk']}")
+        else:
+            print(f"⚠️ Не найден ID группы для региона '{session['region_name']}' в all_my_groups")
+    else:
+        session['post_group_vk'] = None
+        print("⚠️ region_name или all_my_groups не установлены")
 
     session['bags'] = bags
 
     # И таблицу для работы, например novost
     session['work'] = {}
-    if session['name_session'] in session['zagolovki'].keys():
+    if session['name_session'] in session.get('zagolovki', {}).keys():
         session['work']['novost'] = load_table('novost')
     elif session['name_session'] in 'addons malmigrus':
         return
