@@ -8,16 +8,52 @@ vk_session = VkApi(token=session['VK_TOKEN_VALSTAN'])
 vk_app = vk_session.get_api()
 client = MongoClient(session['MONGO_CLIENT'])
 mongo_base = client['postopus']
-collection = mongo_base['mi']
+
+# Загружаем список регионов из базы данных динамически
+collection_config = mongo_base['config']
+config_data = collection_config.find_one({'title': 'config'}, {'all_my_groups': 1})
+
+names_regions = []
+if config_data and 'all_my_groups' in config_data:
+    for key in config_data['all_my_groups'].keys():
+        if key.endswith('_groups'):
+            region_name = key.replace('_groups', '')
+            # Исключаем служебные ключи
+            if region_name not in ['all', 'common', 'global']:
+                names_regions.append(region_name)
+
+names_regions = list(set(names_regions))
+print(f"📍 Доступные регионы: {', '.join(sorted(names_regions))}")
+
+# Запрашиваем у пользователя выбор региона
+if not names_regions:
+    print("❌ Не найдено регионов в базе данных!")
+    exit(1)
+
+selected_region = input(f"Введите название региона для работы (или 'list' для списка): ").strip()
+
+if selected_region == 'list':
+    print(f"Полный список регионов: {', '.join(sorted(names_regions))}")
+    selected_region = input(f"Теперь введите название региона для работы: ").strip()
+
+if selected_region not in names_regions:
+    print(f"❌ Регион '{selected_region}' не найден в списке доступных!")
+    exit(1)
+
+collection = mongo_base[selected_region]
 go_program = True
 while go_program:
 
     table = collection.find_one({'title': 'config'}, {'_id': 0, 'title': 0})
+    
+    if not table:
+        print(f"⚠️ Конфигурация для региона '{selected_region}' не найдена!")
+        break
 
     name_group = ''
     id_group = 0
     while not id_group:
-        url = input(f"Введи ссылку на пост в группе, которую хотите добавить в базу {table['name_group']}: ")
+        url = input(f"Введи ссылку на пост в группе, которую хотите добавить в базу {table.get('name_group', selected_region)}: ")
 
         if 'wall' in url:
             text_list = url.split(sep="wall")
