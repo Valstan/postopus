@@ -63,7 +63,7 @@ def parser(stat_mode: bool = False):
         data_string = "".join(session['work']['all_bezfoto']['lip']) + text_to_rafinad(
             "".join(session['work']['bezfoto']['lip']))
         # В строке ниже session['name_session'] не менять
-        posts = read_posts(session[session['name_session']], 20)
+        posts = read_posts({session['region_name']: session['post_group_vk']}, 20)
 
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
