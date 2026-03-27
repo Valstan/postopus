@@ -76,14 +76,21 @@ def parser(stat_mode: bool = False):
             
             # Собираем посты из ВСЕХ групп тематики novost
             for group_name, group_id in group_list:
+                # Пропускаем целевую группу публикации, чтобы не собирать посты из неё
+                if 'post_group_vk' in session and group_id == session['post_group_vk']:
+                    print(f"⏭️ Пропущена целевая группа {group_name} (ID: {group_id})")
+                    continue
+                    
                 candidate_posts = get_msg(group_id, 0, 20)
                 # Добавляем все посты из группы в общий список
                 if candidate_posts:
-                    print(f"📥 Группа {group_name}: получено {len(candidate_posts)} постов")
+                    print(f"📥 Группа {group_name} (ID: {group_id}): получено {len(candidate_posts)} постов")
                     posts.extend(candidate_posts)
                     # Считаем сколько групп имели посты
                     if stat_mode:
                         stats_data['groups_with_posts'] += 1
+                else:
+                    print(f"⚠️ Группа {group_name} (ID: {group_id}): постов не найдено")
             
             if stat_mode:
                 print(f"📊 ВСЕГО собрано постов из всех групп novost: {len(posts)}")
@@ -106,14 +113,21 @@ def parser(stat_mode: bool = False):
             
             # Собираем посты из ВСЕХ групп тематики
             for group_name, group_id in group_list:
+                # Пропускаем целевую группу публикации, чтобы не собирать посты из неё
+                if 'post_group_vk' in session and group_id == session['post_group_vk']:
+                    print(f"⏭️ Пропущена целевая группа {group_name} (ID: {group_id})")
+                    continue
+                    
                 candidate_posts = get_msg(group_id, 0, 20)
                 # Добавляем все посты из группы в общий список
                 if candidate_posts:
-                    print(f"📥 Группа {group_name}: получено {len(candidate_posts)} постов")
+                    print(f"📥 Группа {group_name} (ID: {group_id}): получено {len(candidate_posts)} постов")
                     posts.extend(candidate_posts)
                     # Считаем сколько групп имели посты
                     if stat_mode:
                         stats_data['groups_with_posts'] += 1
+                else:
+                    print(f"⚠️ Группа {group_name} (ID: {group_id}): постов не найдено")
             
             if stat_mode:
                 print(f"📊 ВСЕГО собрано постов из всех групп: {len(posts)}")
