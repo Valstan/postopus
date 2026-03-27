@@ -28,8 +28,17 @@ def parsing():
         posts = read_posts(session['id'][session['name_session']], 20)
 
     else:
-        # Рандомно выбираем одну группу из списка групп заданной темы
-        posts = get_msg(random.choice(list(session['id'][session['name_session']].values())), 0, 50)
+        # Собираем посты из ВСЕХ групп заданной темы, а не выбираем одну случайную
+        all_posts = []
+        groups_dict = session['id'][session['name_session']]
+        for group_name, group_id in groups_dict.items():
+            group_posts = get_msg(group_id, 0, 50)
+            # Добавляем информацию о группе к каждому посту
+            for post in group_posts:
+                post['_source_group_name'] = group_name
+                post['_source_group_id'] = group_id
+            all_posts.extend(group_posts)
+        posts = all_posts
 
     # Всетаки вернул проверку по тексту на уже опубликованные
     old_novost_txt = ''

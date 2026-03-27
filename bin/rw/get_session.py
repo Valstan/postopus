@@ -101,7 +101,12 @@ def get_session(arguments, bags="0"):
     # И таблицу для работы, например novost
     session['work'] = {}
     if session['name_session'] in session.get('zagolovki', {}).keys():
-        session['work']['novost'] = load_table('novost')
+        # Для тем из zagolovki (novost, kultura, sport и т.д.) загружаем соответствующую таблицу
+        session['work'][session['name_session']] = load_table(session['name_session'])
+        # Дополнительно для novost загружаем bezfoto и all_bezfoto
+        if session['name_session'] == 'novost':
+            session['work']['bezfoto'] = load_table('bezfoto')
+            session['work']['all_bezfoto'] = load_table('all_bezfoto')
     elif session['name_session'] in 'addons malmigrus':
         return
     elif session['name_session'] in 'billboard':
