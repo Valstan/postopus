@@ -83,10 +83,11 @@ def parser(stat_mode: bool = False):
             for group_name, group_id in group_list:
                 candidate_posts = get_msg(group_id, 0, 20)
                 # Добавляем все посты из группы в общий список
-                posts.extend(candidate_posts)
-                # Считаем сколько групп имели посты
-                if stat_mode and len(candidate_posts) > 0:
-                    stats_data['groups_with_posts'] += 1
+                if candidate_posts:
+                    posts.extend(candidate_posts)
+                    # Считаем сколько групп имели посты
+                    if stat_mode:
+                        stats_data['groups_with_posts'] += 1
             
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
