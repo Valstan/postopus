@@ -154,10 +154,42 @@ if show_stat:
             print(f"   • {item['region']}: {len(item['groups'])} групп, {item['posts_count']} постов")
 
     if total_stats['failed_regions']:
-        print(f"\n❌ НЕ ОБРАБОТАННЫЕ РЕГИОНЫ:")
+        print(f"\n❌ ПРОБЛЕМНЫЕ РЕГИОНЫ:")
         for item in total_stats['failed_regions']:
+            # Получаем детальную статистику если есть
+            detailed = item.get('detailed_stats', {})
+            groups_checked = detailed.get('total_groups_checked', len(item.get('failed_groups', {})))
+            posts_scanned = detailed.get('total_posts_scanned', 0)
+            filtered_old = detailed.get('posts_filtered_old', 0)
+            filtered_dup_text = detailed.get('posts_filtered_duplicate_text', 0)
+            filtered_dup_lip = detailed.get('posts_filtered_duplicate_lip', 0)
+            filtered_no_region = detailed.get('posts_filtered_no_region_words', 0)
+            filtered_black_id = detailed.get('posts_filtered_black_id', 0)
+            filtered_dup_foto = detailed.get('posts_filtered_duplicate_foto', 0)
+            
             reasons = list(set(item['failed_posts']))
-            print(f"   • {item['region']}: {', '.join(reasons) if reasons else 'Ошибка обработки'}")
+            stats_parts = []
+            if posts_scanned > 0:
+                stats_parts.append(f"📊 Проверено: {groups_checked} гр., {posts_scanned} новостей")
+                filter_parts = []
+                if filtered_old > 0:
+                    filter_parts.append(f"старых: {filtered_old}")
+                if filtered_dup_lip > 0:
+                    filter_parts.append(f"дублей ID: {filtered_dup_lip}")
+                if filtered_dup_text > 0:
+                    filter_parts.append(f"дублей текста: {filtered_dup_text}")
+                if filtered_no_region > 0:
+                    filter_parts.append(f"нет слов региона: {filtered_no_region}")
+                if filtered_black_id > 0:
+                    filter_parts.append(f"запрещённые: {filtered_black_id}")
+                if filtered_dup_foto > 0:
+                    filter_parts.append(f"дублей фото: {filtered_dup_foto}")
+                if filter_parts:
+                    stats_parts.append(f", отсев: " + ", ".join(filter_parts))
+            
+            print(f"   • {item['region']}: {len(item.get('groups', []))} гр., {', '.join(reasons) if reasons else 'Ошибка обработки'}")
+            if stats_parts:
+                print(f"      {' '.join(stats_parts)}")
 
     if total_stats['failed_posts_reasons']:
         unique_reasons = list(set(total_stats['failed_posts_reasons']))
