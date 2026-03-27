@@ -93,11 +93,12 @@ def posting_post(msg_list, stat_mode: bool = False):
 
     if text_post or attachments:
         # Добавляем хэштеги
-        # if theme in 'novost':
-        #    text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}" \
-        #                 f"\n#{session['heshteg_local']['raicentr']} #{session['heshteg_local']['raion']}"
-        if theme == 'novost':
+        # Проверяем наличие heshteg_local перед использованием
+        if theme == 'novost' and 'heshteg_local' in session:
             text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}"
+        elif theme == 'novost':
+            # Если heshteg_local отсутствует, добавляем только глобальный хэштег
+            text_post += f"\n#{session['heshteg'][theme]}"
 
         try:
             post_result = post_msg(session['post_group_vk'],
