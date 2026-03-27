@@ -61,15 +61,40 @@ def parser(stat_mode: bool = False):
     is_novost_theme = theme in session['zagolovki'].keys()
     
     if is_novost_theme and theme == 'novost':
-        # Только для novost используем post_group_vk и special логику с bezfoto
-        session['work']['bezfoto'] = load_table('bezfoto')
-        session['work']['all_bezfoto'] = load_table('all_bezfoto')
-        # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
-        # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
-        data_string = "".join(session['work']['all_bezfoto']['lip']) + text_to_rafinad(
-            "".join(session['work']['bezfoto']['lip']))
-        # В строке ниже session['name_session'] не менять
-        posts = read_posts({session['region_name']: session['post_group_vk']}, 20)
+        # Для novost используем ВСЕ группы тематики из session['novost']
+        # Собираем посты из всех групп в общий список
+        posts = []
+        if 'novost' in session and isinstance(session['novost'], dict) and len(session['novost']) > 0:
+            group_list = list(session['novost'].items())
+            random.shuffle(group_list)  # Перемешиваем порядок обработки
+            
+            # Загружаем таблицы bezfoto для работы с постами без фото
+            session['work']['bezfoto'] = load_table('bezfoto')
+            session['work']['all_bezfoto'] = load_table('all_bezfoto')
+            data_string = "".join(session['work']['all_bezfoto']['lip']) + text_to_rafinad(
+                "".join(session['work']['bezfoto']['lip']))
+            
+            # Собираем посты из ВСЕХ групп тематики novost
+            for group_name, group_id in group_list:
+                candidate_posts = get_msg(group_id, 0, 20)
+                # Добавляем все посты из группы в общий список
+                if candidate_posts:
+                    print(f"📥 Группа {group_name}: получено {len(candidate_posts)} постов")
+                    posts.extend(candidate_posts)
+                    # Считаем сколько групп имели посты
+                    if stat_mode:
+                        stats_data['groups_with_posts'] += 1
+            
+            if stat_mode:
+                print(f"📊 ВСЕГО собрано постов из всех групп novost: {len(posts)}")
+        else:
+            # Fallback на старую логику если session['novost'] пуст
+            session['work']['bezfoto'] = load_table('bezfoto')
+            session['work']['all_bezfoto'] = load_table('all_bezfoto')
+            data_string = "".join(session['work']['all_bezfoto']['lip']) + text_to_rafinad(
+                "".join(session['work']['bezfoto']['lip']))
+            if session.get('post_group_vk'):
+                posts = read_posts({session['region_name']: session['post_group_vk']}, 20)
 
     elif is_novost_theme and theme != 'novost':
         # Для тем типа kultura, sport, detsad и т.д. - перебираем ВСЕ группы темы
