@@ -52,7 +52,8 @@ def parser(stat_mode: bool = False):
         'posts_filtered_no_region_words': 0,
         'posts_filtered_duplicate_text': 0,
         'posts_filtered_duplicate_foto': 0,
-        'posts_final_count': 0
+        'posts_final_count': 0,
+        'groups_with_posts': 0  # Сколько групп имели посты после первичного сбора
     } if stat_mode else None
 
     # Определяем тему для загрузки постов
@@ -71,23 +72,21 @@ def parser(stat_mode: bool = False):
         posts = read_posts({session['region_name']: session['post_group_vk']}, 20)
 
     elif is_novost_theme and theme != 'novost':
-        # Для тем типа kultura, sport, detsad и т.д. - перебираем ВСЕ группы темы по очереди
-        # пока не найдём хотя бы один подходящий пост
+        # Для тем типа kultura, sport, detsad и т.д. - перебираем ВСЕ группы темы
+        # и собираем посты из всех групп в общий список
         posts = []
         if theme in session and isinstance(session[theme], dict) and len(session[theme]) > 0:
             group_list = list(session[theme].items())
-            random.shuffle(group_list)  # Перемешиваем чтобы начинать с разной группы
+            random.shuffle(group_list)  # Перемешиваем порядок обработки
             
+            # Собираем посты из ВСЕХ групп тематики
             for group_name, group_id in group_list:
                 candidate_posts = get_msg(group_id, 0, 20)
-                # Проверяем есть ли среди постов хотя бы один неподходящий под фильтры
-                for sample in candidate_posts:
-                    if lip_of_post(sample) not in session['work'][theme]['lip'] and sort_old_date(sample):
-                        # Нашли потенциально подходящий пост, берём все посты из этой группы
-                        posts = candidate_posts
-                        break
-                if posts:
-                    break  # Выходим как только нашли группу с подходящими постами
+                # Добавляем все посты из группы в общий список
+                posts.extend(candidate_posts)
+                # Считаем сколько групп имели посты
+                if stat_mode and len(candidate_posts) > 0:
+                    stats_data['groups_with_posts'] += 1
             
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
@@ -181,8 +180,11 @@ def parser(stat_mode: bool = False):
         else:
             old_novost_txt += text_rafinad
 
-        # if not ai_sort(sample): подключение нейронки
-        #     continue
+        # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
+        if sort_po_foto(sample) and sort_po_video(sample):
+            if stat_mode:
+                stats_data['posts_filtered_duplicate_foto'] += 1
+            continue
 
         # Чистка и исправление текста для всех публичный мягкий набор слов и простых предложений
         # sample['text'] = clear_text(session['clear_text_blacklist']['novost'], sample['text'])
@@ -209,10 +211,11 @@ def parser(stat_mode: bool = False):
             continue
 
         # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
-        if sort_po_foto(sample) and sort_po_video(sample):
-            if stat_mode:
-                stats_data['posts_filtered_duplicate_foto'] += 1
-            continue
+        # (эта проверка уже была выше, удаляем дублирование)
+        # if sort_po_foto(sample) and sort_po_video(sample):
+        #     if stat_mode:
+        #         stats_data['posts_filtered_duplicate_foto'] += 1
+        #     continue
 
         # Если группа-источник запрещена, то ссылку на нее не ставлю
         if abs(sample['owner_id']) in session['bad_name_group'].values():
@@ -262,7 +265,9 @@ def parser(stat_mode: bool = False):
             'posts': result_posts if result_posts else [],
             'stats': {
                 'success_groups': [str(g) for g in current_groups] if result_posts else [],
+                'failed_groups': {} if result_posts else {str(g): 'Нет подходящих постов' for g in current_groups},
                 'posts_count': len(result_posts) if result_posts else 0,
+                'failed_posts': ['Нет свежих новостей после фильтрации'] if not result_posts else [],
                 'detailed_stats': stats_data
             }
         }
