@@ -26,8 +26,9 @@ def parser(stat_mode: bool = False):
     Returns:
         list постов или dict со статистикой если stat_mode=True
     """
+    # Определяем тему: используем фактическое имя сессии для тем из zagolovki
     if session['name_session'] in session['zagolovki'].keys():
-        theme = 'novost'
+        theme = session['name_session']  # Используем реальное имя темы (kultura, sport и т.д.)
     else:
         theme = session['name_session']
 
@@ -174,24 +175,24 @@ def parser(stat_mode: bool = False):
             continue
 
         # Если режим СОСЕД - Ищем в тексте поста хештег с новостью, если нет, то не берем пост
-        if theme in 'sosed' and not search_text(["#Новости"], sample['text']):
+        if theme == 'sosed' and not search_text(["#Новости"], sample['text']):
             continue
 
         # Сортировка Кино и Музыки, берем только с видео и музыкой
-        if theme in 'kino music' and 'attachments' in sample:
+        if theme in ('kino', 'music') and 'attachments' in sample:
             flag = True
             for atata in sample['attachments']:
-                if atata['type'] in 'video audio':
+                if atata['type'] in ('video', 'audio'):
                     flag = False
             if flag:
                 continue
 
         # Фильтр для Смешного видео
-        if theme in 'prikol' and len(sample['text']) > 100:
+        if theme == 'prikol' and len(sample['text']) > 100:
             continue
 
-        # Фильтры для новостей
-        if theme in 'novost':
+        # Фильтры для новостей (применяются только к теме novost)
+        if theme == 'novost':
 
             # Фильтр ЧУЖОЙ ЖУРНАЛИСТ для открытых групп в которые пишет кто попало
             # ВолейболвУржуме, СавальскаяВолость, Савали+17, МалмыЖ
@@ -238,7 +239,7 @@ def parser(stat_mode: bool = False):
             # Отправляем пост в блок рекламы с дальнейшими проверками
 
             # Если сюда попало сообщение не из Новостей и Рекламы, то не берем его:
-            if theme not in 'novost reklama':
+            if theme not in ('novost', 'reklama'):
                 continue
 
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
@@ -294,9 +295,9 @@ def parser(stat_mode: bool = False):
 
         result_posts.append(sample)
 
-    if theme in 'novost':
+    if theme == 'novost':
         save_table('bezfoto')
-    if theme in 'reklama':
+    if theme == 'reklama':
         save_table('reklama')
 
     if stat_mode:

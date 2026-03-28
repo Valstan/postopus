@@ -161,14 +161,12 @@ def publish_stats_to_test_polygon(total_stats: Dict[str, Any], argument: str) ->
         True если публикация успешна, иначе False
     """
     try:
-        # Устанавливаем токен для постинга
-        if not session.get('token'):
-            if session.get('names_tokens_post_vk'):
-                import random
-                session['token'] = session[random.choice(session['names_tokens_post_vk'])]
-            else:
-                print("❌ Нет доступных токенов для публикации статистики!")
-                return False
+        # Устанавливаем токен Valstan для постинга статистики (обязательно!)
+        if not session.get('VK_TOKEN_VALSTAN'):
+            print("❌ Токен VK_TOKEN_VALSTAN не найден! Публикация статистики невозможна.")
+            return False
+        
+        session['token'] = session['VK_TOKEN_VALSTAN']
 
         # Проверяем подключение к VK API
         if not get_session_vk_api():

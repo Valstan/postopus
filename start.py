@@ -49,9 +49,22 @@ def start(arguments: str, bags: str = '0', stat_mode: bool = False):
         get_mongo_base('postopus')
         get_session(arguments, bags)
 
+        # Определяем список токенов для чтения в зависимости от ТЕМЫ
+        # novost и admin требуют полный доступ → используем только Valstan
+        # Остальные темы могут использовать оба токена (Valstan и Vita)
+        theme = arguments.split('_')[-1] if '_' in arguments else arguments
+        
+        # Темы требующие полного доступа (только Valstan)
+        full_access_themes = ['novost', 'admin']
+        
+        if theme in full_access_themes:
+            tokens_for_read = ["VK_TOKEN_VALSTAN"] if session.get("VK_TOKEN_VALSTAN") else []
+        else:
+            tokens_for_read = session['names_tokens_read_vk']
+        
         # Перебираем токены пока не подключимся к АПИ ВК
-        random.shuffle(session['names_tokens_read_vk'])
-        for name_token in session['names_tokens_read_vk']:
+        random.shuffle(tokens_for_read)
+        for name_token in tokens_for_read:
             session['token'] = session[name_token]
             if get_session_vk_api():
                 break
