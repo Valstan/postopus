@@ -32,6 +32,25 @@ def parser(stat_mode: bool = False):
     else:
         theme = session['name_session']
 
+    # Исключаем регион "Гоньба - жемчужина Вятки" из тематических дайджестов (кроме novost)
+    # У этого региона нет тематических коллекций сообществ для сбора информации
+    if session.get('region_name') == 'Гоньба - жемчужина Вятки' and theme != 'novost':
+        print(f"⏭️ Регион '{session['region_name']}' не поддерживает тему '{theme}'. Пропускаем.")
+        if stat_mode:
+            return {
+                'total_groups_checked': 0,
+                'total_posts_scanned': 0,
+                'posts_filtered_old': 0,
+                'posts_filtered_blacklist': 0,
+                'posts_filtered_no_region_words': 0,
+                'posts_filtered_duplicates': 0,
+                'posts_filtered_banned_groups': 0,
+                'posts_final': 0,
+                'groups_with_posts': 0,
+                'reason': f"Регион '{session['region_name']}' не поддерживает тему '{theme}'"
+            }
+        return []
+
     # Для режима статистики сохраняем список текущих групп
     current_groups = []
     if theme in session and isinstance(session[theme], dict):
