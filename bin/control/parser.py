@@ -32,10 +32,11 @@ def parser(stat_mode: bool = False):
     else:
         theme = session['name_session']
 
-    # Исключаем регион "Гоньба - жемчужина Вятки" из тематических дайджестов (кроме novost)
+    # Исключаем регион "Гоньба - жемчужина Вятки" из всех тематических дайджестов
     # У этого региона нет тематических коллекций сообществ для сбора информации
-    if session.get('region_name') == 'Гоньба - жемчужина Вятки' and theme != 'novost':
-        print(f"⏭️ Регион '{session['region_name']}' не поддерживает тему '{theme}'. Пропускаем.")
+    # Публикация в Гоньбу не производится, постинг осуществляется только через отдельный модуль repost_oleny
+    if session.get('region_name') == 'Гоньба - жемчужина Вятки':
+        print(f"⏭️ Регион '{session['region_name']}' не участвует в тематических дайджестах. Пропускаем.")
         if stat_mode:
             return {
                 'total_groups_checked': 0,
@@ -47,7 +48,7 @@ def parser(stat_mode: bool = False):
                 'posts_filtered_banned_groups': 0,
                 'posts_final': 0,
                 'groups_with_posts': 0,
-                'reason': f"Регион '{session['region_name']}' не поддерживает тему '{theme}'"
+                'reason': f"Регион '{session['region_name']}' не участвует в тематических дайджестах"
             }
         return []
 
