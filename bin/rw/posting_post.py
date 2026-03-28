@@ -28,8 +28,9 @@ def posting_post(msg_list, stat_mode: bool = False):
         print("Нет доступных токенов для постинга! Добавьте токен в .env файле")
         quit()
 
+    # Определяем тему: используем фактическое имя сессии для тем из zagolovki
     if session['name_session'] in session['zagolovki'].keys():
-        theme = 'novost'
+        theme = session['name_session']  # Используем реальное имя темы (kultura, sport и т.д.)
     else:
         theme = session['name_session']
 
@@ -37,13 +38,14 @@ def posting_post(msg_list, stat_mode: bool = False):
     count_attach = 0
     attachments = ''
 
-    if theme in 'sosed repost_oleny karavan' and session['setka_regim_repost']:
+    # Проверяем режим репоста для соответствующих тем
+    if theme in ('sosed', 'repost_oleny', 'karavan') and session['setka_regim_repost']:
         session['vk_app'].wall.repost(object=url_of_post(msg_list[0]), group_id=abs(session['post_group_vk']))
         if lip_of_post(msg_list[0]) not in session['work'][theme]['lip']:
             session['work'][theme]['lip'].append(lip_of_post(msg_list[0]))
             save_table(theme)
 
-    elif theme in 'novost':
+    elif theme == 'novost':
 
         # Получаем первое сообщение
         attach = ''
