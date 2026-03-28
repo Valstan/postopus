@@ -109,7 +109,7 @@ def control(stat_mode: bool = False):
         if stat_mode:
             stats_data['success'] = True
 
-    # elif session['name_session'] in 'malmigrus':
+    # elif session['name_session'] in 'malmig':
     #     public_malm_site()
 
     elif session['name_session'] == 'repost_reklama':

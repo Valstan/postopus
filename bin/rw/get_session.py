@@ -107,7 +107,7 @@ def get_session(arguments, bags="0"):
         if session['name_session'] == 'novost':
             session['work']['bezfoto'] = load_table('bezfoto')
             session['work']['all_bezfoto'] = load_table('all_bezfoto')
-    elif session['name_session'] in 'addons malmigrus':
+    elif session['name_session'] in 'addons malmig':
         return
     elif session['name_session'] in 'billboard':
         session.update(load_table('billboard'))
