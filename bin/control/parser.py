@@ -230,9 +230,13 @@ def parser(stat_mode: bool = False):
 
             # Фильтр для БалтасиРу Балтаси Хезмәт и Кукмор-РТ на присутствие ссылки на сайт
             if abs(first_owher_id) in (65275507, 33406351):
-                if search_text(['shahrikazan', 'kukmor-rt.ru', 'kazved.ru'], sample['text']) or \
-                    'attachments' in sample and 'link' in sample['attachments'][0] and \
-                    'baltaci' in sample['attachments'][0]['link']['url']:
+                has_baltaci_link = False
+                if 'attachments' in sample and len(sample['attachments']) > 0:
+                    first_attach = sample['attachments'][0]
+                    if 'link' in first_attach and 'url' in first_attach['link']:
+                        has_baltaci_link = 'baltaci' in first_attach['link']['url']
+                
+                if search_text(['shahrikazan', 'kukmor-rt.ru', 'kazved.ru'], sample['text']) or has_baltaci_link:
                     continue
 
         # Проверяем на повторы или запрещенку

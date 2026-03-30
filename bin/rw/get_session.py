@@ -44,6 +44,7 @@ def get_session(arguments, bags="0"):
 
     # Загружаем региональную коллекцию для получения данных по темам (kultura, sport и т.д.)
     # Имя коллекции соответствует короткому коду региона (mi, vp, ur и т.д.)
+    regional_config = {}
     if session.get('region_name'):
         # Сопоставляем полное название региона с именем коллекции
         region_to_collection = {
@@ -82,7 +83,7 @@ def get_session(arguments, bags="0"):
                     print(f"✅ Загружены данные тем из региональной коллекции '{collection_name}'")
             except Exception as e:
                 print(f"⚠️ Не удалось загрузить региональную коллекцию '{collection_name}': {e}")
-
+    
     # Устанавливаем filter_region на основе названия региона
     # Определяем регион для фильтра слов (kirov или tatar)
     session['filter_region'] = None
