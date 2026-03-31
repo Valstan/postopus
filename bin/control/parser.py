@@ -292,7 +292,10 @@ def parser(stat_mode: bool = False):
         else:
             name_group = ''
             for i in session['zagolovki'].keys():
-                for key, value in session[i].items():
+                session_groups = session.get(i, {})
+                if not isinstance(session_groups, dict):
+                    continue
+                for key, value in session_groups.items():
                     if sample['owner_id'] == value:
                         name_group = key
                         break

@@ -77,15 +77,15 @@ if MONGO_CLIENT:
         mongo_client.admin.command('ping')
         MONGO_CLIENT_OBJ = mongo_client
         MONGO_BASE = mongo_client['postopus']
-        print(f"✅ MongoDB подключена: postopus")
+        print("MongoDB connected: postopus")
     except Exception as e:
-        print(f"⚠️ Ошибка подключения к MongoDB: {e}")
+        print(f"MongoDB connection error: {e}")
         MONGO_CLIENT_OBJ = None
         MONGO_BASE = None
 else:
     MONGO_CLIENT_OBJ = None
     MONGO_BASE = None
-    print("⚠️ MONGO_CLIENT не найден в .env файле")
+    print("MONGO_CLIENT is not set in .env")
 
 # === name_base по умолчанию (для driver_tables.py) ===
 # Будет переопределено в start_paket.py для каждого региона
