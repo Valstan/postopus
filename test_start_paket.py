@@ -39,7 +39,7 @@ print(f"📍 Загружено {len(names_regions)} регионов из БД:
 for name in names_regions:
 
     command = f"{name}_{argument}"
-    if command in 'dran_sosed':
+    if command == 'dran_sosed':
         continue
     start(command)
     time.sleep(5)

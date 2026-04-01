@@ -104,7 +104,7 @@ def control(stat_mode: bool = False):
         if stat_mode and not found:
             stats_data['failed_posts'].append("Не найдено подходящих постов в режиме addons")
 
-    elif session['name_session'] in 'repost_me':
+    elif session['name_session'] == 'repost_me':
         repost_me()
         if stat_mode:
             stats_data['success'] = True
@@ -154,7 +154,7 @@ def control(stat_mode: bool = False):
             if stat_mode:
                 stats_data['failed_posts'].append("Нет постов для repost_kultpodved")
 
-    elif session['name_session'] in 'telegram':
+    elif session['name_session'] == 'telegram':
         asyncio.run(post_to_telegram())
         if stat_mode:
             stats_data['success'] = True

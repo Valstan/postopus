@@ -61,21 +61,21 @@ def parsing():
             continue
 
         # Если режим СОСЕД - Ищем в тексте поста заголовки или хэштег что это новость соседей и не берем этот пост
-        if session['name_session'] in 'sosed' and search_text([session['podpisi']['zagolovok']['sosed'],
+        if session['name_session'] == 'sosed' and search_text([session['podpisi']['zagolovok']['sosed'],
                                                                session['podpisi']['heshteg']['sosed'],
                                                                "#Объявления", "#Кино", "#Музыка", "#Кругозор",
                                                                "#УраПерерывчик", "#КрасотаСпасетМир"] +
                                                               session['delete_msg_blacklist'],
                                                               sample['text']):
             continue
-        if session['name_session'] in 'sosed' and search_text(["#Новости"], sample['text']):
+        if session['name_session'] == 'sosed' and search_text(["#Новости"], sample['text']):
             sample['text'] = re.sub(r'\n+.+$', '', sample['text'], 4, re.M)
 
         # Сортировка Кино и Музыки, берем только с видео и музыкой
-        if session['name_session'] in 'kino music' and 'attachments' in sample:
+        if session['name_session'] in ('kino', 'music') and 'attachments' in sample:
             flag = True
             for atata in sample['attachments']:
-                if atata['type'] in 'video audio':
+                if atata['type'] in ('video', 'audio'):
                     flag = False
             if flag:
                 continue
@@ -116,7 +116,7 @@ def parsing():
             # Отправляем пост в блок рекламы с дальнейшими проверками
 
             # Если сюда попало сообщение не из Новостей и Рекламы, то не берем его:
-            if session['name_session'] not in 'novost novosti reklama':
+            if session['name_session'] not in ('novost', 'novosti', 'reklama'):
                 continue
 
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп

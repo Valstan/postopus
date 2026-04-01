@@ -59,6 +59,10 @@ def parser(stat_mode: bool = False):
     elif theme == 'novost' and 'post_group_vk' in session:
         current_groups = [session['post_group_vk']]
 
+    # Defensive logging: if no groups were found for the theme, warn
+    if not current_groups:
+        print(f"WARNING: no groups found for theme '{theme}' in region '{session.get('region_name')}'")
+
     data_string = ''
 
     get_del_msg_blacklist()

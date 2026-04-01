@@ -27,8 +27,8 @@ def stata(msg_list):
 
         for i in ('id', 'date', 'from_id', 'views', 'likes', 'reposts', 'comments'):
             if i in new_post:
-                if i in 'id date from_id':
-                    pattern_post.append(new_post[i])
+                        if i in ('id', 'date', 'from_id'):
+                            pattern_post.append(new_post[i])
                 else:
                     pattern_post.append(new_post[i]['count'])
             else:

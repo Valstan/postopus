@@ -27,9 +27,8 @@ def get_session(arguments, bags="0"):
         session['region_name'] = None
         session['name_session'] = parts[0]
     
-    # Из базы подтягиваем региональный конфиг (если нужно)
-    if session['name_session'] not in 'config':
-        session.update(load_table('config'))
+    # (removed duplicated/incorrect membership check)
+    # региональный конфиг будет загружен ниже, при наличии региона
 
     # Устанавливаем post_group_vk для текущего региона
     if session.get('region_name') and session.get('all_my_groups'):
@@ -73,13 +72,16 @@ def get_session(arguments, bags="0"):
                 session['name_base'] = collection_name
                 regional_config = load_table('config')
                 session['name_base'] = old_name_base  # Возвращаем обратно
-                
+
                 if regional_config:
-                    # Добавляем данные из региональной конфигурации в сессию
-                    # Это даст доступ к session['kultura'], session['sport'] и т.д.
-                    for key in ['kultura', 'sport', 'detsad', 'admin', 'union', 'novost']:
-                        if key in regional_config and isinstance(regional_config[key], dict):
-                            session[key] = regional_config[key]
+                    # Сохраним имя региональной коллекции для последующей загрузки таблиц работы
+                    session['_regional_name_base'] = collection_name
+                    # Копируем все словари тем из регионального конфига в сессию
+                    for key, value in regional_config.items():
+                        if key == 'title':
+                            continue
+                        if isinstance(value, dict):
+                            session[key] = value
                     print(f"✅ Загружены данные тем из региональной коллекции '{collection_name}'")
             except Exception as e:
                 print(f"⚠️ Не удалось загрузить региональную коллекцию '{collection_name}': {e}")
@@ -101,16 +103,28 @@ def get_session(arguments, bags="0"):
 
     # И таблицу для работы, например novost
     session['work'] = {}
+    # Prefer loading work tables from the regional collection when available
+    work_base = session.get('_regional_name_base', session['name_base'])
     if session['name_session'] in session.get('zagolovki', {}).keys():
         # Для тем из zagolovki (novost, kultura, sport и т.д.) загружаем соответствующую таблицу
-        session['work'][session['name_session']] = load_table(session['name_session'])
-        # Дополнительно для novost загружаем bezfoto и all_bezfoto
-        if session['name_session'] == 'novost':
-            session['work']['bezfoto'] = load_table('bezfoto')
-            session['work']['all_bezfoto'] = load_table('all_bezfoto')
-    elif session['name_session'] in 'addons malmig':
+        old_name_base = session['name_base']
+        try:
+            session['name_base'] = work_base
+            session['work'][session['name_session']] = load_table(session['name_session'])
+            # Дополнительно для novost загружаем bezfoto и all_bezfoto
+            if session['name_session'] == 'novost':
+                session['work']['bezfoto'] = load_table('bezfoto')
+                session['work']['all_bezfoto'] = load_table('all_bezfoto')
+        finally:
+            session['name_base'] = old_name_base
+    elif session['name_session'] in ('addons', 'malmig'):
         return
-    elif session['name_session'] in 'billboard':
+    elif session['name_session'] == 'billboard':
         session.update(load_table('billboard'))
     else:
-        session['work'][session['name_session']] = load_table(session['name_session'])
+        old_name_base = session['name_base']
+        try:
+            session['name_base'] = work_base
+            session['work'][session['name_session']] = load_table(session['name_session'])
+        finally:
+            session['name_base'] = old_name_base
