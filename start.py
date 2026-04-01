@@ -87,11 +87,18 @@ def start(arguments: str, bags: str = '0', stat_mode: bool = False):
 
 
 if __name__ == '__main__':
-    if len(argv) == 3:
-        argum = str(argv[1])
-        bag = str(argv[2])
-    elif len(argv) == 2:
-        argum = str(argv[1])
+    # Simple CLI parsing: support `start <session>` and optional `--test` flag
+    args = argv[1:]
+    test_flag = False
+    if '--test' in args:
+        test_flag = True
+        args.remove('--test')
+
+    if len(args) == 2:
+        argum = str(args[0])
+        bag = str(args[1])
+    elif len(args) == 1:
+        argum = str(args[0])
         bag = "0"
     else:
         argum = str(input("\nEnter name session of:"
@@ -105,4 +112,9 @@ if __name__ == '__main__':
                         "\n3 - фильтр на запрещенные слова"
                         "\n4 - удаление атачментс потому что нет views и перенос в безфото"
                         "\n5 - Такая фотка уже была, пост не будет опубликован"))
+
+    # If test flag present, enable test polygon posting for this run
+    if test_flag:
+        session['post_to_test_polygon'] = True
+
     start(argum, bag)

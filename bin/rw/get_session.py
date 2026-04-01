@@ -82,7 +82,8 @@ def get_session(arguments, bags="0"):
                             continue
                         if isinstance(value, dict):
                             session[key] = value
-                    print(f"✅ Загружены данные тем из региональной коллекции '{collection_name}'")
+                    from env_loader import logger
+                    logger.info(f"Loaded theme data from regional collection '{collection_name}'")
             except Exception as e:
                 print(f"⚠️ Не удалось загрузить региональную коллекцию '{collection_name}': {e}")
     

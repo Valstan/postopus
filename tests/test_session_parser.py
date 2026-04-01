@@ -57,7 +57,7 @@ def test_get_session_loads_regional_work(monkeypatch):
     assert session['work']['kultura']['lip'] == ['LIP1']
 
 
-def test_parser_handles_empty_groups(monkeypatch, capsys):
+def test_parser_handles_empty_groups(monkeypatch, caplog):
     """Parser should not crash and should return stats when there are no groups."""
     # import parser and set up minimal session
     from env_loader import session
@@ -89,7 +89,7 @@ def test_parser_handles_empty_groups(monkeypatch, capsys):
     assert isinstance(res, dict)
     stats = res.get('stats', {})
     assert stats.get('posts_count', 0) == 0
-    # The printed warning should be present
-    captured = capsys.readouterr()
-    assert "no groups found for theme 'kultura'" in captured.out
-*** End Patch
+    # The logger warning should be present
+    import logging
+    found = any("no groups found for theme 'kultura'" in rec.getMessage() for rec in caplog.records)
+    assert found, f"Expected warning not found in logs: {[r.getMessage() for r in caplog.records]}"

@@ -4,6 +4,7 @@
 """
 
 import os
+import logging
 from pathlib import Path
 from dotenv import load_dotenv
 from pymongo import MongoClient
@@ -11,6 +12,10 @@ from pymongo import MongoClient
 # Загружаем .env файл из корня проекта
 env_path = Path(__file__).parent / ".env"
 load_dotenv(dotenv_path=env_path)
+
+# configure logging for the application (basic config)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('postopus')
 
 
 def get_env(key: str, default: str = "") -> str:
@@ -77,15 +82,15 @@ if MONGO_CLIENT:
         mongo_client.admin.command('ping')
         MONGO_CLIENT_OBJ = mongo_client
         MONGO_BASE = mongo_client['postopus']
-        print("MongoDB connected: postopus")
+        logger.info("MongoDB connected: postopus")
     except Exception as e:
-        print(f"MongoDB connection error: {e}")
+        logger.error(f"MongoDB connection error: {e}")
         MONGO_CLIENT_OBJ = None
         MONGO_BASE = None
 else:
     MONGO_CLIENT_OBJ = None
     MONGO_BASE = None
-    print("MONGO_CLIENT is not set in .env")
+    logger.warning("MONGO_CLIENT is not set in .env")
 
 # === name_base по умолчанию (для driver_tables.py) ===
 # Будет переопределено в start_paket.py для каждого региона
@@ -147,3 +152,12 @@ session = {
     "TIKTOK_LOGIN_MI": TIKTOK_LOGIN_MI,
     "TIKTOK_PASSWORD_MI": TIKTOK_PASSWORD_MI,
 }
+
+# === TEST POLYGON ===
+# Numeric ID for https://vk.com/ititenskoegore (Тестовый полигон)
+TEST_POLYGON_GROUP_ID = -137760500
+session['TEST_POLYGON_GROUP_ID'] = TEST_POLYGON_GROUP_ID
+
+# Enable posting to test polygon when TEST_POLYGON_MODE env var is truthy
+TEST_POLYGON_MODE = get_env('TEST_POLYGON_MODE', '').lower() in ('1', 'true', 'yes')
+session['post_to_test_polygon'] = TEST_POLYGON_MODE

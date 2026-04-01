@@ -62,13 +62,13 @@ def billboard():
         if not sample['text']:
             continue
 
-        if sample['text'][0] in '5':
+    if sample['text'][0] == '5':
             words_in_black_list.extend(sample['text'].split("\n")[1:])
             session['vk_app'].wall.delete(owner_id=sample['owner_id'],
                                           post_id=sample['id'])
             continue
 
-        if sample['text'][0] in '6':
+    if sample['text'][0] == '6':
             n_group = {}
             n_group['name'], n_group['id'], n_group['region'], n_group['novost'] = sample['text'].split("\n")[1:]
             list_dicts_groups_for_append.append(n_group)
@@ -76,7 +76,7 @@ def billboard():
                                           post_id=sample['id'])
             continue
 
-        if sample['text'][0] not in regim_global:
+        if sample['text'][0] != regim_global:
             continue
 
         serv, sample_text = sample['text'].split("\n", 1)
@@ -85,7 +85,7 @@ def billboard():
 
         if int(time_out) < current_date.month * 100 + current_date.day:
             continue
-        if region in 'all':
+        if region == 'all':
             for region in session['afisha']:
                 session['afisha'][region]['list_anons'].append(
                     [time_out, sample_text, get_attach(clear_copy_history(sample))])
@@ -115,7 +115,7 @@ def billboard():
                           f"{session['afisha'][name_region]['podpis']}\n" \
                           f"{session['afisha'][name_region][heshteg_global]}"
 
-        if name_region in 'mi' and session['VK_TOKEN_VALSTAN'] not in session['token']:
+        if name_region == 'mi' and session['VK_TOKEN_VALSTAN'] not in session['token']:
             session.update({"token": session['VK_TOKEN_VALSTAN']})
             get_session_vk_api()
         post_msg(session['afisha'][name_region]['group_id'], sample['text'], sample['attach'])

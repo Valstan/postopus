@@ -61,7 +61,8 @@ def parser(stat_mode: bool = False):
 
     # Defensive logging: if no groups were found for the theme, warn
     if not current_groups:
-        print(f"WARNING: no groups found for theme '{theme}' in region '{session.get('region_name')}'")
+        from env_loader import logger
+        logger.warning(f"no groups found for theme '{theme}' in region '{session.get('region_name')}'")
 
     data_string = ''
 

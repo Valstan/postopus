@@ -9,7 +9,7 @@ reklama"""}
 
 list_dicts_groups_for_append = []
 
-if sample['text'][0] in '6':
+if sample['text'][0] == '6':
     n_group = {}
     n_group['name'], n_group['id'], n_group['region'], n_group['novost'] = sample['text'].split("\n")[1:]
     list_dicts_groups_for_append.append(n_group)

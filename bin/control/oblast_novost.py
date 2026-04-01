@@ -59,7 +59,7 @@ def oblast_novost():
                     name_group = key
                     break
             post['text'] += f"\n@{url_of_post(post)} ({name_group})\n#{podpis}"
-                for session['post_group_vk'] in session['all_my_groups'].values():
+            for session['post_group_vk'] in session['all_my_groups'].values():
                 if session['post_group_vk'] == -218688001:  # Пропускаем группу Гоньба Жемчужина Вятки
                     continue
                 elif str(abs(session['post_group_vk'])) in ('180812597', '179203620') and region == 'kirov':

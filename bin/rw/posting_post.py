@@ -1,11 +1,17 @@
 import random
 import traceback
 
-from env_loader import session
+from env_loader import session, logger
 from bin.rw.get_attach import get_attach
 from bin.rw.get_session_vk_api import get_session_vk_api
 from bin.rw.post_msg import post_msg
 from bin.utils.driver_tables import save_table
+from env_loader import session as _session
+try:
+    # prefer session value if set
+    TEST_POLYGON_GROUP_ID = _session.get('TEST_POLYGON_GROUP_ID')
+except Exception:
+    TEST_POLYGON_GROUP_ID = None
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.send_error import send_error
 from bin.utils.url_of_post import url_of_post
@@ -103,7 +109,16 @@ def posting_post(msg_list, stat_mode: bool = False):
             text_post += f"\n#{session['heshteg'][theme]}"
 
         try:
-            post_result = post_msg(session['post_group_vk'],
+            # If test posting is enabled, redirect posts to TEST_POLYGON_GROUP_ID
+            target_group = session['post_group_vk']
+            if session.get('post_to_test_polygon') and TEST_POLYGON_GROUP_ID is not None:
+                logger.info(
+                    "Redirecting post for session '%s' (original group %s) to TEST_POLYGON_GROUP_ID %s",
+                    session.get('name_session'), session.get('post_group_vk'), TEST_POLYGON_GROUP_ID
+                )
+                target_group = TEST_POLYGON_GROUP_ID
+
+            post_result = post_msg(target_group,
                      text_post,
                      attachments)
             

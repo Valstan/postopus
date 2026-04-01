@@ -1,5 +1,5 @@
 from bin.utils.search_text import search_text
-from env_loader import session
+from env_loader import session, logger
 
 
 def load_table(name_table):
@@ -9,8 +9,8 @@ def load_table(name_table):
     to load from a regional collection.
     """
     # Defensive: if Mongo is not available, return a default empty table
-    if not session.get('MONGO_BASE'):
-        print(f"ERROR: MongoDB not available, cannot load table '{name_table}' - returning empty default table")
+    if session.get('MONGO_BASE') is None:
+        logger.error(f"MongoDB not available, cannot load table '{name_table}' - returning empty default table")
         if name_table in ('config', 'billboard'):
             return {}
         return {'lip': [], 'hash': [], 'title': name_table}
@@ -41,8 +41,8 @@ def save_table(name_table):
         size = session['work'][name_table]['table_size']
     else:
         size = 30
-    if not session.get('MONGO_BASE'):
-        print(f"ERROR: MongoDB not available, skipping save_table('{name_table}')")
+    if session.get('MONGO_BASE') is None:
+        logger.error(f"MongoDB not available, skipping save_table('{name_table}')")
         return
     collection = session['MONGO_BASE'][session['name_base']]
     # Изменяем размеры таблиц содержащих только списки
