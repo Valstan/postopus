@@ -293,7 +293,8 @@ def parser(stat_mode: bool = False):
 
         # Если группа-источник запрещена, то ссылку на нее не ставлю
         if abs(sample['owner_id']) in session['bad_name_group'].values():
-            sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}"
+            header = session.get('zagolovok', {}).get(theme, session.get('zagolovki', {}).get(theme, ''))
+            sample['text'] = f"{header} {sample['text']}"
         else:
             name_group = ''
             for i in session['zagolovki'].keys():
@@ -319,7 +320,8 @@ def parser(stat_mode: bool = False):
                                                                   fields='description')[0]['name'][:40]
 
             # Текст обрамляется подписями.
-            sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}\n" \
+            header = session.get('zagolovok', {}).get(theme, session.get('zagolovki', {}).get(theme, ''))
+            sample['text'] = f"{header} {sample['text']}\n" \
                              f"@{url_of_post(sample)} ({name_group})"
 
         # Вариант сбора текста поста без ссылок на источники

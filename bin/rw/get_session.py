@@ -17,7 +17,7 @@ def get_session(arguments, bags="0"):
     session['timestamp_now'] = int(datetime.now().timestamp())
 
     # Берем аргументы имени региона и таблицы сессии с которой будем работать
-    # Формат аргумента: "Регион_тема" (например: "Малмыж - Инфо_kultura")
+    # Формат аргумента: "Регион_тема" (например: "Малмыж - Инфо_kultura" или короткий код "mi_novost")
     # name_base всегда остается 'config', так как все данные в одной коллекции
     parts = arguments.split('_', 1)
     if len(parts) == 2:
@@ -26,6 +26,42 @@ def get_session(arguments, bags="0"):
         # Если аргумент без подчеркивания, считаем что это тема, а регион будет определен позже
         session['region_name'] = None
         session['name_session'] = parts[0]
+
+    # Поддержка коротких кодов региона: если пользователь передал короткий код ("mi"),
+    # попытаемся сопоставить его с полным названием региона из внутренней мапы.
+    region_to_collection = {
+        'ВП - Инфо': 'vp',
+        'Малмыж - Инфо': 'mi',
+        'Уржум - Инфо': 'ur',
+        'Советск - Инфо': 'sovetsk',
+        'Нолинск - Инфо': 'nolinsk',
+        'Арбаж - Инфо': 'arbazh',
+        'Нема - Инфо': 'nema',
+        'Кильмезь - Инфо': 'klz',
+        'Пижанка - Инфо': 'pizhanka',
+        'Верхошижемье - Инфо': 'verhoshizhem',
+        'Лебяжье - Инфо': 'leb',
+        'Балтаси - Инфо': 'bal',
+        'Кукмор - Инфо': 'kukmor',
+        'Гоньба - жемчужина Вятки': 'gonba',
+        'Кировская область - Инфо': 'kirov_obl'
+    }
+
+    # Если передан короткий код (например 'mi'), преобразуем в полное имя региона,
+    # чтобы последующие операции по поиску группы в `all_my_groups` работали корректно.
+    if session.get('region_name'):
+        rn = session['region_name']
+        # если уже полное название — ничего не делаем
+        if rn not in region_to_collection.keys():
+            # если это короткий код — ищем соответствующее полное имя
+            if rn in region_to_collection.values():
+                full_name = None
+                for full, code in region_to_collection.items():
+                    if code == rn:
+                        full_name = full
+                        break
+                if full_name:
+                    session['region_name'] = full_name
     
     # (removed duplicated/incorrect membership check)
     # региональный конфиг будет загружен ниже, при наличии региона
@@ -116,6 +152,15 @@ def get_session(arguments, bags="0"):
             if session['name_session'] == 'novost':
                 session['work']['bezfoto'] = load_table('bezfoto')
                 session['work']['all_bezfoto'] = load_table('all_bezfoto')
+            else:
+                # Для других тематик, которые используют общую историю novost (например
+                # для проверки повторов по фото/хэшу), обеспечим наличие таблицы 'novost'
+                # чтобы модули сортировки могли обращаться к session['work']['novost'].
+                try:
+                    session['work']['novost'] = load_table('novost')
+                except Exception:
+                    # На случай проблем с загрузкой — инициализируем дефолтную структуру
+                    session['work'].setdefault('novost', {'lip': [], 'hash': [], 'title': 'novost'})
         finally:
             session['name_base'] = old_name_base
     elif session['name_session'] in ('addons', 'malmig'):
@@ -127,5 +172,14 @@ def get_session(arguments, bags="0"):
         try:
             session['name_base'] = work_base
             session['work'][session['name_session']] = load_table(session['name_session'])
+            # Если это реклама — убедимся, что таблицы bezfoto/all_bezfoto загружены,
+            # т.к. post_bezfoto ожидает их наличия.
+            if session['name_session'] == 'reklama':
+                try:
+                    session['work']['bezfoto'] = load_table('bezfoto')
+                    session['work']['all_bezfoto'] = load_table('all_bezfoto')
+                except Exception:
+                    session['work'].setdefault('bezfoto', {'lip': [], 'hash': [], 'title': 'bezfoto'})
+                    session['work'].setdefault('all_bezfoto', {'lip': [], 'hash': [], 'title': 'all_bezfoto'})
         finally:
             session['name_base'] = old_name_base
