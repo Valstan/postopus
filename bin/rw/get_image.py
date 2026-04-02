@@ -14,7 +14,7 @@ def get_image(url, file_path):
             with open(os.path.join(file_path), "wb") as img:
                 img.write(urlopen(url, context=ctx).read())
             return True
-        except:
+        except Exception:
             pass
         time.sleep(1)
     return False

@@ -29,9 +29,7 @@ def copy_to_all_setka():
     vk_app = vk_session.get_api()
 
     # Берем только первый пост для
-    sample = vk_app.wall.get(owner_id=lenta_copy_to_all_setka, count=1, offset=0)[
-        "items"
-    ][0]
+    sample = vk_app.wall.get(owner_id=lenta_copy_to_all_setka, count=1, offset=0)["items"][0]
     if search_text(["репост"], sample["text"]):
         repost = True
 
@@ -51,9 +49,7 @@ def copy_to_all_setka():
             # Если не Олени, то печатаем
             if post_group_vk not in (oleny_id, sample["owner_id"]):
                 if repost:
-                    vk_app.wall.repost(
-                        object=url_of_post(sample), group_id=abs(post_group_vk)
-                    )
+                    vk_app.wall.repost(object=url_of_post(sample), group_id=abs(post_group_vk))
                 else:
                     vk_app.wall.post(
                         owner_id=post_group_vk,

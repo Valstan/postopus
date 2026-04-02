@@ -9,7 +9,11 @@ from bin.utils.draw_text import draw_text
 from bin.utils.resize_img import resize_img
 from bin.utils.white_board import white_board
 
-# from instabot import Bot
+try:
+    from instabot import Bot
+except Exception:
+    Bot = None
+
 from env_loader import session
 
 
@@ -41,11 +45,15 @@ def instagram_manual():
 
     caption = sample["text"][:2000]
 
-    bot = Bot()
-    bot.login(username=session["login"], password=session["password"])
+    if Bot is not None:
+        try:
+            bot = Bot()
+            bot.login(username=session["login"], password=session["password"])
 
-    #  upload a picture
-    bot.upload_photo(session["insta_photo_path"] + "1.jpeg", caption=caption)
+            #  upload a picture
+            bot.upload_photo(session["insta_photo_path"] + "1.jpeg", caption=caption)
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":

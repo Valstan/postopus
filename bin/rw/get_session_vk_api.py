@@ -10,7 +10,7 @@ def get_session_vk_api():
         vk_session = VkApi(token=session["token"])
         session["vk_app"] = vk_session.get_api()
         # session['tools'] = VkTools(vk_session)
-    except:
+    except Exception:
         return False
 
     return True

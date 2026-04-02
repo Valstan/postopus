@@ -1,10 +1,10 @@
 from pymongo import MongoClient
 
+from bin.config import THEMES
 from env_loader import session
 
 client = MongoClient(session["MONGO_CLIENT"])
 mongo_base = client["postopus"]
-from bin.config import THEMES
 
 # Загружаем список регионов из базы данных динамически
 collection_config = mongo_base["config"]

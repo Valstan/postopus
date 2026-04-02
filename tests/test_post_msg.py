@@ -9,9 +9,7 @@ def test_post_msg_success():
 
     pm.session = {"vk_app": mock_vk_app}
 
-    res = pm.post_msg(
-        -10, "hello", attachments="photo100_1", from_group=1, copy_right=""
-    )
+    res = pm.post_msg(-10, "hello", attachments="photo100_1", from_group=1, copy_right="")
 
     assert res is not None
     assert res["post_id"] == 123

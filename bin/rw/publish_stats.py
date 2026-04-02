@@ -90,7 +90,7 @@ def format_stats_for_post(total_stats: Dict[str, Any], argument: str) -> str:
                 posts_scanned = detailed_stats.get("total_posts_scanned", 0)
 
                 # Считаем общее количество отфильтрованных постов
-                filtered_total = sum(
+                sum(
                     [
                         detailed_stats.get("posts_filtered_old", 0),
                         detailed_stats.get("posts_filtered_duplicate_lip", 0),

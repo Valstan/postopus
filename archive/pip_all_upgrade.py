@@ -1,6 +1,5 @@
 import subprocess as sbp
 
-
 pkgs = eval(
     str(
         sbp.run("pip3 list -o --format=json", shell=True, stdout=sbp.PIPE).stdout,

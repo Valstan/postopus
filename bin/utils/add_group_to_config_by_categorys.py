@@ -3,13 +3,13 @@ import re
 from pymongo import MongoClient
 from vk_api import VkApi
 
+from bin.config import THEMES
 from env_loader import session
 
 vk_session = VkApi(token=session["VK_TOKEN_VALSTAN"])
 vk_app = vk_session.get_api()
 client = MongoClient(session["MONGO_CLIENT"])
 mongo_base = client["postopus"]
-from bin.config import THEMES
 
 # Загружаем список регионов из базы данных динамически
 collection_config = mongo_base["config"]

@@ -53,9 +53,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if MONGO_BASE is None:
-        logger.error(
-            "MONGO_BASE not configured (MONGO_CLIENT missing in .env). Aborting write."
-        )
+        logger.error("MONGO_BASE not configured (MONGO_CLIENT missing in .env). Aborting write.")
         return 2
 
     collection = MONGO_BASE["site_config"]

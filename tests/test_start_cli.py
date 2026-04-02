@@ -145,10 +145,8 @@ def test_start_py_default_bags():
 
     test_args = ["start.py", "mi_novost", "--test"]
     args = test_args[1:]
-    test_flag = False
 
     if "--test" in args:
-        test_flag = True
         args.remove("--test")
 
     # Extract arguments

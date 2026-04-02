@@ -12,7 +12,7 @@ def get_del_msg_blacklist():
     try:
         with open(os.path.join("delete_msg_blacklist.json"), "r", encoding="utf-8") as f:
             session["delete_msg_blacklist"] = json.load(f)
-    except:
+    except Exception:
         collection = session["MONGO_BASE"]["config"]
         session["delete_msg_blacklist"] = collection.find_one(
             {"title": "config"}, {"delete_msg_blacklist": 1}

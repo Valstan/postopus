@@ -28,17 +28,13 @@ def deserter():
         while True:
             time.sleep(0.3)
 
-            members_ping = vk_app.groups.getMembers(
-                group_id=abs(id_group), offset=offset
-            )
+            members_ping = vk_app.groups.getMembers(group_id=abs(id_group), offset=offset)
             members += members_ping["items"]
             if offset > members_ping["count"] or members_ping["count"] < 1000:
                 break
             offset += 1000
 
-        intersection_members = set(deserter_base[name_group]["old_members"]) & set(
-            members
-        )
+        intersection_members = set(deserter_base[name_group]["old_members"]) & set(members)
 
         deserter_base[name_group]["plusminus"].insert(
             0,

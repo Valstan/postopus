@@ -2,11 +2,7 @@ from bin.rw.get_attach import get_attach
 
 
 def test_get_attach_video():
-    sample = {
-        "attachments": [
-            {"type": "video", "video": {"owner_id": -42320333, "id": 340363}}
-        ]
-    }
+    sample = {"attachments": [{"type": "video", "video": {"owner_id": -42320333, "id": 340363}}]}
     attach_str, count = get_attach(sample)
     assert attach_str == "video-42320333_340363"
     assert count == 1

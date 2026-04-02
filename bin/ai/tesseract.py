@@ -10,5 +10,5 @@ def tesseract(patch):
     custom_config = r"--oem 3 --psm 6"
     try:
         return pytesseract.image_to_string(img, lang="rus", config=custom_config)
-    except:
+    except Exception:
         return "пусто"

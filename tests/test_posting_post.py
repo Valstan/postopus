@@ -62,7 +62,7 @@ def test_posting_post_no_redirect_when_disabled():
 def test_posting_post_logging_on_redirect():
     """Test that logger.info is called when redirecting to test polygon."""
 
-    with patch("logging.Logger.info") as mock_logger_info:
+    with patch("logging.Logger.info"):
         mock_session = {
             "name_session": "novost",
             "post_group_vk": -123456789,
@@ -73,11 +73,11 @@ def test_posting_post_logging_on_redirect():
         TEST_POLYGON_GROUP_ID = -137760500
 
         # Simulate the redirect with logging
-        target_group = mock_session["post_group_vk"]
+        mock_session["post_group_vk"]
         if mock_session.get("post_to_test_polygon") and TEST_POLYGON_GROUP_ID is not None:
             # This is what should be logged
             theme = mock_session["name_session"]
-            log_msg = (
+            (
                 "Redirecting post for session '%s' (original group %s) to TEST_POLYGON_GROUP_ID %s",
                 theme,
                 mock_session["post_group_vk"],

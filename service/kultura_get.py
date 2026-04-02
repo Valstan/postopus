@@ -29,7 +29,7 @@ def read_p(count):
                     ).json()["response"]
                 )
                 break
-            except:
+            except Exception:
                 time.sleep(1)
 
         group_list = group_list[batch:]
@@ -42,9 +42,9 @@ def read_p(count):
 
 
 def kultura():
-    base_kultura = open_file_json()
+    open_file_json()
 
-    all_news = read_p(10)
+    read_p(10)
 
     save_file_json()
 
