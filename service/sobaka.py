@@ -1,15 +1,16 @@
 from vk_api import VkApi
 
 from env_loader import session
+
+
 def del_delete_users(vk, group_id):
     members = vk.groups.getMembers(group_id=group_id)
-    count_all = members['count']
+    count_all = members["count"]
     print("Всего подписчиков - ", count_all)
     offset_all = 1000
-    members = members['items']
+    members = members["items"]
     while offset_all < count_all:
-        members.extend(vk.groups.getMembers(
-            group_id=group_id, offset=offset_all)['items'])
+        members.extend(vk.groups.getMembers(group_id=group_id, offset=offset_all)["items"])
         offset_all += 1000
 
     print(f"Получил количество id - {len(members)}")
@@ -26,18 +27,25 @@ def del_delete_users(vk, group_id):
         count += 1
         if "deactivated" in i:
             print(f"{count} Удаляем {i}")
-            vk.groups.removeUser(group_id=group_id, user_id=i['id'])
+            vk.groups.removeUser(group_id=group_id, user_id=i["id"])
 
 
 def clear_banned_list(vk, group_id):
-    banned = vk.groups.getBanned(group_id=group_id, fields='deactivated,city', v=5.92)
-    count_banned = banned['count']
+    banned = vk.groups.getBanned(group_id=group_id, fields="deactivated,city", v=5.92)
+    count_banned = banned["count"]
     print("Всего забаненных в группе - ", count_banned)
     offset_banned = 200
-    banned = banned['items']
+    banned = banned["items"]
     while offset_banned < count_banned:
-        banned.extend(vk.groups.getBanned(
-            group_id=group_id, count=200, offset=offset_banned, fields='deactivated,city', v=5.92)['items'])
+        banned.extend(
+            vk.groups.getBanned(
+                group_id=group_id,
+                count=200,
+                offset=offset_banned,
+                fields="deactivated,city",
+                v=5.92,
+            )["items"]
+        )
         offset_banned += 200
     count = 0
     for i in banned:
@@ -65,5 +73,5 @@ def start(name):
     clear_banned_list(vk, id_group)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     start(2)  # 1 - МалмыжИнфо, 2 - Драндулет

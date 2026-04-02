@@ -1,4 +1,3 @@
-import random
 import re
 
 # from bin.ai.ai_sort import ai_sort
@@ -17,33 +16,37 @@ from bin.utils.text_framing import text_framing
 from bin.utils.text_to_rafinad import text_to_rafinad
 from bin.utils.url_of_post import url_of_post
 from env_loader import session
+
+
 def parsing():
-    session['bezfoto'] = load_table('bezfoto')
-    session['all_bezfoto'] = load_table('all_bezfoto')
+    session["bezfoto"] = load_table("bezfoto")
+    session["all_bezfoto"] = load_table("all_bezfoto")
     # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
     # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
-    data_string = text_to_rafinad("".join(session['bezfoto']['lip'] + session['all_bezfoto']['lip']))
+    data_string = text_to_rafinad(
+        "".join(session["bezfoto"]["lip"] + session["all_bezfoto"]["lip"])
+    )
 
     # Собираем посты из ВСЕХ групп заданной темы, а не выбираем одну случайную
     all_posts = []
-    groups_dict = session['id'][session['name_session']]
+    groups_dict = session["id"][session["name_session"]]
     for group_name, group_id in groups_dict.items():
         group_posts = get_msg(group_id, 0, 50)
         # Добавляем информацию о группе к каждому посту
         for post in group_posts:
-            post['_source_group_name'] = group_name
-            post['_source_group_id'] = group_id
+            post["_source_group_name"] = group_name
+            post["_source_group_id"] = group_id
         all_posts.extend(group_posts)
     posts = all_posts
 
     # Всетаки вернул проверку по тексту на уже опубликованные
-    old_novost_txt = ''
-    old_novost = read_posts(session['post_group'], 100)
+    old_novost_txt = ""
+    old_novost = read_posts(session["post_group"], 100)
 
     for sample in old_novost:
         sample = clear_copy_history(sample)
-        if not search_text([session['podpisi']['heshteg']['reklama']], sample['text']):
-            old_novost_txt += sample['text']
+        if not search_text([session["podpisi"]["heshteg"]["reklama"]], sample["text"]):
+            old_novost_txt += sample["text"]
     old_novost_txt = text_to_rafinad(old_novost_txt)
 
     result_posts = []
@@ -51,51 +54,63 @@ def parsing():
 
         # Это единый блок слипшихся строчек, переставлять нельзя, переменные потеряются, и блок должен стоять первым
         if not sort_old_date(sample):
-            bags(sample_text=sample['text'], url=url_of_post(sample))
+            bags(sample_text=sample["text"], url=url_of_post(sample))
             continue
-        group_id = str(sample['owner_id'])
+        group_id = str(sample["owner_id"])
         sample = clear_copy_history(sample)
         url = url_of_post(sample)
-        if url in session[session['name_session']]['lip']:
-            bags(sample_text=sample['text'], url=url)
+        if url in session[session["name_session"]]["lip"]:
+            bags(sample_text=sample["text"], url=url)
             continue
 
         # Если режим СОСЕД - Ищем в тексте поста заголовки или хэштег что это новость соседей и не берем этот пост
-        if session['name_session'] == 'sosed' and search_text([session['podpisi']['zagolovok']['sosed'],
-                                                               session['podpisi']['heshteg']['sosed'],
-                                                               "#Объявления", "#Кино", "#Музыка", "#Кругозор",
-                                                               "#УраПерерывчик", "#КрасотаСпасетМир"] +
-                                                              session['delete_msg_blacklist'],
-                                                              sample['text']):
+        if session["name_session"] == "sosed" and search_text(
+            [
+                session["podpisi"]["zagolovok"]["sosed"],
+                session["podpisi"]["heshteg"]["sosed"],
+                "#Объявления",
+                "#Кино",
+                "#Музыка",
+                "#Кругозор",
+                "#УраПерерывчик",
+                "#КрасотаСпасетМир",
+            ]
+            + session["delete_msg_blacklist"],
+            sample["text"],
+        ):
             continue
-        if session['name_session'] == 'sosed' and search_text(["#Новости"], sample['text']):
-            sample['text'] = re.sub(r'\n+.+$', '', sample['text'], 4, re.M)
+        if session["name_session"] == "sosed" and search_text(["#Новости"], sample["text"]):
+            sample["text"] = re.sub(r"\n+.+$", "", sample["text"], 4, re.M)
 
         # Сортировка Кино и Музыки, берем только с видео и музыкой
-        if session['name_session'] in ('kino', 'music') and 'attachments' in sample:
+        if session["name_session"] in ("kino", "music") and "attachments" in sample:
             flag = True
-            for atata in sample['attachments']:
-                if atata['type'] in ('video', 'audio'):
+            for atata in sample["attachments"]:
+                if atata["type"] in ("video", "audio"):
                     flag = False
             if flag:
                 continue
 
         # Сортировка савальских групп с картинками, если слов Малмыж и Киров нет то игнорируем
-        if group_id in ('-99686065', '-141990463') and not search_text(session['savali'], sample['text']):
+        if group_id in ("-99686065", "-141990463") and not search_text(
+            session["savali"], sample["text"]
+        ):
             continue
 
         # Чистка группы Проблемный Малмыж - МалмыЖ от чужих сообщений
-        if sample['owner_id'] == -9363816 != sample['from_id']:
+        if sample["owner_id"] == -9363816 != sample["from_id"]:
             continue
 
         # Проверяем группы по поиску людей на регион
-        if group_id in ('-20895918',) and not search_text(session['search_human_region_key'], sample['text']):
+        if group_id in ("-20895918",) and not search_text(
+            session["search_human_region_key"], sample["text"]
+        ):
             continue
 
         # Проверяем на повторы
-        text_rafinad = text_to_rafinad(sample['text'])
+        text_rafinad = text_to_rafinad(sample["text"])
         if search_text([text_rafinad], old_novost_txt):
-            bags(sample_text=sample['text'], url=url)
+            bags(sample_text=sample["text"], url=url)
             continue
         else:
             old_novost_txt += text_rafinad
@@ -104,52 +119,56 @@ def parsing():
         #     continue
 
         # проверяем на запрещенку
-        if search_text(session['delete_msg_blacklist'], sample['text']):
+        if search_text(session["delete_msg_blacklist"], sample["text"]):
             continue
 
         # Чистка и исправление текста для всех публичный мягкий набор слов и простых предложений
-        sample['text'] = clear_text(session['clear_text_blacklist']['novost'], sample['text'])
-        if ('views' not in sample or session['name_session'] == 'reklama') and 'attachments' in sample:
-            bags(sample_text=sample['text'], url=url_of_post(sample))
-            del sample['attachments']
-        if 'attachments' not in sample or len(sample['attachments']) == 0:
+        sample["text"] = clear_text(session["clear_text_blacklist"]["novost"], sample["text"])
+        if (
+            "views" not in sample or session["name_session"] == "reklama"
+        ) and "attachments" in sample:
+            bags(sample_text=sample["text"], url=url_of_post(sample))
+            del sample["attachments"]
+        if "attachments" not in sample or len(sample["attachments"]) == 0:
             # Отправляем пост в блок рекламы с дальнейшими проверками
 
             # Если сюда попало сообщение не из Новостей и Рекламы, то не берем его:
-            if session['name_session'] not in ('novost', 'novosti', 'reklama'):
+            if session["name_session"] not in ("novost", "novosti", "reklama"):
                 continue
 
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
-            sample['text'] = clear_text(session['clear_text_blacklist']['reklama'], sample['text'])
+            sample["text"] = clear_text(session["clear_text_blacklist"]["reklama"], sample["text"])
 
-            if len(sample['text']) > 20:
-                text_rafinad = text_to_rafinad(sample['text'])
+            if len(sample["text"]) > 20:
+                text_rafinad = text_to_rafinad(sample["text"])
                 if not search_text([text_rafinad], data_string):
-                    session['bezfoto']['lip'].append('&#128073; ' + avtortut(sample) + '\n')
+                    session["bezfoto"]["lip"].append("&#128073; " + avtortut(sample) + "\n")
                     data_string += text_rafinad
 
             continue
 
         # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
         if sort_po_foto(sample) and sort_po_video(sample):
-            bags(sample_text=sample['text'], url=url_of_post(sample))
+            bags(sample_text=sample["text"], url=url_of_post(sample))
             continue
 
         # Текст обрамляется подписями
-        sample['text'] = text_framing(session['podpisi']['zagolovok'][session['name_session']],
-                                      sample,
-                                      session['podpisi']['heshteg'][session['name_session']],
-                                      session['podpisi']['final'],
-                                      1)
+        sample["text"] = text_framing(
+            session["podpisi"]["zagolovok"][session["name_session"]],
+            sample,
+            session["podpisi"]["heshteg"][session["name_session"]],
+            session["podpisi"]["final"],
+            1,
+        )
 
         result_posts.append(sample)
 
-    save_table('bezfoto')
+    save_table("bezfoto")
 
     if result_posts:
-        result_posts.sort(key=lambda x: x['views']['count'], reverse=True)
+        result_posts.sort(key=lambda x: x["views"]["count"], reverse=True)
         return result_posts
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parsing()

@@ -1,20 +1,22 @@
 import random
 
 from env_loader import session
+
+
 def avtortut(msg, divider=""):
     # ДРАН удален из системы, теперь для всех добавляем авторство
-    url = 'https://vk.com/wall' + str(msg['owner_id']) + '_' + str(msg['id'])
-    if url not in msg['text']:
+    url = "https://vk.com/wall" + str(msg["owner_id"]) + "_" + str(msg["id"])
+    if url not in msg["text"]:
         podpis = random.choice(session["avtortut"])
         name_source = "в статье"
         for name_section in session["id"].items():
             for name_group in name_section[1].items():
-                if name_group[1] == msg['owner_id']:
+                if name_group[1] == msg["owner_id"]:
                     name_source = name_group[0]
 
-        return msg['text'] + divider + '\n@' + url + ' (' + podpis + ' ' + name_source + '.)\n'
-    return msg['text']
+        return msg["text"] + divider + "\n@" + url + " (" + podpis + " " + name_source + ".)\n"
+    return msg["text"]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass

@@ -1,4 +1,12 @@
-"""import time
+"""Archived corrupted test file: original `test_start_paket.py`.
+
+This file was moved to archive because it contained multiple syntax errors
+and prevented formatters/linters from running. If you want to restore and
+fix it, edit the archived copy.
+"""
+
+# Original corrupted contents saved for inspection.
+original_corrupt = '''"""import time
 
 Unit tests for start.py CLI parsing and test polygon mode.from random import shuffle
 
@@ -6,13 +14,14 @@ No MongoDB or VK API calls required.from sys import argv
 
 """
 
-import pytestfrom pymongo import MongoClient
+from sys import argv as sys_argvfrom
+from sys import env_loader, import, session
+from unittest.mock import MagicMockfrom, import, patch, start
 
-from unittest.mock import patch, MagicMockfrom start import start
-
-from sys import argv as sys_argvfrom env_loader import session
-
-
+import import
+import MongoClient
+import pymongo
+import pytestfrom
 
 if len(argv) == 2:
 
@@ -112,6 +121,7 @@ def test_test_polygon_id_constant():
 def test_session_test_polygon_flag_from_env():
     """Test that session['post_to_test_polygon'] can be read from env_loader."""
     from env_loader import session
+
     # Initially should be based on TEST_POLYGON_MODE env var (default False if not set)
     assert 'post_to_test_polygon' in session
     assert isinstance(session['post_to_test_polygon'], bool)
@@ -128,6 +138,7 @@ def test_session_has_test_polygon_group_id():
 def test_env_loader_test_polygon_mode_enabled():
     """Test that TEST_POLYGON_MODE=true enables test polygon posting."""
     import importlib
+
     import env_loader
     importlib.reload(env_loader)
     
@@ -138,6 +149,7 @@ def test_env_loader_test_polygon_mode_enabled():
 def test_env_loader_test_polygon_mode_disabled():
     """Test that empty TEST_POLYGON_MODE disables test polygon posting."""
     import importlib
+
     import env_loader
     importlib.reload(env_loader)
     
@@ -182,3 +194,4 @@ def test_posting_post_no_redirect_when_disabled():
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
+'''

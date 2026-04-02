@@ -1,12 +1,16 @@
 import subprocess as sbp
-import pip
 
-pkgs = eval(str(sbp.run("pip3 list -o --format=json", shell=True,
-                        stdout=sbp.PIPE).stdout, encoding='utf-8'))
+
+pkgs = eval(
+    str(
+        sbp.run("pip3 list -o --format=json", shell=True, stdout=sbp.PIPE).stdout,
+        encoding="utf-8",
+    )
+)
 for pkg in pkgs:
-    sbp.run("pip3 install --upgrade " + pkg['name'], shell=True)
+    sbp.run("pip3 install --upgrade " + pkg["name"], shell=True)
 
-'''
+"""
 adduser valstan
 usermod -a -G sudo valstan
 reboot
@@ -44,4 +48,4 @@ git pull https://github.com/Valstan/postopus
 mkdir config
 mkdir insta_photo
 EDITOR=nano crontab -e
-'''
+"""

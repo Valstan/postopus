@@ -1,14 +1,15 @@
 import yadisk
 
 from env_loader import session
-y = yadisk.YaDisk(token=session['YANDEX_DISK_TOKEN'])
+
+y = yadisk.YaDisk(token=session["YANDEX_DISK_TOKEN"])
 # print(y.check_token())  # Проверим токен
 
 # y.mkdir("/test")  # Создать папку
 y.upload("file1.txt", "/test/file1.txt")  # Загружает первый файл
 y.download("/test/file2.txt", "file2.txt")
 
-'''import yadisk
+"""import yadisk
 
 y = yadisk.YaDisk(token="<токен>")
 # или
@@ -37,4 +38,4 @@ y.download("/some-file-to-download.txt", "downloaded.txt")
 y.remove("/file-to-remove", permanently=True)
 
 # Создаёт новую папку "/test-dir"
-print(y.mkdir("/test-dir"))'''
+print(y.mkdir("/test-dir"))"""

@@ -6,6 +6,8 @@ from bin.rw.get_mongo_base import get_mongo_base
 from bin.rw.get_session import get_session
 from bin.rw.get_session_vk_api import get_session_vk_api
 from env_loader import cron_schedule
+
+
 def schedule():
     min_interval = 1
     interval = 30
@@ -27,13 +29,13 @@ def schedule():
 
             minute, hours_all, arguments = string_schedule.split()
             minute = int(minute)
-            hours_all = hours_all.split(',')
+            hours_all = hours_all.split(",")
             hours = []
             for hour in hours_all:
                 if len(hour) < 3:
                     hours.append(int(hour))
                 else:
-                    hour = hour.split('-')
+                    hour = hour.split("-")
                     hour = [i for i in range(int(hour[0]), int(hour[1]) + 1)]
                     hours.extend(hour)
 
@@ -43,7 +45,7 @@ def schedule():
                 if now_interval < min_interval:
                     min_interval = now_interval
                 if now_interval < interval:
-                    get_mongo_base('postopus')
+                    get_mongo_base("postopus")
                     get_session(arguments)
                     get_session_vk_api()
                     # Отправляем на КПП который перенаправит нас в нужный скрипт-сценарий в зависимости от аргументов

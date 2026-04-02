@@ -11,5 +11,5 @@ def free_ocr(path_image):
             if text is None:
                 text = i
             else:
-                text += ' ' + i
+                text += " " + i
     return text

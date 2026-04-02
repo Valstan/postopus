@@ -1,12 +1,14 @@
 from vk_api import VkApi
 
 from env_loader import session
+
+
 def get_session_vk_api():
     global session
 
     try:
-        vk_session = VkApi(token=session['token'])
-        session['vk_app'] = vk_session.get_api()
+        vk_session = VkApi(token=session["token"])
+        session["vk_app"] = vk_session.get_api()
         # session['tools'] = VkTools(vk_session)
     except:
         return False
@@ -14,5 +16,5 @@ def get_session_vk_api():
     return True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass

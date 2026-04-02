@@ -3,9 +3,10 @@
 Все секреты должны храниться только в .env файле, который не коммитится в Git.
 """
 
-import os
 import logging
+import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 from pymongo import MongoClient
 
@@ -15,17 +16,17 @@ load_dotenv(dotenv_path=env_path)
 
 # configure logging for the application (basic config)
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger('postopus')
+logger = logging.getLogger("postopus")
 
 
 def get_env(key: str, default: str = "") -> str:
     """
     Получить значение переменной окружения.
-    
+
     Args:
         key: Имя переменной окружения
         default: Значение по умолчанию (пустая строка)
-    
+
     Returns:
         Значение переменной окружения или значение по умолчанию
     """
@@ -35,13 +36,13 @@ def get_env(key: str, default: str = "") -> str:
 def get_required_env(key: str) -> str:
     """
     Получить обязательную переменную окружения.
-    
+
     Args:
         key: Имя переменной окружения
-    
+
     Returns:
         Значение переменной окружения
-    
+
     Raises:
         ValueError: Если переменная не найдена
     """
@@ -79,9 +80,9 @@ if MONGO_CLIENT:
     try:
         mongo_client = MongoClient(MONGO_CLIENT, serverSelectionTimeoutMS=5000)
         # Проверка подключения
-        mongo_client.admin.command('ping')
+        mongo_client.admin.command("ping")
         MONGO_CLIENT_OBJ = mongo_client
-        MONGO_BASE = mongo_client['postopus']
+        MONGO_BASE = mongo_client["postopus"]
         logger.info("MongoDB connected: postopus")
     except Exception as e:
         logger.error(f"MongoDB connection error: {e}")
@@ -94,11 +95,31 @@ else:
 
 # === name_base по умолчанию (для driver_tables.py) ===
 # Будет переопределено в start_paket.py для каждого региона
-name_base_default = 'config'
+try:
+    from bin.config import CRON_SCHEDULE, DEFAULT_NAME_BASE
+
+    name_base_default = DEFAULT_NAME_BASE
+    cron_schedule = CRON_SCHEDULE
+except Exception:
+    # Fallbacks if config import fails (shouldn't happen in normal runs)
+    name_base_default = "config"
+    cron_schedule = (
+        "05 7,8,10,12,14-23 mi_novost",
+        "15 9,13 mi_repost_reklama",
+        "15 7,12,18,20,22 mi_addons",
+        "15 21 mi_repost_krugozor",
+        "15 19 mi_repost_aprel",
+        "20 6-23 mi_repost_me",
+        "50 6-22 mi_reklama",
+    )
 
 # === TELEGRAM ===
-tb_url = 'https://api.telegram.org/bot'
-tb_params = {'chat_id': -1001746966097}  # канал Тест-тест-тест2000
+tb_url = "https://api.telegram.org/bot"
+try:
+    TELEGRAM_CHAT_ID = int(get_env("TELEGRAM_CHAT_ID", "-1001746966097"))
+except Exception:
+    TELEGRAM_CHAT_ID = -1001746966097
+tb_params = {"chat_id": TELEGRAM_CHAT_ID}  # канал Тест-тест-тест2000
 
 # === ЛОГИНЫ/ПАРОЛИ ===
 VK_LOGIN_DRAN = ""
@@ -111,18 +132,18 @@ TIKTOK_PASSWORD_MI = get_env("TIKTOK_PASSWORD_MI")
 # === CRON SCHEDULE ===
 cron_schedule = (
     # mi
-    '05 7,8,10,12,14-23 mi_novost',
-    '15 9,13 mi_repost_reklama',
-    '15 7,12,18,20,22 mi_addons',
-    '15 21 mi_repost_krugozor',
-    '15 19 mi_repost_aprel',
-    '20 6-23 mi_repost_me',
+    "05 7,8,10,12,14-23 mi_novost",
+    "15 9,13 mi_repost_reklama",
+    "15 7,12,18,20,22 mi_addons",
+    "15 21 mi_repost_krugozor",
+    "15 19 mi_repost_aprel",
+    "20 6-23 mi_repost_me",
     # dran - отключено, так как токен DRAN просрочен
     # '25 7,9,12,18,20,22 dran_novost',
     # '25 6,8,11,15,19,21,23 dran_addons',
     # sbor reklamy
     # '40 5-22 dran_reklama',
-    '50 6-22 mi_reklama'
+    "50 6-22 mi_reklama",
 )
 
 # === session dict для обратной совместимости ===
@@ -155,9 +176,12 @@ session = {
 
 # === TEST POLYGON ===
 # Numeric ID for https://vk.com/ititenskoegore (Тестовый полигон)
-TEST_POLYGON_GROUP_ID = -137760500
-session['TEST_POLYGON_GROUP_ID'] = TEST_POLYGON_GROUP_ID
+try:
+    TEST_POLYGON_GROUP_ID = int(get_env("TEST_POLYGON_GROUP_ID", "-137760500"))
+except Exception:
+    TEST_POLYGON_GROUP_ID = -137760500
+session["TEST_POLYGON_GROUP_ID"] = TEST_POLYGON_GROUP_ID
 
 # Enable posting to test polygon when TEST_POLYGON_MODE env var is truthy
-TEST_POLYGON_MODE = get_env('TEST_POLYGON_MODE', '').lower() in ('1', 'true', 'yes')
-session['post_to_test_polygon'] = TEST_POLYGON_MODE
+TEST_POLYGON_MODE = get_env("TEST_POLYGON_MODE", "").lower() in ("1", "true", "yes")
+session["post_to_test_polygon"] = TEST_POLYGON_MODE

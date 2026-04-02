@@ -1,11 +1,11 @@
 import random
 import time
 
-from env_loader import session
 from bin.rw.get_msg import get_msg
 from bin.rw.posting_post import posting_post
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.lip_of_post import lip_of_post
+from env_loader import session
 
 
 def karavan():
@@ -19,15 +19,17 @@ def karavan():
     # for offset in (0, 100):
     #     msgs.extend(get_msg(karavan_id, offset, 100))
 
-    session['work']['karavan']['table_size'] = int(len(msgs) / 100 * 30)
+    session["work"]["karavan"]["table_size"] = int(len(msgs) / 100 * 30)
 
     msg_list = []
     for sample in msgs:
         sample = clear_copy_history(sample)
-        if lip_of_post(sample) not in session['work'][session['name_session']]['lip']:
+        if lip_of_post(sample) not in session["work"][session["name_session"]]["lip"]:
             msg_list.append(sample)
 
-    for session['post_group_vk'] in session['all_my_groups'].values():
-        if session['post_group_vk'] != -218688001:  # Чтобы не репостить в группу Гоньба Жемчужина Вятки
+    for session["post_group_vk"] in session["all_my_groups"].values():
+        if (
+            session["post_group_vk"] != -218688001
+        ):  # Чтобы не репостить в группу Гоньба Жемчужина Вятки
             posting_post([random.choice(msg_list)])
             time.sleep(10)

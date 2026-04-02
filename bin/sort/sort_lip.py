@@ -1,5 +1,5 @@
 def sort_lip(msg, lip):
-    skleika = ''.join(map(str, ('https://vk.com/wall', msg['owner_id'], '_', msg['id'])))
+    skleika = "".join(map(str, ("https://vk.com/wall", msg["owner_id"], "_", msg["id"])))
     if skleika in lip:
-        msg = ''
+        msg = ""
     return msg, skleika

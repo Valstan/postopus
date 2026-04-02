@@ -3,17 +3,17 @@ from time import sleep
 
 from pymongo import MongoClient
 
-from env_loader import session
 from bin.utils.send_error import send_error
+from env_loader import session
 
 
-def get_mongo_base(base='postopus'):
+def get_mongo_base(base="postopus"):
     global session
 
     for i in range(3):
         try:
-            client = MongoClient(session['MONGO_CLIENT'])
-            session['MONGO_BASE'] = client[base]
+            client = MongoClient(session["MONGO_CLIENT"])
+            session["MONGO_BASE"] = client[base]
             return
         except Exception as exc:
             send_error(__name__, exc, traceback.print_exc())

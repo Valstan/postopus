@@ -25,6 +25,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
+          pip install pre-commit black isort flake8
+
+      - name: Run pre-commit hooks (format and lint)
+        run: |
+          pre-commit run --all-files || true
+
+      - name: Check formatting (black)
+        run: |
+          python -m black --check .
+
+      - name: Check import order (isort)
+        run: |
+          python -m isort --check-only --profile black .
+
+      - name: Lint (flake8)
+        run: |
+          flake8 .
 
       - name: Run tests
         run: |
