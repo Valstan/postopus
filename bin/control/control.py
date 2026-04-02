@@ -48,9 +48,7 @@ def control(stat_mode: bool = False):
         # Для novost и других тем из zagolovki используем post_group_vk
         if session.get("post_group_vk"):
             current_groups = [session["post_group_vk"]]
-        elif session["name_session"] in session and isinstance(
-            session[session["name_session"]], dict
-        ):
+        elif session["name_session"] in session and isinstance(session[session["name_session"]], dict):
             current_groups = list(session[session["name_session"]].values())
     elif session["name_session"] in session:
         if isinstance(session[session["name_session"]], dict):
@@ -172,9 +170,7 @@ def control(stat_mode: bool = False):
     #     instagram_manual()
 
     else:
-        error_msg = (
-            "Аргументы запуска не совпадают ни с одним вариантов, проверь аргументы в коде скрипте."
-        )
+        error_msg = "Аргументы запуска не совпадают ни с одним вариантов, проверь аргументы в коде скрипте."
         print(error_msg)
         if stat_mode:
             stats_data["failed_posts"].append(error_msg)

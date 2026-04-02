@@ -97,9 +97,7 @@ async def post_to_telegram():
                 if "photo" in attach:
                     url_photo = get_link_image_select_size(attach["photo"]["sizes"], 300, 1281)
                     if get_image(url_photo, f"telega_image_{count_attach}.jpg"):
-                        if clear_posts[0][
-                            "text"
-                        ]:  # Если еще остался текст, то прикрепляем к первой фотке
+                        if clear_posts[0]["text"]:  # Если еще остался текст, то прикрепляем к первой фотке
                             media.append(
                                 InputMediaPhoto(
                                     media=FSInputFile(f"telega_image_{count_attach}.jpg"),
@@ -110,11 +108,7 @@ async def post_to_telegram():
                             count_attach += 1
                             clear_posts[0]["text"] = ""
                         else:
-                            media.append(
-                                InputMediaPhoto(
-                                    media=FSInputFile(f"telega_image_{count_attach}.jpg")
-                                )
-                            )
+                            media.append(InputMediaPhoto(media=FSInputFile(f"telega_image_{count_attach}.jpg")))
                             media_files.append(f"telega_image_{count_attach}.jpg")
                             count_attach += 1
 
@@ -130,9 +124,7 @@ async def post_to_telegram():
         # Закрываем сессию Бота
         await bot.session.close()
 
-        session["work"][session["name_session"]][f"lip_{twins[1]}"].append(
-            lip_of_post(clear_posts[0])
-        )
+        session["work"][session["name_session"]][f"lip_{twins[1]}"].append(lip_of_post(clear_posts[0]))
         save_table(session["name_session"])
 
 

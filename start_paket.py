@@ -33,9 +33,7 @@ if config_data and "all_my_groups" in config_data and config_data["all_my_groups
             names_regions.append(key)
 else:
     print("❌ ОШИБКА: Не удалось загрузить данные о регионах из базы данных!")
-    print(
-        "   Проверьте наличие документа {'title': 'config'} с полем 'all_my_groups' в коллекции 'config'"
-    )
+    print("   Проверьте наличие документа {'title': 'config'} с полем 'all_my_groups' в коллекции 'config'")
     exit(1)
 
 # Убираем дубликаты и перемешиваем
@@ -82,22 +80,16 @@ for name in names_regions:
             if show_stat:
                 # Вывод статистики по текущему региону сразу после обработки
                 if region_stat["success"]:
-                    print(
-                        f"\n✅ РЕГИОН {name}: Обработано {len(region_stat['groups'])} групп, получено {region_stat['posts_count']} постов"
-                    )
+                    print(f"\n✅ РЕГИОН {name}: Обработано {len(region_stat['groups'])} групп, получено {region_stat['posts_count']} постов")
                     for group in region_stat["groups"]:
                         print(f"   ✓ Группа {group}")
 
                     # Публикация дайджеста
                     if region_stat["posts_count"] > 0:
-                        print(
-                            f"\n📰 Собран и опубликован дайджест из {region_stat['posts_count']} постов"
-                        )
+                        print(f"\n📰 Собран и опубликован дайджест из {region_stat['posts_count']} постов")
                         # Здесь можно добавить ссылку на пост, если она возвращается
                     else:
-                        print(
-                            "\n⚠️  Посты найдены, но дайджест не опубликован (нет подходящих постов)"
-                        )
+                        print("\n⚠️  Посты найдены, но дайджест не опубликован (нет подходящих постов)")
                 else:
                     print(f"\n❌ РЕГИОН {name}: Не удалось обработать")
                     if region_stat["failed_groups"]:
@@ -162,18 +154,14 @@ if show_stat:
     if total_stats["success_regions"]:
         print("\n✅ УСПЕШНО ОБРАБОТАННЫЕ РЕГИОНЫ:")
         for item in total_stats["success_regions"]:
-            print(
-                f"   • {item['region']}: {len(item['groups'])} групп, {item['posts_count']} постов"
-            )
+            print(f"   • {item['region']}: {len(item['groups'])} групп, {item['posts_count']} постов")
 
     if total_stats["failed_regions"]:
         print("\n❌ ПРОБЛЕМНЫЕ РЕГИОНЫ:")
         for item in total_stats["failed_regions"]:
             # Получаем детальную статистику если есть
             detailed = item.get("detailed_stats", {})
-            groups_checked = detailed.get(
-                "total_groups_checked", len(item.get("failed_groups", {}))
-            )
+            groups_checked = detailed.get("total_groups_checked", len(item.get("failed_groups", {})))
             posts_scanned = detailed.get("total_posts_scanned", 0)
             filtered_old = detailed.get("posts_filtered_old", 0)
             filtered_dup_text = detailed.get("posts_filtered_duplicate_text", 0)
@@ -202,9 +190,7 @@ if show_stat:
                 if filter_parts:
                     stats_parts.append(", отсев: " + ", ".join(filter_parts))
 
-            print(
-                f"   • {item['region']}: {len(item.get('groups', []))} гр., {', '.join(reasons) if reasons else 'Ошибка обработки'}"
-            )
+            print(f"   • {item['region']}: {len(item.get('groups', []))} гр., {', '.join(reasons) if reasons else 'Ошибка обработки'}")
             if stats_parts:
                 print(f"      {' '.join(stats_parts)}")
 

@@ -61,9 +61,7 @@ def main(argv: list[str] | None = None) -> int:
     doc_to_store = dict(doc)
     doc_to_store["updated_at"] = doc["updated_at"].isoformat()
 
-    result = collection.update_one(
-        {"title": "postopus_config"}, {"$set": doc_to_store}, upsert=True
-    )
+    result = collection.update_one({"title": "postopus_config"}, {"$set": doc_to_store}, upsert=True)
     if result.acknowledged:
         print("Migration applied: upserted postopus_config")
         return 0

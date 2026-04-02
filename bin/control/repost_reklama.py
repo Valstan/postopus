@@ -41,19 +41,13 @@ def repost_reklama():
             if not name_group:
                 if sample["owner_id"] > 0:
                     # значит пользователь
-                    name_group = session["vk_app"].users.get(
-                        user_ids=abs(sample["owner_id"]), fields="screen_name"
-                    )[0]["screen_name"][:40]
+                    name_group = session["vk_app"].users.get(user_ids=abs(sample["owner_id"]), fields="screen_name")[0]["screen_name"][:40]
                 else:
                     # иначе группа
-                    name_group = session["vk_app"].groups.getById(
-                        group_ids=abs(sample["owner_id"]), fields="description"
-                    )[0]["name"][:40]
+                    name_group = session["vk_app"].groups.getById(group_ids=abs(sample["owner_id"]), fields="description")[0]["name"][:40]
 
             # Текст обрамляется подписями.
-            sample["text"] = (
-                f"{sample['text']}\nДобро пожаловать к нам: @{url_of_post(sample)} ({name_group})"
-            )
+            sample["text"] = f"{sample['text']}\nДобро пожаловать к нам: @{url_of_post(sample)} ({name_group})"
             posting_post([sample])
             break
 

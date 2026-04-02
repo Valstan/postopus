@@ -25,12 +25,7 @@ def append_group_in_config(list_dicts):
     for group_dict in list_dicts:
         collection = mongo_base[group_dict["region"]]
         table = collection.find_one({"title": "config"})
-        list_old_groups_ids = (
-            list(table["n1"].values())
-            + list(table["n2"].values())
-            + list(table["n3"].values())
-            + list(table["reklama"].values())
-        )
+        list_old_groups_ids = list(table["n1"].values()) + list(table["n2"].values()) + list(table["n3"].values()) + list(table["reklama"].values())
         if int(group_dict["id"]) in list_old_groups_ids:
             continue
         table[group_dict["novost"]].update({group_dict["name"]: int(group_dict["id"])})
@@ -40,9 +35,7 @@ def append_group_in_config(list_dicts):
 def billboard():
     # Работа Афишы не привязана ни к одному району, работает сразу на все районы.
     # Забираем из группы "Напоминашки" 500 постов.
-    msgs = session["tools"].get_all(
-        method="wall.get", max_count=100, limit=500, values={"owner_id": session["afisha_group"]}
-    )["items"]
+    msgs = session["tools"].get_all(method="wall.get", max_count=100, limit=500, values={"owner_id": session["afisha_group"]})["items"]
 
     current_date = datetime.now().date()
     # current_time = datetime.now().time()
@@ -73,9 +66,7 @@ def billboard():
 
         if sample["text"][0] == "6":
             n_group = {}
-            n_group["name"], n_group["id"], n_group["region"], n_group["novost"] = sample[
-                "text"
-            ].split("\n")[1:]
+            n_group["name"], n_group["id"], n_group["region"], n_group["novost"] = sample["text"].split("\n")[1:]
             list_dicts_groups_for_append.append(n_group)
             session["vk_app"].wall.delete(owner_id=sample["owner_id"], post_id=sample["id"])
             continue
@@ -91,13 +82,9 @@ def billboard():
             continue
         if region == "all":
             for region in session["afisha"]:
-                session["afisha"][region]["list_anons"].append(
-                    [time_out, sample_text, get_attach(clear_copy_history(sample))]
-                )
+                session["afisha"][region]["list_anons"].append([time_out, sample_text, get_attach(clear_copy_history(sample))])
         else:
-            session["afisha"][region]["list_anons"].append(
-                [time_out, sample_text, get_attach(clear_copy_history(sample))]
-            )
+            session["afisha"][region]["list_anons"].append([time_out, sample_text, get_attach(clear_copy_history(sample))])
 
     if words_in_black_list:
         append_words_in_black_list(words_in_black_list)

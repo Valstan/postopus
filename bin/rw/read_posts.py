@@ -35,9 +35,7 @@ def read_posts(group_dict, count):
                 data = response.json()
 
                 if "error" in data:
-                    print(
-                        f"⚠️  Ошибка VK API для группы {group_name} ({group_id}): {data['error'].get('error_msg', 'Unknown error')}"
-                    )
+                    print(f"⚠️  Ошибка VK API для группы {group_name} ({group_id}): {data['error'].get('error_msg', 'Unknown error')}")
                     break
 
                 if "response" in data and "items" in data["response"]:

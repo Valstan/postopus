@@ -102,18 +102,7 @@ for k, v in sort_sity.items():
 
 
 with open(
-    os.path.join(
-        group_name
-        + "_"
-        + str(group_id)
-        + "_"
-        + str(current_date)
-        + "-"
-        + str(current_time.hour)
-        + "-"
-        + str(current_time.minute)
-        + ".json"
-    ),
+    os.path.join(group_name + "_" + str(group_id) + "_" + str(current_date) + "-" + str(current_time.hour) + "-" + str(current_time.minute) + ".json"),
     "w",
     encoding="utf-8",
 ) as f:

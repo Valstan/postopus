@@ -24,9 +24,7 @@ if config_data and "all_my_groups" in config_data and config_data["all_my_groups
             names_regions.append(key)
 else:
     print("❌ ОШИБКА: Не удалось загрузить данные о регионах из базы данных!")
-    print(
-        "   Проверьте наличие документа {'title': 'config'} с полем 'all_my_groups' в коллекции 'config'"
-    )
+    print("   Проверьте наличие документа {'title': 'config'} с полем 'all_my_groups' в коллекции 'config'")
     exit(1)
 
 names_regions = list(set(names_regions))
@@ -60,9 +58,7 @@ while go_program:
     name_group = ""
     id_group = 0
     while not id_group:
-        url = input(
-            f"Введи ссылку на пост в группе, которую хотите добавить в базу {table.get('name_group', selected_region)}: "
-        )
+        url = input(f"Введи ссылку на пост в группе, которую хотите добавить в базу {table.get('name_group', selected_region)}: ")
 
         if "wall" in url:
             text_list = url.split(sep="wall")
@@ -72,9 +68,7 @@ while go_program:
 
             for i in THEMES:
                 if i in table and id_group in table[i].values():
-                    aaa = input(
-                        f"Эта группа уже есть в категории {i}, продолжить внос - 1, начать сначала - 0:"
-                    )
+                    aaa = input(f"Эта группа уже есть в категории {i}, продолжить внос - 1, начать сначала - 0:")
                     if aaa == "0":
                         id_group = 0
                         break
@@ -82,13 +76,9 @@ while go_program:
             if id_group == 0:
                 continue
             elif id_group < 0:
-                name_group = vk_app.groups.getById(group_ids=abs(id_group), fields="description")[
-                    0
-                ]["name"]
+                name_group = vk_app.groups.getById(group_ids=abs(id_group), fields="description")[0]["name"]
             else:
-                name_group_all = vk_app.users.get(
-                    user_ids=abs(id_group), fields="first_name,last_name"
-                )[0]
+                name_group_all = vk_app.users.get(user_ids=abs(id_group), fields="first_name,last_name")[0]
                 name_group = f"{name_group_all['first_name']} {name_group_all['last_name']}"
 
             name_group = re.sub(r"\W", " ", name_group, 0, re.M | re.I)
@@ -98,10 +88,7 @@ while go_program:
     category = 0
     while not category:
         category = int(
-            input(
-                f"1-detsad, 2-kultura, 3-admin, 4-novost, 5-union, 6-sport, 7-reklama, 8-kultpodved\n"
-                f'Группа: "{name_group}" добавить в категорию: '
-            )
+            input(f"1-detsad, 2-kultura, 3-admin, 4-novost, 5-union, 6-sport, 7-reklama, 8-kultpodved\n" f'Группа: "{name_group}" добавить в категорию: ')
         )
 
     # Map numeric choice to theme from central THEMES list

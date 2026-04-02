@@ -23,9 +23,7 @@ def parsing():
     session["all_bezfoto"] = load_table("all_bezfoto")
     # Загружаем набор текстов из объявлений-реклам, проверяются они отдельно от новостных old-текстов
     # чтобы в новость всеравно проходили посты которые случайно первыми оказались в рекламе
-    data_string = text_to_rafinad(
-        "".join(session["bezfoto"]["lip"] + session["all_bezfoto"]["lip"])
-    )
+    data_string = text_to_rafinad("".join(session["bezfoto"]["lip"] + session["all_bezfoto"]["lip"]))
 
     # Собираем посты из ВСЕХ групп заданной темы, а не выбираем одну случайную
     all_posts = []
@@ -92,9 +90,7 @@ def parsing():
                 continue
 
         # Сортировка савальских групп с картинками, если слов Малмыж и Киров нет то игнорируем
-        if group_id in ("-99686065", "-141990463") and not search_text(
-            session["savali"], sample["text"]
-        ):
+        if group_id in ("-99686065", "-141990463") and not search_text(session["savali"], sample["text"]):
             continue
 
         # Чистка группы Проблемный Малмыж - МалмыЖ от чужих сообщений
@@ -102,9 +98,7 @@ def parsing():
             continue
 
         # Проверяем группы по поиску людей на регион
-        if group_id in ("-20895918",) and not search_text(
-            session["search_human_region_key"], sample["text"]
-        ):
+        if group_id in ("-20895918",) and not search_text(session["search_human_region_key"], sample["text"]):
             continue
 
         # Проверяем на повторы
@@ -124,9 +118,7 @@ def parsing():
 
         # Чистка и исправление текста для всех публичный мягкий набор слов и простых предложений
         sample["text"] = clear_text(session["clear_text_blacklist"]["novost"], sample["text"])
-        if (
-            "views" not in sample or session["name_session"] == "reklama"
-        ) and "attachments" in sample:
+        if ("views" not in sample or session["name_session"] == "reklama") and "attachments" in sample:
             bags(sample_text=sample["text"], url=url_of_post(sample))
             del sample["attachments"]
         if "attachments" not in sample or len(sample["attachments"]) == 0:

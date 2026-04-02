@@ -33,9 +33,7 @@ def format_stats_for_post(total_stats: Dict[str, Any], argument: str) -> str:
     text += "=" * 40 + "\n\n"
 
     # Общая информация
-    total_regions = len(total_stats.get("success_regions", [])) + len(
-        total_stats.get("failed_regions", [])
-    )
+    total_regions = len(total_stats.get("success_regions", [])) + len(total_stats.get("failed_regions", []))
     success_regions = len(total_stats.get("success_regions", []))
     failed_regions = len(total_stats.get("failed_regions", []))
     total_posts = total_stats.get("total_posts", 0)
@@ -109,21 +107,13 @@ def format_stats_for_post(total_stats: Dict[str, Any], argument: str) -> str:
                 if detailed_stats.get("posts_filtered_old", 0) > 0:
                     filter_reasons.append(f"старых: {detailed_stats['posts_filtered_old']}")
                 if detailed_stats.get("posts_filtered_duplicate_lip", 0) > 0:
-                    filter_reasons.append(
-                        f"повторов: {detailed_stats['posts_filtered_duplicate_lip']}"
-                    )
+                    filter_reasons.append(f"повторов: {detailed_stats['posts_filtered_duplicate_lip']}")
                 if detailed_stats.get("posts_filtered_no_region_words", 0) > 0:
-                    filter_reasons.append(
-                        f"нет слов региона: {detailed_stats['posts_filtered_no_region_words']}"
-                    )
+                    filter_reasons.append(f"нет слов региона: {detailed_stats['posts_filtered_no_region_words']}")
                 if detailed_stats.get("posts_filtered_duplicate_text", 0) > 0:
-                    filter_reasons.append(
-                        f"дублей текста: {detailed_stats['posts_filtered_duplicate_text']}"
-                    )
+                    filter_reasons.append(f"дублей текста: {detailed_stats['posts_filtered_duplicate_text']}")
                 if detailed_stats.get("posts_filtered_duplicate_foto", 0) > 0:
-                    filter_reasons.append(
-                        f"повторов фото: {detailed_stats['posts_filtered_duplicate_foto']}"
-                    )
+                    filter_reasons.append(f"повторов фото: {detailed_stats['posts_filtered_duplicate_foto']}")
 
                 if filter_reasons:
                     text += f"   • {region}: {groups_count} гр., {reason_str}\n"

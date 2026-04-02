@@ -50,9 +50,7 @@ def add_group_for_parsing():
 def service_config():
     global session
 
-    click = str(
-        input("1 - config delete_msg_blacklist\n" "2 - add group for parsing\n" "Enter - Exit")
-    )
+    click = str(input("1 - config delete_msg_blacklist\n" "2 - add group for parsing\n" "Enter - Exit"))
     if click == "1":
         del_msg_blacklist()
     elif click == "2":

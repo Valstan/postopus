@@ -65,9 +65,7 @@ def analiz_prosmotrov(name_base):
     print("Сортировка по частоте сообщений")
     data.sort(key=lambda x: x["difference_second"], reverse=True)
     result += (
-        f"Статистика региона {name_base}:\n"
-        f"Сортировка по частоте сообщений:\n"
-        f"Имя группы * Постов в день * Разница дней * Просмотров всего * Репосты"
+        f"Статистика региона {name_base}:\n" f"Сортировка по частоте сообщений:\n" f"Имя группы * Постов в день * Разница дней * Просмотров всего * Репосты"
     )
     for sample in data:
         result += (
@@ -77,10 +75,7 @@ def analiz_prosmotrov(name_base):
 
     print("Сортировка по всем просмотрам")
     data.sort(key=lambda x: x["all_views"], reverse=True)
-    result += (
-        "\nСортировка по всем просмотрам:\n"
-        "Имя группы * Просмотров всего * Постов в день * Репосты"
-    )
+    result += "\nСортировка по всем просмотрам:\n" "Имя группы * Просмотров всего * Постов в день * Репосты"
     for sample in data:
         result += (
             f"{sample['name_group']} - {sample['all_views']} - "
@@ -116,9 +111,7 @@ def analiz_prosmotrov(name_base):
 
     print("Сохраняю:")
     with open(
-        os.path.join(
-            f"{name_base} {str(current_date)}-{str(current_time.hour)}-{str(current_time.minute)}.json"
-        ),
+        os.path.join(f"{name_base} {str(current_date)}-{str(current_time.hour)}-{str(current_time.minute)}.json"),
         "w",
         encoding="utf-8",
     ) as f:

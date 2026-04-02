@@ -42,10 +42,7 @@ def instagram_mi():
                     )
                 )
                 if sample_template not in session["instagram"]["lip"]:
-                    if (
-                        "ДЕСЯТКА" not in sample_clear["text"]
-                        and "#Музыка" not in sample_clear["text"]
-                    ):
+                    if "ДЕСЯТКА" not in sample_clear["text"] and "#Музыка" not in sample_clear["text"]:
                         break
         sample_template = ""
     if sample_template:

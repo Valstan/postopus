@@ -17,9 +17,7 @@ def repost_oleny():
     msg_list = []
     for sample in msgs:
         sample = clear_copy_history(sample)
-        if lip_of_post(sample) not in session["work"][session["name_session"]]["lip"] and abs(
-            sample["owner_id"]
-        ) == abs(oleny_id):
+        if lip_of_post(sample) not in session["work"][session["name_session"]]["lip"] and abs(sample["owner_id"]) == abs(oleny_id):
 
             # Добавляем подпись-ссылку на случай если репосты отключены в постинге
             sample["text"] = f"\n@{url_of_post(sample)} (*** Гоньба - Жемчужина Вятки ***)"

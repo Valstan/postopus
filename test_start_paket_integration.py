@@ -28,9 +28,7 @@ if config_data and "all_my_groups" in config_data and config_data["all_my_groups
             names_regions.append(key)
 else:
     print("❌ ОШИБКА: Не удалось загрузить данные о регионах из базы данных!")
-    print(
-        "   Проверьте наличие документа {'title': 'config'} с полем 'all_my_groups' в коллекции 'config'"
-    )
+    print("   Проверьте наличие документа {'title': 'config'} с полем 'all_my_groups' в коллекции 'config'")
     exit(1)
 
 names_regions = list(set(names_regions))

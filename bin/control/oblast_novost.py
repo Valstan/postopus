@@ -38,13 +38,7 @@ def oblast_novost():
             posts = []
             for i in range(3):
                 get_posts = get_msg(
-                    random.choice(
-                        list(
-                            session["work"][session["name_session"]][
-                                f"{region}_oblast_novost"
-                            ].values()
-                        )
-                    ),
+                    random.choice(list(session["work"][session["name_session"]][f"{region}_oblast_novost"].values())),
                     0,
                     10,
                 )
@@ -67,27 +61,17 @@ def oblast_novost():
         if post:
             podpis = session["work"][session["name_session"]][f"{region}_podpis"]
             name_group = "Рассказали здесь"
-            for key, value in session["work"][session["name_session"]][
-                f"{region}_oblast_novost"
-            ].items():
+            for key, value in session["work"][session["name_session"]][f"{region}_oblast_novost"].items():
                 if post["owner_id"] == value:
                     name_group = key
                     break
             post["text"] += f"\n@{url_of_post(post)} ({name_group})\n#{podpis}"
             for session["post_group_vk"] in session["all_my_groups"].values():
-                if (
-                    session["post_group_vk"] == -218688001
-                ):  # Пропускаем группу Гоньба Жемчужина Вятки
+                if session["post_group_vk"] == -218688001:  # Пропускаем группу Гоньба Жемчужина Вятки
                     continue
-                elif (
-                    str(abs(session["post_group_vk"])) in ("180812597", "179203620")
-                    and region == "kirov"
-                ):
+                elif str(abs(session["post_group_vk"])) in ("180812597", "179203620") and region == "kirov":
                     continue
-                elif (
-                    str(abs(session["post_group_vk"])) in ("180812597", "179203620")
-                    and region == "tatar"
-                ):
+                elif str(abs(session["post_group_vk"])) in ("180812597", "179203620") and region == "tatar":
                     posting_post([post])
                     time.sleep(10)
                 else:

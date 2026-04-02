@@ -28,16 +28,10 @@ def post_bezfoto():
 
         # Проверяем наличие heshteg_local перед использованием
         if "heshteg_local" in session:
-            text = (
-                f"#{session['heshteg']['reklama']}{session['heshteg_local']['raicentr']}\n"
-                f"{''.join(map(str, session['work']['bezfoto']['lip'][:15]))}"
-            )
+            text = f"#{session['heshteg']['reklama']}{session['heshteg_local']['raicentr']}\n" f"{''.join(map(str, session['work']['bezfoto']['lip'][:15]))}"
         else:
             # Если heshteg_local отсутствует, используем только глобальный хэштег
-            text = (
-                f"#{session['heshteg']['reklama']}\n"
-                f"{''.join(map(str, session['work']['bezfoto']['lip'][:15]))}"
-            )
+            text = f"#{session['heshteg']['reklama']}\n" f"{''.join(map(str, session['work']['bezfoto']['lip'][:15]))}"
 
         post_msg(session["post_group_vk"], text)
 
@@ -45,9 +39,7 @@ def post_bezfoto():
         bezfoto = []
         for sample in session["work"]["bezfoto"]["lip"][:15]:
             sample = sample.split("@")[0]  # Отрезаю ссылку
-            bezfoto.append(
-                text_to_rafinad(sample[10:].lower())
-            )  # отрезаю Эмодзи и lower для просмотра в Атласе
+            bezfoto.append(text_to_rafinad(sample[10:].lower()))  # отрезаю Эмодзи и lower для просмотра в Атласе
 
         session["work"]["all_bezfoto"]["lip"].extend(bezfoto)
         del session["work"]["bezfoto"]["lip"][:15]

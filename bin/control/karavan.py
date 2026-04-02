@@ -28,8 +28,6 @@ def karavan():
             msg_list.append(sample)
 
     for session["post_group_vk"] in session["all_my_groups"].values():
-        if (
-            session["post_group_vk"] != -218688001
-        ):  # Чтобы не репостить в группу Гоньба Жемчужина Вятки
+        if session["post_group_vk"] != -218688001:  # Чтобы не репостить в группу Гоньба Жемчужина Вятки
             posting_post([random.choice(msg_list)])
             time.sleep(10)

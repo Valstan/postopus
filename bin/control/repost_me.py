@@ -44,9 +44,7 @@ def repost_me():
                 for name_token in session["names_tokens_repost_vk"]:
                     session["token"] = session[name_token]
                     if get_session_vk_api():
-                        session["vk_app"].wall.repost(
-                            object="".join(map(str, (url_of_post(sample))))
-                        )
+                        session["vk_app"].wall.repost(object="".join(map(str, (url_of_post(sample)))))
                     time.sleep(random.randint(5, 15))
 
                 session["work"][session["name_session"]]["lip"].append(lip_of_post(sample))

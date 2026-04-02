@@ -48,9 +48,7 @@ def posting_post(msg_list, stat_mode: bool = False):
 
     # Проверяем режим репоста для соответствующих тем
     if theme in ("sosed", "repost_oleny", "karavan") and session["setka_regim_repost"]:
-        session["vk_app"].wall.repost(
-            object=url_of_post(msg_list[0]), group_id=abs(session["post_group_vk"])
-        )
+        session["vk_app"].wall.repost(object=url_of_post(msg_list[0]), group_id=abs(session["post_group_vk"]))
         if lip_of_post(msg_list[0]) not in session["work"][theme]["lip"]:
             session["work"][theme]["lip"].append(lip_of_post(msg_list[0]))
             save_table(theme)
@@ -83,11 +81,7 @@ def posting_post(msg_list, stat_mode: bool = False):
                 attach, count_att = get_attach(sample)
 
             # Если длина текста больше чем в конфиге и текст есть или картинок-видео уже больше десяти, прекращаем набор
-            if (
-                len(text_post) + len(sample["text"]) > session["text_post_maxsize_simbols"]
-                and text_post
-                or count_attach + count_att > 10
-            ):
+            if len(text_post) + len(sample["text"]) > session["text_post_maxsize_simbols"] and text_post or count_attach + count_att > 10:
                 break
             text_post += f"\n\n{sample['text']}"
             attachments += attach + ","

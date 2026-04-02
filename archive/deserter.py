@@ -44,9 +44,7 @@ def deserter():
         )
 
         while len(deserter_base[name_group]["plusminus"]) > 30:
-            del deserter_base[name_group]["plusminus"][
-                len(deserter_base[name_group]["plusminus"]) - 1
-            ]
+            del deserter_base[name_group]["plusminus"][len(deserter_base[name_group]["plusminus"]) - 1]
 
         deserter_base[name_group]["old_members"] = members
 

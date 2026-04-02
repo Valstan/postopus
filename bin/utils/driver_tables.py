@@ -10,9 +10,7 @@ def load_table(name_table):
     """
     # Defensive: if Mongo is not available, return a default empty table
     if session.get("MONGO_BASE") is None:
-        logger.error(
-            f"MongoDB not available, cannot load table '{name_table}' - returning empty default table"
-        )
+        logger.error(f"MongoDB not available, cannot load table '{name_table}' - returning empty default table")
         if name_table in ("config", "billboard"):
             return {}
         return {"lip": [], "hash": [], "title": name_table}
@@ -22,9 +20,7 @@ def load_table(name_table):
         table = collection.find_one({"title": "novost"}, {"_id": 0, "title": 0})
     elif name_table == "config" and session.get("name_base") == "config":
         # 'delete_msg_blacklist' подгружается с локального диска
-        table = collection.find_one(
-            {"title": "config"}, {"delete_msg_blacklist": 0, "_id": 0, "title": 0}
-        )
+        table = collection.find_one({"title": "config"}, {"delete_msg_blacklist": 0, "_id": 0, "title": 0})
     else:
         table = collection.find_one({"title": name_table}, {"_id": 0, "title": 0})
 

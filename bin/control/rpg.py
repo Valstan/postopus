@@ -46,22 +46,12 @@ def rpg():
     global session
     # Константы настройки
     session["current_date"] = datetime.now().date()
-    session["name_file"] = (
-        f"Спам-реклама {session['name_base']} от " f"{str(session['current_date'])}.html"
-    )  # Имя файла куда сохранять инфу
+    session["name_file"] = f"Спам-реклама {session['name_base']} от " f"{str(session['current_date'])}.html"  # Имя файла куда сохранять инфу
     session["group_count_max"] = 1000  # (максимум 1000) Сколько групп найти по каждому слову поиска
-    session["count_post_up_max"] = (
-        70  # Количество успешных публикаций после которых программа остановится
-    )
-    session["count_members_up_max"] = (
-        50000000  # Максимальное количество подписчиков после которых завершаем работу
-    )
-    session["count_members_minimum"] = (
-        2000  # Минимум подписчиков в группе для разрешения публикации
-    )
-    session["count_members_maximum"] = (
-        10000000  # Максимум подписчиков в группе для разрешения публикации
-    )
+    session["count_post_up_max"] = 70  # Количество успешных публикаций после которых программа остановится
+    session["count_members_up_max"] = 50000000  # Максимальное количество подписчиков после которых завершаем работу
+    session["count_members_minimum"] = 2000  # Минимум подписчиков в группе для разрешения публикации
+    session["count_members_maximum"] = 10000000  # Максимум подписчиков в группе для разрешения публикации
 
     # Счетчики и накопители
     session["count_up"] = 0
@@ -88,20 +78,14 @@ def rpg():
         sample_spam_post = sample
 
     sample_spam_post["text"] += (
-        f"\n\nПодпишись "
-        f"на @https://vk.com/public{-session['post_group_vk']} ({session['name_group']}), "
-        f"чтобы ничего не пропустить."
+        f"\n\nПодпишись " f"на @https://vk.com/public{-session['post_group_vk']} ({session['name_group']}), " f"чтобы ничего не пропустить."
     )
     attachments, count_att = get_attach(sample_spam_post)
 
     session["work"][session["name_session"]]["false_groups_id"].extend(session["rpg_black_ids"])
-    session["work"][session["name_session"]]["true_groups_id"].append(
-        -28534711
-    )  # Для страховки от пустого списка
+    session["work"][session["name_session"]]["true_groups_id"].append(-28534711)  # Для страховки от пустого списка
     session["work"][session["name_session"]]["true_groups_id"] = list(
-        set(session["work"][session["name_session"]]["true_groups_id"]).difference(
-            set(session["work"][session["name_session"]]["false_groups_id"])
-        )
+        set(session["work"][session["name_session"]]["true_groups_id"]).difference(set(session["work"][session["name_session"]]["false_groups_id"]))
     )
     shuffle(session["work"][session["name_session"]]["true_groups_id"])
 
@@ -114,12 +98,9 @@ def rpg():
                 attachments=attachments,
             )
 
-            session["list_url"].append(f"""<a href="https://vk.com/public{
-            abs(true_group_id)}">https://vk.com/public{abs(true_group_id)}</a><br />""")
+            session["list_url"] += f'<a href="https://vk.com/public{abs(true_group_id)}' > f"https://vk.com/public{abs(true_group_id)}</a><br />"
 
-            print(
-                f"https://vk.com/public{abs(true_group_id)} Всего - {session['count_all_members']}"
-            )
+            print(f"https://vk.com/public{abs(true_group_id)} Всего - {session['count_all_members']}")
             session["count_up"] += 1
             if session["count_up"] > session["count_post_up_max"]:
                 save_result()
@@ -175,13 +156,7 @@ def rpg():
             continue
 
         try:
-            if (
-                group["can_post"] == 0
-                or group["wall"] != 1
-                or group["is_closed"] != 0
-                or group["is_advertiser"] == 1
-                or "deactivated" in group
-            ):
+            if group["can_post"] == 0 or group["wall"] != 1 or group["is_closed"] != 0 or group["is_advertiser"] == 1 or "deactivated" in group:
                 session["work"][session["name_session"]]["false_groups_id"].append(abs(group["id"]))
                 session["count_down"] += 1
                 continue
@@ -194,10 +169,7 @@ def rpg():
         try:
             members = session["vk_app"].groups.getMembers(group_id=abs(group["id"]))
             session["count_members"] = members["count"]
-            if (
-                session["count_members"] > session["count_members_maximum"]
-                or session["count_members"] < session["count_members_minimum"]
-            ):
+            if session["count_members"] > session["count_members_maximum"] or session["count_members"] < session["count_members_minimum"]:
                 session["work"][session["name_session"]]["false_groups_id"].append(abs(group["id"]))
                 session["count_down"] += 1
                 continue
@@ -220,10 +192,7 @@ def rpg():
             session[
                 "list_url"
             ] += f"""<a href="https://vk.com/{group['screen_name']}">https://vk.com/{group['screen_name']} - {session['count_members']} подписчиков</a><br />"""
-            print(
-                f"{group['screen_name']} - {session['count_members']} "
-                f"подписчиков. Всего - {session['count_all_members']}"
-            )
+            print(f"{group['screen_name']} - {session['count_members']} " f"подписчиков. Всего - {session['count_all_members']}")
             session["work"][session["name_session"]]["true_groups_id"].append(abs(group["id"]))
             session["count_up"] += 1
             if session["count_up"] > session["count_post_up_max"]:

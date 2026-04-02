@@ -39,10 +39,7 @@ def repost_kultpodved():
         sample = clear_copy_history(sample)
 
         # Фильтр на ПОВТОРЫ и ЗАПРЕЩЕННЫЕ ГРУППЫ И АККАУНТЫ
-        if (
-            lip_of_post(sample) in session["work"][theme]["lip"]
-            or abs(sample["owner_id"]) in session["black_id"]
-        ):
+        if lip_of_post(sample) in session["work"][theme]["lip"] or abs(sample["owner_id"]) in session["black_id"]:
             continue
 
         # Фильтр ЧУЖОЙ ЖУРНАЛИСТ
@@ -84,14 +81,10 @@ def repost_kultpodved():
         if not name_group:
             if sample["owner_id"] > 0:
                 # значит пользователь
-                name_group = session["vk_app"].users.get(
-                    user_ids=abs(sample["owner_id"]), fields="screen_name"
-                )[0]["screen_name"][:40]
+                name_group = session["vk_app"].users.get(user_ids=abs(sample["owner_id"]), fields="screen_name")[0]["screen_name"][:40]
             else:
                 # иначе группа
-                name_group = session["vk_app"].groups.getById(
-                    group_ids=abs(sample["owner_id"]), fields="description"
-                )[0]["name"][:40]
+                name_group = session["vk_app"].groups.getById(group_ids=abs(sample["owner_id"]), fields="description")[0]["name"][:40]
 
         # Текст обрамляется подписями.
         sample["text"] = f"{sample['text']}\n@{url_of_post(sample)} ({name_group})"

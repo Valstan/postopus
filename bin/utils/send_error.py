@@ -6,10 +6,7 @@ from env_loader import session, tb_params, tb_url
 def send_error(modul_name="?", exception="?", traceback="?"):
     method = tb_url + session["TELEGA_TOKEN_VALSTANBOT"] + "/sendMessage"
 
-    tb_params["text"] = (
-        f"МОДУЛЬ:\n{modul_name}\nАШИПКА:\n{exception}\nПРИЧИНА:\n{traceback}\nСЕССИЯ:\n"
-        + str(session)
-    )
+    tb_params["text"] = f"МОДУЛЬ:\n{modul_name}\nАШИПКА:\n{exception}\nПРИЧИНА:\n{traceback}\nСЕССИЯ:\n" + str(session)
 
     requests.post(method, data=tb_params)
 

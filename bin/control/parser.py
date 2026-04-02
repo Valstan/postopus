@@ -38,9 +38,7 @@ def parser(stat_mode: bool = False):
     # У этого региона нет тематических коллекций сообществ для сбора информации
     # Публикация в Гоньбу не производится, постинг осуществляется только через отдельный модуль repost_oleny
     if session.get("region_name") == "Гоньба - жемчужина Вятки":
-        print(
-            f"⏭️ Регион '{session['region_name']}' не участвует в тематических дайджестах. Пропускаем."
-        )
+        print(f"⏭️ Регион '{session['region_name']}' не участвует в тематических дайджестах. Пропускаем.")
         if stat_mode:
             return {
                 "total_groups_checked": 0,
@@ -67,9 +65,7 @@ def parser(stat_mode: bool = False):
     if not current_groups:
         from env_loader import logger
 
-        logger.warning(
-            f"no groups found for theme '{theme}' in region '{session.get('region_name')}'"
-        )
+        logger.warning(f"no groups found for theme '{theme}' in region '{session.get('region_name')}'")
 
     data_string = ""
 
@@ -101,20 +97,14 @@ def parser(stat_mode: bool = False):
         # Для novost используем ВСЕ группы тематики из session['novost']
         # Собираем посты из всех групп в общий список
         posts = []
-        if (
-            "novost" in session
-            and isinstance(session["novost"], dict)
-            and len(session["novost"]) > 0
-        ):
+        if "novost" in session and isinstance(session["novost"], dict) and len(session["novost"]) > 0:
             group_list = list(session["novost"].items())
             random.shuffle(group_list)  # Перемешиваем порядок обработки
 
             # Загружаем таблицы bezfoto для работы с постами без фото
             session["work"]["bezfoto"] = load_table("bezfoto")
             session["work"]["all_bezfoto"] = load_table("all_bezfoto")
-            data_string = "".join(session["work"]["all_bezfoto"]["lip"]) + text_to_rafinad(
-                "".join(session["work"]["bezfoto"]["lip"])
-            )
+            data_string = "".join(session["work"]["all_bezfoto"]["lip"]) + text_to_rafinad("".join(session["work"]["bezfoto"]["lip"]))
 
             # Собираем посты из ВСЕХ групп тематики novost
             for group_name, group_id in group_list:
@@ -126,9 +116,7 @@ def parser(stat_mode: bool = False):
                 candidate_posts = get_msg(group_id, 0, 20)
                 # Добавляем все посты из группы в общий список
                 if candidate_posts:
-                    print(
-                        f"📥 Группа {group_name} (ID: {group_id}): получено {len(candidate_posts)} постов"
-                    )
+                    print(f"📥 Группа {group_name} (ID: {group_id}): получено {len(candidate_posts)} постов")
                     posts.extend(candidate_posts)
                     # Считаем сколько групп имели посты
                     if stat_mode:
@@ -142,9 +130,7 @@ def parser(stat_mode: bool = False):
             # Fallback на старую логику если session['novost'] пуст
             session["work"]["bezfoto"] = load_table("bezfoto")
             session["work"]["all_bezfoto"] = load_table("all_bezfoto")
-            data_string = "".join(session["work"]["all_bezfoto"]["lip"]) + text_to_rafinad(
-                "".join(session["work"]["bezfoto"]["lip"])
-            )
+            data_string = "".join(session["work"]["all_bezfoto"]["lip"]) + text_to_rafinad("".join(session["work"]["bezfoto"]["lip"]))
             if session.get("post_group_vk"):
                 posts = read_posts({session["region_name"]: session["post_group_vk"]}, 20)
 
@@ -166,9 +152,7 @@ def parser(stat_mode: bool = False):
                 candidate_posts = get_msg(group_id, 0, 20)
                 # Добавляем все посты из группы в общий список
                 if candidate_posts:
-                    print(
-                        f"📥 Группа {group_name} (ID: {group_id}): получено {len(candidate_posts)} постов"
-                    )
+                    print(f"📥 Группа {group_name} (ID: {group_id}): получено {len(candidate_posts)} постов")
                     posts.extend(candidate_posts)
                     # Считаем сколько групп имели посты
                     if stat_mode:
@@ -212,10 +196,7 @@ def parser(stat_mode: bool = False):
         sample = clear_copy_history(sample)
 
         # Фильтр на ПОВТОРЫ и ЗАПРЕЩЕННЫЕ ГРУППЫ И АККАУНТЫ
-        if (
-            lip_of_post(sample) in session["work"][theme]["lip"]
-            or abs(sample["owner_id"]) in session["black_id"]
-        ):
+        if lip_of_post(sample) in session["work"][theme]["lip"] or abs(sample["owner_id"]) in session["black_id"]:
             if stat_mode:
                 if abs(sample["owner_id"]) in session["black_id"]:
                     stats_data["posts_filtered_black_id"] += 1
@@ -265,10 +246,7 @@ def parser(stat_mode: bool = False):
                     if "link" in first_attach and "url" in first_attach["link"]:
                         has_baltaci_link = "baltaci" in first_attach["link"]["url"]
 
-                if (
-                    search_text(["shahrikazan", "kukmor-rt.ru", "kazved.ru"], sample["text"])
-                    or has_baltaci_link
-                ):
+                if search_text(["shahrikazan", "kukmor-rt.ru", "kazved.ru"], sample["text"]) or has_baltaci_link:
                     continue
 
         # Проверяем на повторы или запрещенку
@@ -313,9 +291,7 @@ def parser(stat_mode: bool = False):
                     [text_rafinad[int(len(text_rafinad) * 0.2) : int(len(text_rafinad) * 0.7)]],
                     data_string,
                 ):
-                    session["work"]["bezfoto"]["lip"].append(
-                        f"&#128073; {sample['text']} @{url_of_post(sample)} (>ответить<.)\n\n"
-                    )
+                    session["work"]["bezfoto"]["lip"].append(f"&#128073; {sample['text']} @{url_of_post(sample)} (>ответить<.)\n\n")
                     data_string += text_rafinad
             session["work"][theme]["lip"].append(lip_of_post(sample))
             continue
@@ -347,20 +323,13 @@ def parser(stat_mode: bool = False):
             if not name_group:
                 if sample["owner_id"] > 0:
                     # значит пользователь
-                    name_group = session["vk_app"].users.get(
-                        user_ids=abs(sample["owner_id"]), fields="screen_name"
-                    )[0]["screen_name"][:40]
+                    name_group = session["vk_app"].users.get(user_ids=abs(sample["owner_id"]), fields="screen_name")[0]["screen_name"][:40]
                 else:
                     # иначе группа
-                    name_group = session["vk_app"].groups.getById(
-                        group_ids=abs(sample["owner_id"]), fields="description"
-                    )[0]["name"][:40]
+                    name_group = session["vk_app"].groups.getById(group_ids=abs(sample["owner_id"]), fields="description")[0]["name"][:40]
 
             # Текст обрамляется подписями.
-            sample["text"] = (
-                f"{session['zagolovok'][theme]} {sample['text']}\n"
-                f"@{url_of_post(sample)} ({name_group})"
-            )
+            sample["text"] = f"{session['zagolovok'][theme]} {sample['text']}\n" f"@{url_of_post(sample)} ({name_group})"
 
         # Вариант сбора текста поста без ссылок на источники
         # sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}"
@@ -382,15 +351,9 @@ def parser(stat_mode: bool = False):
             "posts": result_posts if result_posts else [],
             "stats": {
                 "success_groups": ([str(g) for g in current_groups] if result_posts else []),
-                "failed_groups": (
-                    {}
-                    if result_posts
-                    else {str(g): "Нет подходящих постов" for g in current_groups}
-                ),
+                "failed_groups": ({} if result_posts else {str(g): "Нет подходящих постов" for g in current_groups}),
                 "posts_count": len(result_posts) if result_posts else 0,
-                "failed_posts": (
-                    ["Нет свежих новостей после фильтрации"] if not result_posts else []
-                ),
+                "failed_posts": (["Нет свежих новостей после фильтрации"] if not result_posts else []),
                 "detailed_stats": stats_data,
             },
         }

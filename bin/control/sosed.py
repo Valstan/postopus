@@ -22,9 +22,7 @@ def sosed():
 
     result_posts = []
     for sample in posts:
-        if lip_of_post(sample) in session["work"]["sosed"]["lip"] and not search_text(
-            ["#Новости"], sample["text"]
-        ):
+        if lip_of_post(sample) in session["work"]["sosed"]["lip"] and not search_text(["#Новости"], sample["text"]):
             continue
         if "views" not in sample:
             sample["views"] = {"count": 0}

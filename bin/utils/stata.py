@@ -113,9 +113,7 @@ def stata(msg_list):
 
     if "all_stata" in session["work"]["summa_stata"]:
         del session["work"]["summa_stata"]["all_stata"]
-        session["work"]["summa_stata"]["all_stata"] = dict(
-            sorted(list(all_stata.items()), key=lambda item: item[1])
-        )
+        session["work"]["summa_stata"]["all_stata"] = dict(sorted(list(all_stata.items()), key=lambda item: item[1]))
 
     save_table("summa_stata")
 
