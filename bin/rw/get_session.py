@@ -17,7 +17,7 @@ def get_session(arguments, bags="0"):
     session["timestamp_now"] = int(datetime.now().timestamp())
 
     # Берем аргументы имени региона и таблицы сессии с которой будем работать
-    # Формат аргумента: "Регион_тема" (например: "Малмыж - Инфо_kultura")
+    # Формат аргумента: "Регион_тема" (например: "Малмыж - Инфо_kultura" или короткий код "mi_novost")
     # name_base всегда остается 'config', так как все данные в одной коллекции
     parts = arguments.split("_", 1)
     if len(parts) == 2:
