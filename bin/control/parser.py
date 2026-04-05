@@ -210,7 +210,7 @@ def parser(stat_mode: bool = False):
         post_id = sample.get("id", "?")
         owner_id = sample.get("owner_id", "?")
         source_group = sample.get("_source_group_name", "?")
-        post_url = f"https://vk.com/wall{abs(owner_id)}_{post_id}" if owner_id != "?" else "?"
+        post_url = f"https://vk.com/wall{owner_id}_{post_id}" if owner_id != "?" else "?"
 
         # Первоначальная быстрая проверка на повторы и на старость
         if lip_of_post(sample) in session["work"][theme]["lip"] or not sort_old_date(sample):

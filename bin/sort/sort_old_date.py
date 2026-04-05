@@ -37,7 +37,7 @@ def sort_old_date(sample):
             owner_id = sample.get("owner_id", "?")
             source_group = sample.get("_source_group_name", "?")
             source_group_id = sample.get("_source_group_id", owner_id)
-            post_url = f"https://vk.com/wall{abs(owner_id)}_{post_id}" if owner_id != "?" else "?"
+            post_url = f"https://vk.com/wall{owner_id}_{post_id}" if owner_id != "?" else "?"
             msg = (
                 f"✅ СВЕЖИЙ ПОСТ: тема={session.get('name_session', '?')}, "
                 f"возраст={difference_hours:.1f}ч < порог={threshold_hours:.1f}ч | "
