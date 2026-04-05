@@ -29,16 +29,18 @@ def sort_old_date(sample):
         
         is_fresh = difference < threshold
         
-        # Логируем для отладки ВСЕГДА (временно, для диагностики)
-        difference_hours = difference / 3600
-        threshold_hours = threshold / 3600
-        logger.info(
-            f"sort_old_date: тема={session.get('name_session', '?')}, "
-            f"разница={difference_hours:.1f}ч ({difference} сек), "
-            f"порог={threshold_hours:.1f}ч ({threshold} сек), "
-            f"time_limits_from_db={time_limits}, "
-            f"результ={'✅ СВЕЖИЙ' if is_fresh else '❌ СТАРЫЙ'}"
-        )
+        # Логируем ТОЛЬКО свежие посты (для диагностики)
+        if is_fresh:
+            difference_hours = difference / 3600
+            threshold_hours = threshold / 3600
+            post_id = sample.get("id", "?")
+            owner_id = sample.get("owner_id", "?")
+            post_url = f"https://vk.com/wall{abs(owner_id)}_{post_id}" if owner_id != "?" else "?"
+            logger.info(
+                f"✅ СВЕЖИЙ ПОСТ: тема={session.get('name_session', '?')}, "
+                f"возраст={difference_hours:.1f}ч < порог={threshold_hours:.1f}ч | "
+                f"ID={post_id}, owner={owner_id} | 🔗 {post_url}"
+            )
         
         return is_fresh
         
