@@ -13,9 +13,10 @@ from bin.utils.clear_text import clear_text
 from bin.utils.driver_tables import load_table, save_table
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.search_text import search_text
+from bin.utils.send_error import send_error
 from bin.utils.text_to_rafinad import text_to_rafinad
 from bin.utils.url_of_post import url_of_post
-from env_loader import session
+from env_loader import logger, session
 
 
 def parser(stat_mode: bool = False):
@@ -29,7 +30,7 @@ def parser(stat_mode: bool = False):
         list постов или dict со статистикой если stat_mode=True
     """
     # Определяем тему: используем фактическое имя сессии для тем из zagolovki
-    if session["name_session"] in session["zagolovki"].keys():
+    if session["name_session"] in session.get("zagolovki", {}).keys():
         theme = session["name_session"]  # Используем реальное имя темы (kultura, sport и т.д.)
     else:
         theme = session["name_session"]
@@ -304,8 +305,9 @@ def parser(stat_mode: bool = False):
         #     continue
 
         # Если группа-источник запрещена, то ссылку на нее не ставлю
-        if abs(sample["owner_id"]) in session["bad_name_group"].values():
-            sample["text"] = f"{session['zagolovok'][theme]} {sample['text']}"
+        if abs(sample["owner_id"]) in session.get("bad_name_group", {}).values():
+            zagolovok = session.get("zagolovok", {}).get(theme, session.get("zagolovok", {}).get("novost", ""))
+            sample["text"] = f"{zagolovok} {sample['text']}"
         else:
             name_group = ""
             for i in session["zagolovki"].keys():
@@ -329,7 +331,8 @@ def parser(stat_mode: bool = False):
                     name_group = session["vk_app"].groups.getById(group_ids=abs(sample["owner_id"]), fields="description")[0]["name"][:40]
 
             # Текст обрамляется подписями.
-            sample["text"] = f"{session['zagolovok'][theme]} {sample['text']}\n" f"@{url_of_post(sample)} ({name_group})"
+            zagolovok = session.get("zagolovok", {}).get(theme, session.get("zagolovok", {}).get("novost", ""))
+            sample["text"] = f"{zagolovok} {sample['text']}\n@{url_of_post(sample)} ({name_group})"
 
         # Вариант сбора текста поста без ссылок на источники
         # sample['text'] = f"{session['zagolovok'][theme]} {sample['text']}"
