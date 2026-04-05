@@ -204,6 +204,7 @@ def parser(stat_mode: bool = False):
     posts_fresh = 0
     posts_old = 0
     posts_dup_lip = 0
+    posts_dup_text = 0
     
     for sample in posts:
         if stat_mode:
@@ -302,18 +303,32 @@ def parser(stat_mode: bool = False):
                     continue
 
         # Проверяем на повторы или запрещенку
+        # ИСПРАВЛЕНИЕ: для тематических постов (kultura, sport и др.) используем 
+        # более строгий порог (35%-55% вместо 20%-70%) чтобы избежать ложных дубликатов
+        # когда тексты праздников похожи в разных регионах
         text_rafinad = text_to_rafinad(sample["text"])
+        if theme in ("novost", "reklama"):
+            # Для новостей используем старый широкий диапазон
+            search_slice = text_rafinad[int(len(text_rafinad) * 0.2) : int(len(text_rafinad) * 0.7)]
+        else:
+            # Для тематических постов (kultura, sport, detsad и т.д.) - более узкий диапазон
+            # чтобы только очень похожие тексты считались дубликатами
+            search_slice = text_rafinad[int(len(text_rafinad) * 0.35) : int(len(text_rafinad) * 0.55)]
+        
         if search_text(
-            [text_rafinad[int(len(text_rafinad) * 0.2) : int(len(text_rafinad) * 0.7)]],
+            [search_slice],
             old_novost_txt,
         ) or search_text(session["delete_msg_blacklist"], text_rafinad):
             if stat_mode:
                 stats_data["posts_filtered_duplicate_text"] += 1
+                posts_dup_text += 1
                 msg = f"❌ Свежий пост отброшен (duplicate text/blacklist): 📰 {source_group} | 🔗 {post_url}"
                 print(msg)
                 logger.info(msg)
             continue
         else:
+            # Добавляем текст поста в old_novost_txt для проверки следующих постов
+            # ТОЛЬКО в пределах текущего региона (не накапливается между регионами!)
             old_novost_txt += text_rafinad
 
         # Проверка на повтор картинок и видео, если картинки уже публиковались, пост игнорируется
@@ -411,7 +426,7 @@ def parser(stat_mode: bool = False):
         save_table("reklama")
 
     # Итоговая сводка по фильтрации
-    print(f"\n📊 ИТОГО ФИЛЬТРАЦИЯ [{theme}]: проверено={posts_checked}, старых={posts_old}, дубликатов_lip={posts_dup_lip}, свежих={posts_fresh}, прошло_в_дайджест={len(result_posts)}")
+    print(f"\n📊 ИТОГО ФИЛЬТРАЦИЯ [{theme}]: проверено={posts_checked}, старых={posts_old}, дубликатов_lip={posts_dup_lip}, дубликатов_text={posts_dup_text}, свежих={posts_fresh}, прошло_в_дайджест={len(result_posts)}")
 
     if stat_mode:
         stats_data["posts_final_count"] = len(result_posts)
