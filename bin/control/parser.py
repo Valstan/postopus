@@ -222,7 +222,10 @@ def parser(stat_mode: bool = False):
             continue
 
         # Если мы здесь - пост СВЕЖИЙ! Логируем начало отслеживания
-        logger.info(f"🔍 Свежий пост прошел sort_old_date: 📰 {source_group} | 🔗 {post_url} | текст='{sample.get('text', '')[:80]}...'")
+        text_preview = sample.get('text', '')[:100].replace('\n', ' ')
+        msg = f"🔍 Свежий пост прошел sort_old_date: 📰 {source_group} | 🔗 {post_url} | текст='{text_preview}...'"
+        print(msg)  # Дублируем в stdout для надёжности
+        logger.info(msg)
 
         # Вытаскиваем репосты
         first_owher_id = sample["owner_id"]
@@ -233,10 +236,12 @@ def parser(stat_mode: bool = False):
             if stat_mode:
                 if abs(sample["owner_id"]) in session["black_id"]:
                     stats_data["posts_filtered_black_id"] += 1
-                    logger.info(f"❌ Свежий пост отброшен (black_id): 📰 {source_group} | 🔗 {post_url}")
+                    msg = f"❌ Свежий пост отброшен (black_id): 📰 {source_group} | 🔗 {post_url}"
                 else:
                     stats_data["posts_filtered_duplicate_lip"] += 1
-                    logger.info(f"❌ Свежий пост отброшен (duplicate lip): 📰 {source_group} | 🔗 {post_url}")
+                    msg = f"❌ Свежий пост отброшен (duplicate lip - уже публиковался): 📰 {source_group} | 🔗 {post_url}"
+                print(msg)
+                logger.info(msg)
             continue
 
         # Если режим СОСЕД - Ищем в тексте поста хештег с новостью, если нет, то не берем пост
@@ -292,7 +297,9 @@ def parser(stat_mode: bool = False):
         ) or search_text(session["delete_msg_blacklist"], text_rafinad):
             if stat_mode:
                 stats_data["posts_filtered_duplicate_text"] += 1
-                logger.info(f"❌ Свежий пост отброшен (duplicate text/blacklist): 📰 {source_group} | 🔗 {post_url}")
+                msg = f"❌ Свежий пост отброшен (duplicate text/blacklist): 📰 {source_group} | 🔗 {post_url}"
+                print(msg)
+                logger.info(msg)
             continue
         else:
             old_novost_txt += text_rafinad
@@ -301,7 +308,9 @@ def parser(stat_mode: bool = False):
         if sort_po_foto(sample) and sort_po_video(sample):
             if stat_mode:
                 stats_data["posts_filtered_duplicate_foto"] += 1
-                logger.info(f"❌ Свежий пост отброшен (duplicate foto/video): 📰 {source_group} | 🔗 {post_url}")
+                msg = f"❌ Свежий пост отброшен (duplicate foto/video): 📰 {source_group} | 🔗 {post_url}"
+                print(msg)
+                logger.info(msg)
             continue
 
         # Чистка и исправление текста для всех публичный мягкий набор слов и простых предложений
@@ -320,7 +329,9 @@ def parser(stat_mode: bool = False):
                 if stat_mode:
                     stats_data.setdefault("posts_filtered_no_attachments", 0)
                     stats_data["posts_filtered_no_attachments"] += 1
-                    logger.info(f"❌ Свежий пост отброшен (НЕТ ВЛОЖЕНИЙ, тема={theme}): 📰 {source_group} | 🔗 {post_url}")
+                    msg = f"❌ Свежий пост отброшен (НЕТ ВЛОЖЕНИЙ, тема={theme}): 📰 {source_group} | 🔗 {post_url}"
+                    print(msg)
+                    logger.info(msg)
                 continue
 
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
@@ -377,7 +388,9 @@ def parser(stat_mode: bool = False):
         # Вариант сбора текста поста без ссылок на источники
         # sample['text'] = f"{zagolovok} {sample['text']}"
 
-        logger.info(f"✅ Свежий пост ПРОШЕЛ ВСЕ ФИЛЬТРЫ: 📰 {source_group} | 🔗 {post_url}")
+        msg_pass = f"✅ Свежий пост ПРОШЕЛ ВСЕ ФИЛЬТРЫ: 📰 {source_group} | 🔗 {post_url}"
+        print(msg_pass)
+        logger.info(msg_pass)
         result_posts.append(sample)
 
     if theme == "novost":

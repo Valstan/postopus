@@ -36,13 +36,16 @@ def sort_old_date(sample):
             post_id = sample.get("id", "?")
             owner_id = sample.get("owner_id", "?")
             source_group = sample.get("_source_group_name", "?")
+            source_group_id = sample.get("_source_group_id", owner_id)
             post_url = f"https://vk.com/wall{abs(owner_id)}_{post_id}" if owner_id != "?" else "?"
-            logger.info(
+            msg = (
                 f"✅ СВЕЖИЙ ПОСТ: тема={session.get('name_session', '?')}, "
                 f"возраст={difference_hours:.1f}ч < порог={threshold_hours:.1f}ч | "
-                f"📰 Группа-источник: {source_group} (ID: {sample.get('_source_group_id', owner_id)}) | "
+                f"📰 Группа-источник: {source_group} (ID: {source_group_id}) | "
                 f"🔗 {post_url}"
             )
+            print(msg)  # Дублируем в stdout для надёжности
+            logger.info(msg)
         
         return is_fresh
         
