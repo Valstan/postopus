@@ -1,4 +1,5 @@
 import os
+import traceback
 
 from aiogram import Bot
 from aiogram.types import FSInputFile, InputMediaPhoto
@@ -10,6 +11,7 @@ from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.driver_tables import save_table
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.search_text import search_text
+from bin.utils.send_error import send_error
 from env_loader import session
 
 
@@ -22,110 +24,114 @@ async def send_media_post(media, post_group_telega, bot):
 
 
 async def post_to_telegram():
-    for twins in session["all_telega_group"]:
+    try:
+        for twins in session["all_telega_group"]:
 
-        posts = get_msg(twins[0], 0, 10)
+            posts = get_msg(twins[0], 0, 10)
 
-        # Набираем правильные посты
-        clear_posts = []
-        for sample in posts:
+            # Набираем правильные посты
+            clear_posts = []
+            for sample in posts:
 
-            # if 'malmyzh_info' in twins[1]:
-            # if search_text(['АФИША ВАКАНСИЙ'], sample['text']):
-            #     continue
-            # if search_text(['афиша'], sample['text']):
-            #     sample['views']['count'] += 20000
+                # if 'malmyzh_info' in twins[1]:
+                # if search_text(['АФИША ВАКАНСИЙ'], sample['text']):
+                #     continue
+                # if search_text(['афиша'], sample['text']):
+                #     sample['views']['count'] += 20000
 
-            # Вытягиваем если есть репосты и проверяем на повтор по номеру поста
-            sample = clear_copy_history(sample)
-            if (
-                lip_of_post(sample) in session["work"][session["name_session"]][f"lip_{twins[1]}"]
-                or sample["owner_id"] == -179037590
-                or search_text(
-                    ["ОбъявленияМалмыж", "УраПерерывчикМалмыж", "КиноМалмыж"],
-                    sample["text"],
-                )
-            ):
+                # Вытягиваем если есть репосты и проверяем на повтор по номеру поста
+                sample = clear_copy_history(sample)
+                if (
+                    lip_of_post(sample) in session["work"][session["name_session"]][f"lip_{twins[1]}"]
+                    or sample["owner_id"] == -179037590
+                    or search_text(
+                        ["ОбъявленияМалмыж", "УраПерерывчикМалмыж", "КиноМалмыж"],
+                        sample["text"],
+                    )
+                ):
+                    continue
+
+                if "views" not in sample:
+                    sample["views"] = {"count": 5}
+
+                clear_posts.append(sample)
+
+            if not clear_posts:
                 continue
 
-            if "views" not in sample:
-                sample["views"] = {"count": 5}
+            if len(clear_posts) > 1:
+                clear_posts.sort(key=lambda x: x["views"]["count"], reverse=True)
 
-            clear_posts.append(sample)
-
-        if not clear_posts:
-            continue
-
-        if len(clear_posts) > 1:
-            clear_posts.sort(key=lambda x: x["views"]["count"], reverse=True)
-
-        # Публикуем тупо самый первый верхний пост.
-        # Вырезаю из поста ссылки на источник
-        text_list = clear_posts[0]["text"].split(sep="\n", maxsplit=-1)
-        clear_posts[0]["text"] = ""
-        for i in text_list:
-            if ("[http" and "|") not in i:
-                clear_posts[0]["text"] += i + "\n"
-        clear_posts[0]["text"] = clear_posts[0]["text"][:-1]
-
-        # Открываем сессию Бота
-        if "malmyzh_info" in twins[1]:
-            bot = Bot(token=session["TELEGA_TOKEN_AFONYA"])
-        else:
-            bot = Bot(token=session["TELEGA_TOKEN_VALSTANBOT"])
-
-        # Если текст слишком длинный, то публикуем его сразу или режем на части и публикуем сразу
-        if len(clear_posts[0]["text"]) > 1024:
-            if len(clear_posts[0]["text"]) > 4096:
-                while clear_posts[0]["text"]:
-                    await send_text_post(clear_posts[0]["text"][:4096], twins[1], bot)
-                    clear_posts[0]["text"] = clear_posts[0]["text"][4096:]
-            else:
-                await send_text_post(clear_posts[0]["text"], twins[1], bot)
+            # Публикуем тупо самый первый верхний пост.
+            # Вырезаю из поста ссылки на источник
+            text_list = clear_posts[0]["text"].split(sep="\n", maxsplit=-1)
             clear_posts[0]["text"] = ""
+            for i in text_list:
+                if ("[http" and "|") not in i:
+                    clear_posts[0]["text"] += i + "\n"
+            clear_posts[0]["text"] = clear_posts[0]["text"][:-1]
 
-        # Если есть фотки
-        if "attachments" in clear_posts[0] and len(clear_posts[0]["attachments"]) > 0:
+            # Открываем сессию Бота
+            if "malmyzh_info" in twins[1]:
+                bot = Bot(token=session["TELEGA_TOKEN_AFONYA"])
+            else:
+                bot = Bot(token=session["TELEGA_TOKEN_VALSTANBOT"])
 
-            media_files = []
-            media = []
-            count_attach = 0
+            # Если текст слишком длинный, то публикуем его сразу или режем на части и публикуем сразу
+            if len(clear_posts[0]["text"]) > 1024:
+                if len(clear_posts[0]["text"]) > 4096:
+                    while clear_posts[0]["text"]:
+                        await send_text_post(clear_posts[0]["text"][:4096], twins[1], bot)
+                        clear_posts[0]["text"] = clear_posts[0]["text"][4096:]
+                else:
+                    await send_text_post(clear_posts[0]["text"], twins[1], bot)
+                clear_posts[0]["text"] = ""
 
-            for attach in clear_posts[0]["attachments"]:
-                if count_attach == 10:
-                    break
-                if "photo" in attach:
-                    url_photo = get_link_image_select_size(attach["photo"]["sizes"], 300, 1281)
-                    if get_image(url_photo, f"telega_image_{count_attach}.jpg"):
-                        if clear_posts[0]["text"]:  # Если еще остался текст, то прикрепляем к первой фотке
-                            media.append(
-                                InputMediaPhoto(
-                                    media=FSInputFile(f"telega_image_{count_attach}.jpg"),
-                                    caption=clear_posts[0]["text"],
+            # Если есть фотки
+            if "attachments" in clear_posts[0] and len(clear_posts[0]["attachments"]) > 0:
+
+                media_files = []
+                media = []
+                count_attach = 0
+
+                for attach in clear_posts[0]["attachments"]:
+                    if count_attach == 10:
+                        break
+                    if "photo" in attach:
+                        url_photo = get_link_image_select_size(attach["photo"]["sizes"], 300, 1281)
+                        if get_image(url_photo, f"telega_image_{count_attach}.jpg"):
+                            if clear_posts[0]["text"]:  # Если еще остался текст, то прикрепляем к первой фотке
+                                media.append(
+                                    InputMediaPhoto(
+                                        media=FSInputFile(f"telega_image_{count_attach}.jpg"),
+                                        caption=clear_posts[0]["text"],
+                                    )
                                 )
-                            )
-                            media_files.append(f"telega_image_{count_attach}.jpg")
-                            count_attach += 1
-                            clear_posts[0]["text"] = ""
-                        else:
-                            media.append(InputMediaPhoto(media=FSInputFile(f"telega_image_{count_attach}.jpg")))
-                            media_files.append(f"telega_image_{count_attach}.jpg")
-                            count_attach += 1
+                                media_files.append(f"telega_image_{count_attach}.jpg")
+                                count_attach += 1
+                                clear_posts[0]["text"] = ""
+                            else:
+                                media.append(InputMediaPhoto(media=FSInputFile(f"telega_image_{count_attach}.jpg")))
+                                media_files.append(f"telega_image_{count_attach}.jpg")
+                                count_attach += 1
 
-            if media:
-                await send_media_post(media, twins[1], bot)
-                for i in media_files:
-                    os.remove(i)
+                if media:
+                    await send_media_post(media, twins[1], bot)
+                    for i in media_files:
+                        os.remove(i)
 
-        # Если текст был короткий и без фоток, то печатаем его
-        if clear_posts[0]["text"]:
-            await send_text_post(clear_posts[0]["text"], twins[1], bot)
+            # Если текст был короткий и без фоток, то печатаем его
+            if clear_posts[0]["text"]:
+                await send_text_post(clear_posts[0]["text"], twins[1], bot)
 
-        # Закрываем сессию Бота
-        await bot.session.close()
+            # Закрываем сессию Бота
+            await bot.session.close()
 
-        session["work"][session["name_session"]][f"lip_{twins[1]}"].append(lip_of_post(clear_posts[0]))
-        save_table(session["name_session"])
+            session["work"][session["name_session"]][f"lip_{twins[1]}"].append(lip_of_post(clear_posts[0]))
+            save_table(session["name_session"])
+    except Exception as e:
+        print(f"❌ Post_to_telegram: ошибка в контроллере: {e}")
+        send_error(__name__, e, traceback.print_exc())
 
 
 if __name__ == "__main__":

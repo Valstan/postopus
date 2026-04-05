@@ -47,11 +47,29 @@ def posting_post(msg_list, stat_mode: bool = False):
     attachments = ""
 
     # Проверяем режим репоста для соответствующих тем
-    if theme in ("sosed", "repost_oleny", "karavan") and session["setka_regim_repost"]:
-        session["vk_app"].wall.repost(object=url_of_post(msg_list[0]), group_id=abs(session["post_group_vk"]))
-        if lip_of_post(msg_list[0]) not in session["work"][theme]["lip"]:
-            session["work"][theme]["lip"].append(lip_of_post(msg_list[0]))
-            save_table(theme)
+    # ИСПРАВЛЕНИЕ: убираем зависимость от setka_regim_repost
+    # Если тема требует репоста, пробуем выполнить репост
+    # Если репост недоступен, публикуем как обычный пост
+    if theme in ("sosed", "repost_oleny", "karavan"):
+        # Пытаемся выполнить репост если включен режим репоста
+        if session.get("setka_regim_repost"):
+            try:
+                session["vk_app"].wall.repost(
+                    object=url_of_post(msg_list[0]),
+                    group_id=abs(session["post_group_vk"])
+                )
+                if lip_of_post(msg_list[0]) not in session["work"][theme]["lip"]:
+                    session["work"][theme]["lip"].append(lip_of_post(msg_list[0]))
+                    save_table(theme)
+                return  # Репост выполнен, выходим
+            except Exception as repost_error:
+                print(f"⚠️ Не удалось выполнить репост для темы '{theme}': {repost_error}")
+                # FALLBACK: если репост не удался, продолжаем как обычный постинг
+                print(f"🔄 Переключаюсь на обычный постинг для темы '{theme}'")
+        
+        # Если режим репоста выключен или репост не удался,
+        # продолжаем выполнение функции для публикации как обычного поста
+        # Не возвращаем, а продолжаем выполнение кода ниже!
 
     elif theme == "novost":
 
