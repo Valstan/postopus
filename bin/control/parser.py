@@ -202,9 +202,15 @@ def parser(stat_mode: bool = False):
             old_novost_txt += text_to_rafinad(sample["text"])
 
     result_posts = []
+    posts_checked = 0
+    posts_fresh = 0
+    posts_old = 0
+    posts_dup_lip = 0
+    
     for sample in posts:
         if stat_mode:
             stats_data["total_posts_scanned"] += 1
+        posts_checked += 1
 
         # Определяем URL поста для логирования
         post_id = sample.get("id", "?")
@@ -213,17 +219,25 @@ def parser(stat_mode: bool = False):
         post_url = f"https://vk.com/wall{owner_id}_{post_id}" if owner_id != "?" else "?"
 
         # Первоначальная быстрая проверка на повторы и на старость
-        if lip_of_post(sample) in session["work"][theme]["lip"] or not sort_old_date(sample):
+        is_dup_lip = lip_of_post(sample) in session["work"][theme]["lip"]
+        is_old = not sort_old_date(sample)
+        
+        if is_dup_lip or is_old:
             if stat_mode:
-                if lip_of_post(sample) in session["work"][theme]["lip"]:
+                if is_dup_lip:
                     stats_data["posts_filtered_duplicate_lip"] += 1
-                if not sort_old_date(sample):
+                    posts_dup_lip += 1
+                if is_old:
                     stats_data["posts_filtered_old"] += 1
+                    posts_old += 1
             continue
 
+        # Пост СВЕЖИЙ!
+        posts_fresh += 1
+        
         # Если мы здесь - пост СВЕЖИЙ! Логируем начало отслеживания
         text_preview = sample.get('text', '')[:100].replace('\n', ' ')
-        msg = f"🔍 Свежий пост прошел sort_old_date: 📰 {source_group} | 🔗 {post_url} | текст='{text_preview}...'"
+        msg = f"🔍 [{posts_fresh}] Свежий пост прошел sort_old_date: 📰 {source_group} | 🔗 {post_url} | текст='{text_preview}...'"
         print(msg)  # Дублируем в stdout для надёжности
         logger.info(msg)
 
@@ -397,6 +411,9 @@ def parser(stat_mode: bool = False):
         save_table("bezfoto")
     if theme == "reklama":
         save_table("reklama")
+
+    # Итоговая сводка по фильтрации
+    print(f"\n📊 ИТОГО ФИЛЬТРАЦИЯ [{theme}]: проверено={posts_checked}, старых={posts_old}, дубликатов_lip={posts_dup_lip}, свежих={posts_fresh}, прошло_в_дайджест={len(result_posts)}")
 
     if stat_mode:
         stats_data["posts_final_count"] = len(result_posts)
