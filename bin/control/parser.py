@@ -35,6 +35,25 @@ def parser(stat_mode: bool = False):
     else:
         theme = session["name_session"]
 
+    # Проверяем что work таблица для темы загружена
+    if theme not in session.get("work", {}):
+        error_msg = f"work таблица для темы '{theme}' не загружена! region={session.get('region_name')}, zagolovki={list(session.get('zagolovki', {}).keys())}"
+        logger.error(error_msg)
+        print(f"❌ {error_msg}")
+        if stat_mode:
+            return {
+                "posts": [],
+                "stats": {
+                    "success": False,
+                    "success_groups": [],
+                    "failed_groups": {"all": error_msg},
+                    "posts_count": 0,
+                    "failed_posts": [error_msg],
+                    "detailed_stats": {},
+                },
+            }
+        return []
+
     # Исключаем регион "Гоньба - жемчужина Вятки" из всех тематических дайджестов
     # У этого региона нет тематических коллекций сообществ для сбора информации
     # Публикация в Гоньбу не производится, постинг осуществляется только через отдельный модуль repost_oleny
