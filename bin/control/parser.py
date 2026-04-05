@@ -173,6 +173,10 @@ def parser(stat_mode: bool = False):
                 # Добавляем все посты из группы в общий список
                 if candidate_posts:
                     print(f"📥 Группа {group_name} (ID: {group_id}): получено {len(candidate_posts)} постов")
+                    # Добавляем имя группы-источника к каждому посту для отслеживания
+                    for p in candidate_posts:
+                        p["_source_group_name"] = group_name
+                        p["_source_group_id"] = group_id
                     posts.extend(candidate_posts)
                     # Считаем сколько групп имели посты
                     if stat_mode:
@@ -205,6 +209,7 @@ def parser(stat_mode: bool = False):
         # Определяем URL поста для логирования
         post_id = sample.get("id", "?")
         owner_id = sample.get("owner_id", "?")
+        source_group = sample.get("_source_group_name", "?")
         post_url = f"https://vk.com/wall{abs(owner_id)}_{post_id}" if owner_id != "?" else "?"
 
         # Первоначальная быстрая проверка на повторы и на старость
@@ -217,7 +222,7 @@ def parser(stat_mode: bool = False):
             continue
 
         # Если мы здесь - пост СВЕЖИЙ! Логируем начало отслеживания
-        logger.info(f"🔍 Свежий пост прошел sort_old_date: 🔗 {post_url} | текст='{sample.get('text', '')[:80]}...'")
+        logger.info(f"🔍 Свежий пост прошел sort_old_date: 📰 {source_group} | 🔗 {post_url} | текст='{sample.get('text', '')[:80]}...'")
 
         # Вытаскиваем репосты
         first_owher_id = sample["owner_id"]
@@ -228,10 +233,10 @@ def parser(stat_mode: bool = False):
             if stat_mode:
                 if abs(sample["owner_id"]) in session["black_id"]:
                     stats_data["posts_filtered_black_id"] += 1
-                    logger.info(f"❌ Свежий пост отброшен (black_id): 🔗 {post_url}")
+                    logger.info(f"❌ Свежий пост отброшен (black_id): 📰 {source_group} | 🔗 {post_url}")
                 else:
                     stats_data["posts_filtered_duplicate_lip"] += 1
-                    logger.info(f"❌ Свежий пост отброшен (duplicate lip): 🔗 {post_url}")
+                    logger.info(f"❌ Свежий пост отброшен (duplicate lip): 📰 {source_group} | 🔗 {post_url}")
             continue
 
         # Если режим СОСЕД - Ищем в тексте поста хештег с новостью, если нет, то не берем пост
@@ -287,7 +292,7 @@ def parser(stat_mode: bool = False):
         ) or search_text(session["delete_msg_blacklist"], text_rafinad):
             if stat_mode:
                 stats_data["posts_filtered_duplicate_text"] += 1
-                logger.info(f"❌ Свежий пост отброшен (duplicate text/blacklist): 🔗 {post_url}")
+                logger.info(f"❌ Свежий пост отброшен (duplicate text/blacklist): 📰 {source_group} | 🔗 {post_url}")
             continue
         else:
             old_novost_txt += text_rafinad
@@ -296,7 +301,7 @@ def parser(stat_mode: bool = False):
         if sort_po_foto(sample) and sort_po_video(sample):
             if stat_mode:
                 stats_data["posts_filtered_duplicate_foto"] += 1
-                logger.info(f"❌ Свежий пост отброшен (duplicate foto/video): 🔗 {post_url}")
+                logger.info(f"❌ Свежий пост отброшен (duplicate foto/video): 📰 {source_group} | 🔗 {post_url}")
             continue
 
         # Чистка и исправление текста для всех публичный мягкий набор слов и простых предложений
@@ -315,7 +320,7 @@ def parser(stat_mode: bool = False):
                 if stat_mode:
                     stats_data.setdefault("posts_filtered_no_attachments", 0)
                     stats_data["posts_filtered_no_attachments"] += 1
-                    logger.info(f"❌ Свежий пост отброшен (НЕТ ВЛОЖЕНИЙ, тема={theme}): 🔗 {post_url}")
+                    logger.info(f"❌ Свежий пост отброшен (НЕТ ВЛОЖЕНИЙ, тема={theme}): 📰 {source_group} | 🔗 {post_url}")
                 continue
 
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
@@ -372,7 +377,7 @@ def parser(stat_mode: bool = False):
         # Вариант сбора текста поста без ссылок на источники
         # sample['text'] = f"{zagolovok} {sample['text']}"
 
-        logger.info(f"✅ Свежий пост ПРОШЕЛ ВСЕ ФИЛЬТРЫ: 🔗 {post_url}")
+        logger.info(f"✅ Свежий пост ПРОШЕЛ ВСЕ ФИЛЬТРЫ: 📰 {source_group} | 🔗 {post_url}")
         result_posts.append(sample)
 
     if theme == "novost":

@@ -35,11 +35,13 @@ def sort_old_date(sample):
             threshold_hours = threshold / 3600
             post_id = sample.get("id", "?")
             owner_id = sample.get("owner_id", "?")
+            source_group = sample.get("_source_group_name", "?")
             post_url = f"https://vk.com/wall{abs(owner_id)}_{post_id}" if owner_id != "?" else "?"
             logger.info(
                 f"✅ СВЕЖИЙ ПОСТ: тема={session.get('name_session', '?')}, "
                 f"возраст={difference_hours:.1f}ч < порог={threshold_hours:.1f}ч | "
-                f"ID={post_id}, owner={owner_id} | 🔗 {post_url}"
+                f"📰 Группа-источник: {source_group} (ID: {sample.get('_source_group_id', owner_id)}) | "
+                f"🔗 {post_url}"
             )
         
         return is_fresh
