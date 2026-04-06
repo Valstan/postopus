@@ -28,8 +28,8 @@ def repost_reklama():
         posts = get_msg(group_id, 0, 50)
         if not posts:
             print("⚠️ Repost_reklama: не получено постов из источника")
-            return
-            
+            return []  # ИСПРАВЛЕНИЕ: возвращаем пустой список
+
         shuffle(posts)
         for iii in range(20):
             sample = clear_copy_history(choice(posts))
@@ -56,10 +56,14 @@ def repost_reklama():
                 # Текст обрамляется подписями.
                 sample["text"] = f"{sample['text']}\nДобро пожаловать к нам: @{url_of_post(sample)} ({name_group})"
                 posting_post([sample])
-                break
+                return 1  # ИСПРАВЛЕНИЕ: возвращаем 1 опубликованный пост
+
+        return []  # ИСПРАВЛЕНИЕ: не нашли подходящий поста
+
     except Exception as e:
         print(f"❌ Repost_reklama: ошибка в контроллере: {e}")
         send_error(__name__, e, traceback.print_exc())
+        return 0  # ИСПРАВЛЕНИЕ: возвращаем 0 при ошибке
 
 
 if __name__ == "__main__":

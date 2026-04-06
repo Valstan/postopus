@@ -22,7 +22,7 @@ def sosed():
 
         if not posts:
             print(f"⚠️ Sosed: не получено постов от соседа '{near}'")
-            return
+            return []  # ИСПРАВЛЕНИЕ: возвращаем пустой список
 
         result_posts = []
         for sample in posts:
@@ -35,9 +35,12 @@ def sosed():
         if result_posts:
             result_posts.sort(key=lambda x: x["views"]["count"], reverse=True)
             posting_post(result_posts)
+            return len(result_posts)  # ИСПРАВЛЕНИЕ: возвращаем количество
         else:
             print(f"⚠️ Sosed: все посты от соседа '{near}' уже опубликованы")
+            return []  # ИСПРАВЛЕНИЕ: возвращаем пустой список
 
     except Exception as e:
         print(f"❌ Sosed: ошибка в контроллере: {e}")
         send_error(__name__, e, traceback.print_exc())
+        return 0  # ИСПРАВЛЕНИЕ: возвращаем 0 при ошибке

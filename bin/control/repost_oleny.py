@@ -19,11 +19,11 @@ def repost_oleny():
 
         if not msgs:
             print("⚠️ Repost_oleny: не получено постов из источника")
-            return
+            return []  # ИСПРАВЛЕНИЕ: возвращаем пустой список
 
         # Находим первый подходящий пост
         post_to_publish = None
-        
+
         for sample in msgs:
             sample = clear_copy_history(sample)
             if lip_of_post(sample) not in session["work"][session["name_session"]]["lip"] and abs(sample["owner_id"]) == abs(oleny_id):
@@ -35,7 +35,7 @@ def repost_oleny():
         # КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: проверяем что нашли пост перед постингом
         if not post_to_publish:
             print("⚠️ Repost_oleny: все посты уже опубликованы или не прошли фильтрацию")
-            return
+            return []  # ИСПРАВЛЕНИЕ: возвращаем пустой список
 
         # Публикуем пост во все группы кроме самой Гоньбы
         target_groups = [
@@ -43,15 +43,20 @@ def repost_oleny():
             if gid != oleny_id
         ]
 
+        posts_published = 0  # ИСПРАВЛЕНИЕ: счётчик опубликованных постов
         for session["post_group_vk"] in target_groups:
             try:
                 posting_post([post_to_publish])
+                posts_published += 1  # ИСПРАВЛЕНИЕ: считаем посты
                 time.sleep(15)
             except Exception as post_error:
                 print(f"⚠️ Repost_oleny: ошибка при постинге в группу {session['post_group_vk']}: {post_error}")
                 send_error(__name__, post_error, traceback.print_exc())
                 continue
 
+        return posts_published  # ИСПРАВЛЕНИЕ: возвращаем количество опубликованных постов
+
     except Exception as e:
         print(f"❌ Repost_oleny: критическая ошибка в контроллере: {e}")
         send_error(__name__, e, traceback.print_exc())
+        return 0  # ИСПРАВЛЕНИЕ: возвращаем 0 при ошибке

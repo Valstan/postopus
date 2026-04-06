@@ -109,43 +109,61 @@ def control(stat_mode: bool = False):
             stats_data["failed_posts"].append("Не найдено подходящих постов в режиме addons")
 
     elif session["name_session"] == "repost_me":
-        repost_me()
+        result = repost_me()
         if stat_mode:
             stats_data["success"] = True
+            if result and isinstance(result, (list, dict)):
+                posts_count = len(result) if isinstance(result, list) else result.get("posts_count", 0)
+                stats_data["posts_count"] = posts_count
 
     # elif session['name_session'] in 'malmig':
     #     public_malm_site()
 
     elif session["name_session"] == "repost_reklama":
-        repost_reklama()
+        result = repost_reklama()
         if stat_mode:
             stats_data["success"] = True
+            if result and isinstance(result, (list, dict)):
+                posts_count = len(result) if isinstance(result, list) else result.get("posts_count", 0)
+                stats_data["posts_count"] = posts_count
 
     elif session["name_session"] == "karavan":
-        karavan()
+        result = karavan()
         if stat_mode:
             stats_data["success"] = True
+            if result and isinstance(result, (list, dict)):
+                posts_count = len(result) if isinstance(result, list) else result.get("posts_count", 0)
+                stats_data["posts_count"] = posts_count
 
     elif session["name_session"] == "oblast_novost":
-        oblast_novost()
+        result = oblast_novost()
         if stat_mode:
             stats_data["success"] = True
+            if result and isinstance(result, (list, dict)):
+                posts_count = len(result) if isinstance(result, list) else result.get("posts_count", 0)
+                stats_data["posts_count"] = posts_count
 
     # elif session['name_session'] == 'billboard':
     #     billboard()
 
     elif session["name_session"] == "repost_oleny":
-        repost_oleny()
+        result = repost_oleny()
         if stat_mode:
             stats_data["success"] = True
+            if result and isinstance(result, (list, dict)):
+                posts_count = len(result) if isinstance(result, list) else result.get("posts_count", 0)
+                stats_data["posts_count"] = posts_count
 
     # elif session['name_session'] in 'rpg':
     #     rpg()
 
     elif session["name_session"] == "sosed":
-        sosed()
+        result = sosed()
         if stat_mode:
             stats_data["success"] = True
+            if result and isinstance(result, (list, dict)):
+                posts_count = len(result) if isinstance(result, list) else result.get("posts_count", 0)
+                stats_data["posts_count"] = posts_count
 
     elif session["name_session"] == "repost_kultpodved":
         msg_list = repost_kultpodved()

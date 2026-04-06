@@ -24,7 +24,7 @@ def karavan():
 
         if not msgs:
             print("⚠️ Karavan: не получено постов из источника")
-            return
+            return []  # ИСПРАВЛЕНИЕ: возвращаем пустой список
 
         session["work"]["karavan"]["table_size"] = int(len(msgs) / 100 * 30)
 
@@ -37,7 +37,7 @@ def karavan():
         # КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: проверяем что msg_list не пустой
         if not msg_list:
             print("⚠️ Karavan: все посты уже опубликованы (после фильтрации)")
-            return
+            return []  # ИСПРАВЛЕНИЕ: возвращаем пустой список
 
         # Публикуем посты во все группы кроме Гоньба
         target_groups = [
@@ -45,16 +45,21 @@ def karavan():
             if gid != -218688001  # Чтобы не репостить в группу Гоньба Жемчужина Вятки
         ]
 
+        posts_published = 0  # ИСПРАВЛЕНИЕ: счётчик опубликованных постов
         for session["post_group_vk"] in target_groups:
             try:
                 post_to_publish = random.choice(msg_list)
                 posting_post([post_to_publish])
+                posts_published += 1  # ИСПРАВЛЕНИЕ: считаем посты
                 time.sleep(10)
             except Exception as post_error:
                 print(f"⚠️ Karavan: ошибка при постинге в группу {session['post_group_vk']}: {post_error}")
                 send_error(__name__, post_error, traceback.print_exc())
                 continue
 
+        return posts_published  # ИСПРАВЛЕНИЕ: возвращаем количество опубликованных постов
+
     except Exception as e:
         print(f"❌ Karavan: критическая ошибка в контроллере: {e}")
         send_error(__name__, e, traceback.print_exc())
+        return 0  # ИСПРАВЛЕНИЕ: возвращаем 0 при ошибе

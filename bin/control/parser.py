@@ -420,10 +420,15 @@ def parser(stat_mode: bool = False):
         logger.info(msg_pass)
         result_posts.append(sample)
 
+    # ИСПРАВЛЕНИЕ: сохраняем work-таблицы для ВСЕХ тем, а не только novost/reklama
+    # Это обеспечивает накопление хешей и lip для тематических постов
     if theme == "novost":
         save_table("bezfoto")
     if theme == "reklama":
         save_table("reklama")
+    # Для всех остальных тем (kultura, sport, detsad и др.) сохраняем свою таблицу
+    if theme not in ("novost", "reklama"):
+        save_table(theme)
 
     # Итоговая сводка по фильтрации
     print(f"\n📊 ИТОГО ФИЛЬТРАЦИЯ [{theme}]: проверено={posts_checked}, старых={posts_old}, дубликатов_lip={posts_dup_lip}, дубликатов_text={posts_dup_text}, свежих={posts_fresh}, прошло_в_дайджест={len(result_posts)}")

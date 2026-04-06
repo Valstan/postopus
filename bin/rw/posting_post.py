@@ -110,21 +110,60 @@ def posting_post(msg_list, stat_mode: bool = False):
             attachments = attachments[:-1]
 
     else:
+        # ИСПРАВЛЕНИЕ: для всех тематических тем (kultura, sport, detsad и др.)
+        # собираем дайджест из нескольких постов как для novost, добавляем заголовок и хэштеги
 
+        # Проверяем есть ли заголовок для этой темы
+        has_header = theme in session.get("zagolovki", {})
+
+        # Получаем первое сообщение
+        attach = ""
+        count_att = 0
         if "attachments" in msg_list[0]:
-            attachments, count_att = get_attach(msg_list[0])
-        text_post = msg_list[0]["text"]
-        if lip_of_post(msg_list[0]) not in session["work"][theme]["lip"]:
-            session["work"][theme]["lip"].append(lip_of_post(msg_list[0]))
+            attach, count_att = get_attach(msg_list[0])
+        attachments += attach + ","
+        count_attach += count_att
+
+        # Добавляем заголовок если есть
+        if has_header:
+            text_post += f"{session['zagolovki'][theme]}\n{msg_list[0]['text']}"
+        else:
+            text_post = msg_list[0]["text"]
+
+        session["work"][theme]["lip"].append(lip_of_post(msg_list[0]))
+
+        # Добавляем следующие сообщения, если есть место (как novost)
+        for sample in msg_list[1:]:
+            attach = ""
+            count_att = 0
+            if "attachments" in sample:
+                attach, count_att = get_attach(sample)
+
+            # Если длина текста больше чем в конфиге и текст есть или картинок-видео уже больше десяти, прекращаем набор
+            if len(text_post) + len(sample["text"]) > session["text_post_maxsize_simbols"] and text_post or count_attach + count_att > 10:
+                break
+            text_post += f"\n\n{sample['text']}"
+            attachments += attach + ","
+            count_attach += count_att
+            session["work"][theme]["lip"].append(lip_of_post(sample))
+
+        if attachments:
+            attachments = attachments[:-1]
 
     if text_post or attachments:
         # Добавляем хэштеги
-        # Проверяем наличие heshteg_local перед использованием
-        if theme == "novost" and "heshteg_local" in session:
-            text_post += f"\n#{session['heshteg'][theme]}{session['heshteg_local']['raicentr']}"
-        elif theme == "novost":
-            # Если heshteg_local отсутствует, добавляем только глобальный хэштег
-            text_post += f"\n#{session['heshteg'][theme]}"
+        # ИСПРАВЛЕНИЕ: добавляем хэштеги для всех тем у которых есть heshteg, а не только novost
+        if theme in session.get("heshteg", {}):
+            if "heshteg_local" in session and session["heshteg_local"]:
+                # Проверяем есть ли локальный хэштег для этой темы
+                local_tag = session["heshteg_local"].get("raicentr", "")
+                if local_tag:
+                    text_post += f"\n#{session['heshteg'][theme]}{local_tag}"
+                else:
+                    text_post += f"\n#{session['heshteg'][theme]}"
+            else:
+                # Если heshteg_local отсутствует, добавляем только глобальный хэштег
+                text_post += f"\n#{session['heshteg'][theme]}"
 
         try:
             # If test posting is enabled, redirect posts to TEST_POLYGON_GROUP_ID

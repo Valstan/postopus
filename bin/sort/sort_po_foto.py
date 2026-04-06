@@ -13,10 +13,10 @@ from env_loader import session
 def sort_po_foto(msg):
     global session
 
-    if session["name_session"] in session["zagolovki"].keys():
-        theme = "novost"
-    else:
-        theme = session["name_session"]
+    # ИСПРАВЛЕНИЕ: используем реальную тему вместо принудительного "novost"
+    # Раньше для всех тем из zagolovki (kultura, sport и др.) использовался "novost",
+    # что приводило к ложным срабатываниям дубликатов из новостей
+    theme = session["name_session"]
 
     if "attachments" in msg and msg["attachments"]:
         for sample in msg["attachments"]:

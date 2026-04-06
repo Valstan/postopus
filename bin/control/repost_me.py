@@ -22,6 +22,7 @@ def repost_me():
         time.sleep(random.randint(5, 1000))
 
         flag = False
+        reposts_count = 0  # ИСПРАВЛЕНИЕ: счётчик репостов
 
         for count in range(15):
 
@@ -53,13 +54,18 @@ def repost_me():
                     session["work"][session["name_session"]]["lip"].append(lip_of_post(sample))
                     save_table(session["name_session"])
                     flag = True
+                    reposts_count += 1  # ИСПРАВЛЕНИЕ: считаем репосты
                     break
 
             if flag:
                 break
+
+        return reposts_count  # ИСПРАВЛЕНИЕ: возвращаем количество репостов
+
     except Exception as e:
         print(f"❌ Repost_me: ошибка в контроллере: {e}")
         send_error(__name__, e, traceback.print_exc())
+        return 0  # ИСПРАВЛЕНИЕ: возвращаем 0 при ошибке
 
 
 if __name__ == "__main__":

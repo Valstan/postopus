@@ -19,6 +19,8 @@ def oblast_novost():
         # Получаем сообщения из группы поиска людей
         liza_posts = get_msg(-20895918, 0, 50)  # ПОИСКОВЫЙ ОТРЯД ЛИЗА АЛЕРТ
 
+        posts_published = 0  # ИСПРАВЛЕНИЕ: счётчик опубликованных постов
+
         for region in ("kirov", "tatar"):
             if region == "tatar":  # 'tatar' пока пропускаем, не нашел группы с нормальными новостями
                 continue
@@ -76,10 +78,16 @@ def oblast_novost():
                         continue
                     elif str(abs(session["post_group_vk"])) in ("180812597", "179203620") and region == "tatar":
                         posting_post([post])
+                        posts_published += 1  # ИСПРАВЛЕНИЕ: считаем посты
                         time.sleep(10)
                     else:
                         posting_post([post])
+                        posts_published += 1  # ИСПРАВЛЕНИЕ: считаем посты
                         time.sleep(10)
+
+        return posts_published  # ИСПРАВЛЕНИЕ: возвращаем количество опубликованных постов
+
     except Exception as e:
         print(f"❌ Oblast_novost: ошибка в контроллере: {e}")
         send_error(__name__, e, traceback.print_exc())
+        return 0  # ИСПРАВЛЕНИЕ: возвращаем 0 при ошибке
