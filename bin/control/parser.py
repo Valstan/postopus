@@ -128,22 +128,21 @@ def parser(stat_mode: bool = False):
             for group_name, group_id in group_list:
                 # Пропускаем целевую группу публикации, чтобы не собирать посты из неё
                 if "post_group_vk" in session and group_id == session["post_group_vk"]:
-                    print(f"⏭️ Пропущена целевая группа {group_name} (ID: {group_id})")
                     continue
 
                 candidate_posts = get_msg(group_id, 0, 20)
                 # Добавляем все посты из группы в общий список
                 if candidate_posts:
-                    print(f"📥 Группа {group_name} (ID: {group_id}): получено {len(candidate_posts)} постов")
+                    logger.debug("Группа %s (ID: %s): получено %d постов", group_name, group_id, len(candidate_posts))
                     posts.extend(candidate_posts)
                     # Считаем сколько групп имели посты
                     if stat_mode:
                         stats_data["groups_with_posts"] += 1
                 else:
-                    print(f"⚠️ Группа {group_name} (ID: {group_id}): постов не найдено")
+                    logger.debug("Группа %s (ID: %s): постов не найдено", group_name, group_id)
 
             if stat_mode:
-                print(f"📊 ВСЕГО собрано постов из всех групп novost: {len(posts)}")
+                logger.info("ВСЕГО собрано постов из всех групп novost: %d", len(posts))
         else:
             # Fallback на старую логику если session['novost'] пуст
             session["work"]["bezfoto"] = load_table("bezfoto")
@@ -164,13 +163,12 @@ def parser(stat_mode: bool = False):
             for group_name, group_id in group_list:
                 # Пропускаем целевую группу публикации, чтобы не собирать посты из неё
                 if "post_group_vk" in session and group_id == session["post_group_vk"]:
-                    print(f"⏭️ Пропущена целевая группа {group_name} (ID: {group_id})")
                     continue
 
                 candidate_posts = get_msg(group_id, 0, 20)
                 # Добавляем все посты из группы в общий список
                 if candidate_posts:
-                    print(f"📥 Группа {group_name} (ID: {group_id}): получено {len(candidate_posts)} постов")
+                    logger.debug("Группа %s (ID: %s): получено %d постов", group_name, group_id, len(candidate_posts))
                     # Добавляем имя группы-источника к каждому посту для отслеживания
                     for p in candidate_posts:
                         p["_source_group_name"] = group_name
@@ -180,10 +178,10 @@ def parser(stat_mode: bool = False):
                     if stat_mode:
                         stats_data["groups_with_posts"] += 1
                 else:
-                    print(f"⚠️ Группа {group_name} (ID: {group_id}): постов не найдено")
+                    logger.debug("Группа %s (ID: %s): постов не найдено", group_name, group_id)
 
             if stat_mode:
-                print(f"📊 ВСЕГО собрано постов из всех групп: {len(posts)}")
+                logger.info("ВСЕГО собрано постов из всех групп: %d", len(posts))
 
     else:
         # Рандомно выбираем одну группу из списка групп заданной темы
@@ -233,12 +231,11 @@ def parser(stat_mode: bool = False):
 
         # Пост СВЕЖИЙ!
         posts_fresh += 1
-        
-        # Если мы здесь - пост СВЕЖИЙ! Логируем начало отслеживания
+
+        # Если мы здесь - пост СВЕЖИЙ! Логируем
         text_preview = sample.get('text', '')[:100].replace('\n', ' ')
-        msg = f"🔍 [{posts_fresh}] Свежий пост прошел sort_old_date: 📰 {source_group} | 🔗 {post_url} | текст='{text_preview}...'"
-        print(msg)  # Дублируем в stdout для надёжности
-        logger.info(msg)
+        logger.debug("[%d] Свежий пост прошел sort_old_date: %s | %s | текст='%s...'",
+                     posts_fresh, source_group, post_url, text_preview)
 
         # Вытаскиваем репосты
         first_owher_id = sample["owner_id"]
@@ -249,11 +246,10 @@ def parser(stat_mode: bool = False):
             if stat_mode:
                 if abs(sample["owner_id"]) in session["black_id"]:
                     stats_data["posts_filtered_black_id"] += 1
-                    msg = f"❌ Свежий пост отброшен (black_id): 📰 {source_group} | 🔗 {post_url}"
+                    msg = f"❌ Свежий пост отброшен (black_id): {source_group} | {post_url}"
                 else:
                     stats_data["posts_filtered_duplicate_lip"] += 1
-                    msg = f"❌ Свежий пост отброшен (duplicate lip - уже публиковался): 📰 {source_group} | 🔗 {post_url}"
-                print(msg)
+                    msg = f"❌ Свежий пост отброшен (duplicate lip): {source_group} | {post_url}"
                 logger.info(msg)
             continue
 
@@ -322,9 +318,7 @@ def parser(stat_mode: bool = False):
             if stat_mode:
                 stats_data["posts_filtered_duplicate_text"] += 1
                 posts_dup_text += 1
-                msg = f"❌ Свежий пост отброшен (duplicate text/blacklist): 📰 {source_group} | 🔗 {post_url}"
-                print(msg)
-                logger.info(msg)
+                logger.info("❌ Свежий пост отброшен (duplicate text/blacklist): %s | %s", source_group, post_url)
             continue
         else:
             # Добавляем текст поста в old_novost_txt для проверки следующих постов
@@ -335,9 +329,7 @@ def parser(stat_mode: bool = False):
         if sort_po_foto(sample) and sort_po_video(sample):
             if stat_mode:
                 stats_data["posts_filtered_duplicate_foto"] += 1
-                msg = f"❌ Свежий пост отброшен (duplicate foto/video): 📰 {source_group} | 🔗 {post_url}"
-                print(msg)
-                logger.info(msg)
+                logger.info("❌ Свежий пост отброшен (duplicate foto/video): %s | %s", source_group, post_url)
             continue
 
         # Чистка и исправление текста для всех публичный мягкий набор слов и простых предложений
@@ -356,9 +348,7 @@ def parser(stat_mode: bool = False):
                 if stat_mode:
                     stats_data.setdefault("posts_filtered_no_attachments", 0)
                     stats_data["posts_filtered_no_attachments"] += 1
-                    msg = f"❌ Свежий пост отброшен (НЕТ ВЛОЖЕНИЙ, тема={theme}): 📰 {source_group} | 🔗 {post_url}"
-                    print(msg)
-                    logger.info(msg)
+                    logger.info("❌ Свежий пост отброшен (нет вложений, тема=%s): %s | %s", theme, source_group, post_url)
                 continue
 
             # Жесткая чистка текста регулярными выражениями и словами для постов из рекламных групп
@@ -415,9 +405,7 @@ def parser(stat_mode: bool = False):
         # Вариант сбора текста поста без ссылок на источники
         # sample['text'] = f"{zagolovok} {sample['text']}"
 
-        msg_pass = f"✅ Свежий пост ПРОШЕЛ ВСЕ ФИЛЬТРЫ: 📰 {source_group} | 🔗 {post_url}"
-        print(msg_pass)
-        logger.info(msg_pass)
+        logger.debug("✅ Свежий пост ПРОШЕЛ ВСЕ ФИЛЬТРЫ: %s | %s", source_group, post_url)
         result_posts.append(sample)
 
     # ИСПРАВЛЕНИЕ: сохраняем work-таблицы для ВСЕХ тем, а не только novost/reklama
@@ -430,8 +418,11 @@ def parser(stat_mode: bool = False):
     if theme not in ("novost", "reklama"):
         save_table(theme)
 
-    # Итоговая сводка по фильтрации
-    print(f"\n📊 ИТОГО ФИЛЬТРАЦИЯ [{theme}]: проверено={posts_checked}, старых={posts_old}, дубликатов_lip={posts_dup_lip}, дубликатов_text={posts_dup_text}, свежих={posts_fresh}, прошло_в_дайджест={len(result_posts)}")
+    # Итоговая сводка по фильтрации (только в лог, не в терминал)
+    logger.info(
+        "ИТОГО ФИЛЬТРАЦИЯ [%s]: проверено=%d, старых=%d, дубликатов_lip=%d, дубликатов_text=%d, свежих=%d, прошло_в_дайджест=%d",
+        theme, posts_checked, posts_old, posts_dup_lip, posts_dup_text, posts_fresh, len(result_posts)
+    )
 
     if stat_mode:
         stats_data["posts_final_count"] = len(result_posts)

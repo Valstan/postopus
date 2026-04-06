@@ -42,99 +42,76 @@ def format_stats_for_post(total_stats: Dict[str, Any], argument: str) -> str:
     text += f"🌍 Всего регионов: {total_regions}\n"
     text += f"✅ Успешно: {success_regions}\n"
     text += f"❌ Неудачи: {failed_regions}\n"
-    text += f"📈 Всего постов: {total_posts}\n"
+    text += f"📈 Всего постов в дайджестах: {total_posts}\n"
     text += f"📊 Опросили групп: {total_groups}\n\n"
 
-    # Успешные регионы с ссылками на посты
+    # Успешные регионы — упрощённый формат
     if total_stats.get("success_regions"):
         text += "✅ УСПЕШНЫЕ РЕГИОНЫ:\n"
         for item in total_stats["success_regions"]:
-            region = item.get("region", "unknown")
-            groups_count = len(item.get("groups", []))
+            # Убираем " - Инфо" из названия для краткости
+            region = item.get("region", "unknown").replace(" - Инфо", "")
             posts_count = item.get("posts_count", 0)
+            detailed_stats = item.get("detailed_stats", {})
 
-            # Добавляем ссылки на посты если есть
+            # Статистика фильтрации
+            groups_checked = detailed_stats.get("total_groups_checked", 0)
+            posts_scanned = detailed_stats.get("total_posts_scanned", 0)
+            posts_filtered_old = detailed_stats.get("posts_filtered_old", 0)
+            posts_filtered_dup = detailed_stats.get("posts_filtered_duplicate_lip", 0) + detailed_stats.get("posts_filtered_duplicate_text", 0) + detailed_stats.get("posts_filtered_duplicate_foto", 0)
+
+            text += f"• {region}\n"
+            text += f"  📥 Опросили: {groups_checked} групп, {posts_scanned} постов\n"
+
+            # Показываем отсев только если был
+            if posts_filtered_old > 0 or posts_filtered_dup > 0:
+                parts = []
+                if posts_filtered_old > 0:
+                    parts.append(f"старых: {posts_filtered_old}")
+                if posts_filtered_dup > 0:
+                    parts.append(f"дублей: {posts_filtered_dup}")
+                text += f"  ⏭️ Отсев: {', '.join(parts)}\n"
+
+            text += f"  📝 В дайджесте: {posts_count} постов\n"
+
+            # Ссылка на итоговый дайджест (один URL вместо списка)
             post_urls = item.get("post_urls", [])
             if post_urls:
-                urls_str = ", ".join(post_urls[:3])  # Показываем до 3 ссылок
-                if len(post_urls) > 3:
-                    urls_str += f" и ещё {len(post_urls) - 3}"
-                text += f"   • {region}: {groups_count} групп, {posts_count} постов\n"
-                text += f"      🔗 Посты: {urls_str}\n"
-            else:
-                text += f"   • {region}: {groups_count} групп, {posts_count} постов\n"
+                text += f"  🔗 Дайджест: {post_urls[0]}\n"
+
         text += "\n"
 
-    # Неудачные регионы с детальной статистикой
+    # Неудачные регионы — упрощённый формат
     if total_stats.get("failed_regions"):
         text += "❌ ПРОБЛЕМНЫЕ РЕГИОНЫ:\n"
         for item in total_stats["failed_regions"]:
-            region = item.get("region", "unknown")
-            groups_count = len(item.get("groups", []))
-
-            # Получаем детальную статистику если есть
+            # Убираем " - Инфо" из названия
+            region = item.get("region", "unknown").replace(" - Инфо", "")
             detailed_stats = item.get("detailed_stats", {})
 
-            # Формируем подробный отчет
-            reasons = list(set(item.get("failed_posts", [])))
-            reason_str = ", ".join(reasons[:3]) if reasons else "Ошибка обработки"
-            if len(reasons) > 3:
-                reason_str += f" и ещё {len(reasons) - 3}"
+            # Статистика фильтрации
+            groups_checked = detailed_stats.get("total_groups_checked", 0)
+            posts_scanned = detailed_stats.get("total_posts_scanned", 0)
+            posts_filtered_old = detailed_stats.get("posts_filtered_old", 0)
+            posts_filtered_dup = detailed_stats.get("posts_filtered_duplicate_lip", 0) + detailed_stats.get("posts_filtered_duplicate_text", 0) + detailed_stats.get("posts_filtered_duplicate_foto", 0)
 
-            # Добавляем статистику по группам и отфильтрованным постам
-            stats_details = []
-            if detailed_stats:
-                groups_checked = detailed_stats.get("total_groups_checked", 0)
-                posts_scanned = detailed_stats.get("total_posts_scanned", 0)
-
-                # Считаем общее количество отфильтрованных постов
-                sum(
-                    [
-                        detailed_stats.get("posts_filtered_old", 0),
-                        detailed_stats.get("posts_filtered_duplicate_lip", 0),
-                        detailed_stats.get("posts_filtered_black_id", 0),
-                        detailed_stats.get("posts_filtered_no_region_words", 0),
-                        detailed_stats.get("posts_filtered_duplicate_text", 0),
-                        detailed_stats.get("posts_filtered_duplicate_foto", 0),
-                    ]
-                )
-
-                stats_details.append(f"{groups_checked} гр.")
-                stats_details.append(f"{posts_scanned} новостей")
-
-                # Показываем основные причины отсева
-                filter_reasons = []
-                if detailed_stats.get("posts_filtered_old", 0) > 0:
-                    filter_reasons.append(f"старых: {detailed_stats['posts_filtered_old']}")
-                if detailed_stats.get("posts_filtered_duplicate_lip", 0) > 0:
-                    filter_reasons.append(f"повторов: {detailed_stats['posts_filtered_duplicate_lip']}")
-                if detailed_stats.get("posts_filtered_no_region_words", 0) > 0:
-                    filter_reasons.append(f"нет слов региона: {detailed_stats['posts_filtered_no_region_words']}")
-                if detailed_stats.get("posts_filtered_duplicate_text", 0) > 0:
-                    filter_reasons.append(f"дублей текста: {detailed_stats['posts_filtered_duplicate_text']}")
-                if detailed_stats.get("posts_filtered_duplicate_foto", 0) > 0:
-                    filter_reasons.append(f"повторов фото: {detailed_stats['posts_filtered_duplicate_foto']}")
-
-                if filter_reasons:
-                    text += f"   • {region}: {groups_count} гр., {reason_str}\n"
-                    text += f"      📊 Проверено: {', '.join(stats_details)}, отсев: {', '.join(filter_reasons[:3])}\n"
-                else:
-                    text += f"   • {region}: {groups_count} гр., {reason_str}\n"
-                    text += f"      📊 Проверено: {', '.join(stats_details)}\n"
+            # Если есть детальная статистика — показываем что было проверено
+            if posts_scanned > 0:
+                text += f"• {region}: проверено {groups_checked} гр., {posts_scanned} постов\n"
+                if posts_filtered_old > 0:
+                    text += f"  ⏭️ Отсев: старых {posts_filtered_old}"
+                    if posts_filtered_dup > 0:
+                        text += f", дублей {posts_filtered_dup}"
+                    text += "\n"
             else:
-                text += f"   • {region}: {reason_str}\n"
-        text += "\n"
+                # Нет постов вообще
+                reason = item.get("failed_posts", ["Нет данных"])[0] if item.get("failed_posts") else "Нет данных"
+                # Сокращаем длинные сообщения
+                if "Нет свежих новостей" in reason:
+                    reason = "нет свежих постов"
+                text += f"• {region}: {reason}\n"
 
-    # Причины неудач
-    if total_stats.get("failed_posts_reasons"):
-        unique_reasons = list(set(total_stats["failed_posts_reasons"]))
-        if unique_reasons:
-            text += "⚠️ ПРИЧИНЫ НЕУДАЧ:\n"
-            for reason in unique_reasons[:5]:  # Показываем максимум 5 причин
-                text += f"   • {reason}\n"
-            if len(unique_reasons) > 5:
-                text += f"   ... и ещё {len(unique_reasons) - 5}\n"
-            text += "\n"
+        text += "\n"
 
     # Итог
     text += "=" * 40 + "\n"
