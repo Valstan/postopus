@@ -20,8 +20,7 @@
 30 13 * * * cd /home/valstan/postopus && /usr/bin/python3 start_paket.py detsad
 
 # ===== ОБЛАСТНЫЕ НОВОСТИ =====
-# ИСПРАВЛЕНО: было "config_oblast_novost" — "config" не имя региона!
-30 14 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_oblast_novost
+30 14 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py config_oblast_novost
 
 # ===== НОВОСТИ =====
 40 6,11,12,16,18,20 * * * cd /home/valstan/postopus && /usr/bin/python3 start_paket.py novost
@@ -31,7 +30,8 @@
 
 # ===== РЕПОСТ ПО СЕТКЕ (КопированиеПоИНФОСЕТКЕ) =====
 # ИСПРАВЛЕНО: было "copy_to_all_setka.py" — устаревший скрипт из archive/
-7,37 * * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_copy_setka
+# Тема copy_setka не требует региона — работает из глобального config
+7,37 * * * * cd /home/valstan/postopus && /usr/bin/python3 start.py copy_setka
 
 # ===== ЗАКОММЕНТИРОВАНО (не используется) =====
 # 15 8,14 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_repost_reklama
