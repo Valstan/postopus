@@ -41,6 +41,10 @@ EXCLUDED_GROUP_ID = -218688001
 # Тема для work-таблицы
 WORK_THEME = "copy_setka"
 
+# Ограничения
+MAX_POSTS_TO_SCAN = 10       # Сканируем только последние N постов
+MAX_LIP_HISTORY = 12         # Храним не более N записей в lip
+
 
 def repost_oblast_setka():
     """
@@ -73,31 +77,54 @@ def repost_oblast_setka():
 
         work_lip = session["work"][WORK_THEME].get("lip", [])
 
-        # Сканируем посты из группы КопированиеПоИНФОСЕТКЕ
-        all_posts = get_msg(COPY_SETKA_GROUP_ID, 0, 50)
+        # Сканируем ТОЛЬКО последние N постов (не больше чтобы не брать старые)
+        all_posts = get_msg(COPY_SETKA_GROUP_ID, 0, MAX_POSTS_TO_SCAN)
         if not all_posts:
             logger.info("repost_oblast_setka: нет постов в источнике")
             return 0
 
+        logger.info("repost_oblast_setka: получено %d постов, фильтруем", len(all_posts))
+
         # Фильтруем уже распространённые посты
+        # ВАЖНО: проверяем "репост" в ОРИГИНАЛЬНОМ тексте ДО clear_copy_history!
         new_posts = []
-        for sample in all_posts:
-            sample = clear_copy_history(sample)
-            post_lip = lip_of_post(sample)
-            if post_lip not in work_lip:
-                new_posts.append(sample)
+        for raw_sample in all_posts:
+            post_lip = lip_of_post(raw_sample)
+            if post_lip in work_lip:
+                continue  # Уже распространён
+
+            # Проверяем команду "репост" в ОРИГИНАЛЬНОМ тексте поста
+            # ДО вызова clear_copy_history, иначе текст команды теряется!
+            original_text = raw_sample.get("text", "").lower()
+            has_copy_history = "copy_history" in raw_sample and len(raw_sample["copy_history"]) > 0
+
+            new_posts.append({
+                "raw": raw_sample,
+                "is_repost": "репост" in original_text,
+                "has_attachment": has_copy_history,
+                "lip": post_lip,
+            })
 
         if not new_posts:
             logger.info("repost_oblast_setka: все посты уже распространены")
             return 0
 
         # Берём САМЫЙ СТАРЫЙ нераспространённый пост
-        new_posts.sort(key=lambda x: x.get("date", 0))
-        post = new_posts[0]
+        new_posts.sort(key=lambda x: x["raw"].get("date", 0))
+        entry = new_posts[0]
+        raw_post = entry["raw"]
+        is_repost_command = entry["is_repost"]
 
-        # Проверяем есть ли команда «репост» в тексте (без учёта регистра)
-        text_lower = post.get("text", "").lower()
-        is_repost_command = "репост" in text_lower
+        # Если это репост с командой — берём URL оригинала из copy_history
+        # Иначе — URL самого поста из группы КопированиеПоИНФОСЕТКЕ
+        if is_repost_command and "copy_history" in raw_post:
+            original = raw_post["copy_history"][0]
+            source_url = url_of_post(original)
+        else:
+            source_url = url_of_post(raw_post)
+
+        # Обрабатываем пост для публикации (извлекаем вложения)
+        post = clear_copy_history(raw_post)
 
         # Получаем список целевых групп всех регионов кроме исключённых
         all_groups = session.get("all_my_groups", {})
@@ -112,7 +139,7 @@ def repost_oblast_setka():
 
         logger.info(
             "repost_oblast_setka: пост %s, режим=%s, целевых групп=%d",
-            url_of_post(post),
+            source_url,
             "РЕПОСТ" if is_repost_command else "КОПИРОВАНИЕ",
             len(target_groups),
         )
@@ -121,11 +148,10 @@ def repost_oblast_setka():
 
         if is_repost_command:
             # РЕПОСТИМ оригинал из источника по всем целевым группам
-            repost_url = url_of_post(post)
             for group_id in target_groups:
                 try:
                     vk_app.wall.repost(
-                        object=repost_url,
+                        object=source_url,
                         group_id=abs(group_id),
                     )
                     success_count += 1
@@ -142,8 +168,6 @@ def repost_oblast_setka():
             if "attachments" in post and post["attachments"]:
                 attachments, _ = get_attach(post)
 
-            # Текст поста — если это репост с командой, текст может содержать
-            # инструкцию. В режиме копирования публикуем как есть.
             message = post.get("text", "")
 
             for group_id in target_groups:
@@ -165,13 +189,17 @@ def repost_oblast_setka():
 
         # Если хотя бы одна публикация успешна — помечаем пост как распространённый
         if success_count > 0:
-            post_lip = lip_of_post(post)
-            if post_lip not in session["work"][WORK_THEME]["lip"]:
-                session["work"][WORK_THEME]["lip"].append(post_lip)
+            post_lip = entry["lip"]
+            work_list = session["work"][WORK_THEME]["lip"]
+            if post_lip not in work_list:
+                work_list.append(post_lip)
+            # ОБРЕЗАЕМ lip до MAX_LIP_HISTORY чтобы не засорять БД
+            if len(work_list) > MAX_LIP_HISTORY:
+                session["work"][WORK_THEME]["lip"] = work_list[-MAX_LIP_HISTORY:]
             save_table(WORK_THEME)
             logger.info(
-                "repost_oblast_setka: успешно распространён в %d групп",
-                success_count,
+                "repost_oblast_setka: успешно распространён в %d групп (lip=%d/%d)",
+                success_count, len(session["work"][WORK_THEME]["lip"]), MAX_LIP_HISTORY,
             )
         else:
             logger.warning("repost_oblast_setka: ни одна публикация не удалась")
