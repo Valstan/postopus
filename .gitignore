@@ -3,6 +3,12 @@
 *.pyc
 __pycache__/
 
+# IDE files
+.idea/
+.gigaide/
+.vscode/
+*.iml
+
 # Environment files
 .env
 .env.local
