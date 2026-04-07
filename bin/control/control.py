@@ -7,6 +7,7 @@ from bin.control.parser import parser
 from bin.control.post_to_telega import post_to_telegram
 from bin.control.repost_kultpodved import repost_kultpodved
 from bin.control.repost_me import repost_me
+from bin.control.repost_oblast_setka import repost_oblast_setka
 from bin.control.repost_oleny import repost_oleny
 from bin.control.repost_reklama import repost_reklama
 from bin.control.sosed import sosed
@@ -188,6 +189,13 @@ def control(stat_mode: bool = False):
         else:
             if stat_mode:
                 stats_data["failed_posts"].append("Нет постов для repost_kultpodved")
+
+    elif session["name_session"] == "copy_setka":
+        result = repost_oblast_setka()
+        if stat_mode:
+            stats_data["success"] = True
+            if result and isinstance(result, (int, float)) and result > 0:
+                stats_data["posts_count"] = int(result)
 
     elif session["name_session"] == "telegram":
         asyncio.run(post_to_telegram())
