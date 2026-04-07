@@ -151,19 +151,34 @@ def posting_post(msg_list, stat_mode: bool = False):
             attachments = attachments[:-1]
 
     if text_post or attachments:
-        # Добавляем хэштеги
-        # ИСПРАВЛЕНИЕ: добавляем хэштеги для всех тем у которых есть heshteg, а не только novost
-        if theme in session.get("heshteg", {}):
-            if "heshteg_local" in session and session["heshteg_local"]:
-                # Проверяем есть ли локальный хэштег для этой темы
-                local_tag = session["heshteg_local"].get("raicentr", "")
-                if local_tag:
-                    text_post += f"\n#{session['heshteg'][theme]}{local_tag}"
-                else:
-                    text_post += f"\n#{session['heshteg'][theme]}"
+        # Добавляем хэштеги для ВСЕХ тематических постов
+        # Принцип: тематический хештег + хештег региона
+        # Fallback: если темы нет в heshteg, используем ключ темы как хештег
+
+        # Определяем тематический хештег
+        hashtag_theme = None
+        heshteg_dict = session.get("heshteg", {})
+
+        if theme in heshteg_dict:
+            # Тема есть в БД — берём оттуда
+            hashtag_theme = heshteg_dict[theme]
+        elif theme in session.get("zagolovki", {}):
+            # Тема легальная (есть в zagolovki), но нет в heshteg — fallback
+            # Используем ключ темы как хештег (например "kultura" → "#kultura")
+            hashtag_theme = theme
+            logger.debug("Хештег для темы '%s' не найден в heshteg, используем fallback", theme)
+
+        if hashtag_theme:
+            # Проверяем локальный хештег региона
+            local_tag = ""
+            heshteg_local = session.get("heshteg_local", {})
+            if heshteg_local:
+                local_tag = heshteg_local.get("raicentr", "")
+
+            if local_tag:
+                text_post += f"\n#{hashtag_theme}{local_tag}"
             else:
-                # Если heshteg_local отсутствует, добавляем только глобальный хэштег
-                text_post += f"\n#{session['heshteg'][theme]}"
+                text_post += f"\n#{hashtag_theme}"
 
         try:
             # If test posting is enabled, redirect posts to TEST_POLYGON_GROUP_ID
