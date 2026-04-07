@@ -75,6 +75,33 @@ def parser(stat_mode: bool = False):
             }
         return []
 
+    # СПЕЦИАЛЬНАЯ ЛОГИКА ДЛЯ "Кировская область - Инфо":
+    # Агрегирует только готовые дайджесты из целевых групп ВСЕХ других регионов.
+    # НЕ собирает из исходных групп-источников.
+    is_kirov_obl = session.get("region_name") == "Кировская область - Инфо"
+    kirov_obl_posts = []
+    if is_kirov_obl:
+        all_groups = session.get("all_my_groups", {})
+        target_group_ids = [
+            gid for rname, gid in all_groups.items()
+            if rname != "Кировская область - Инфо"
+        ]
+
+        if not target_group_ids:
+            logger.warning("Кировская область - Инфо: не найдены целевые группы других регионов")
+            return []
+
+        logger.info("Кировская область - Инфо: сбор дайджестов из %d целевых групп", len(target_group_ids))
+
+        for group_id in target_group_ids:
+            candidate_posts = get_msg(group_id, 0, 30)
+            if candidate_posts:
+                for p in candidate_posts:
+                    p["_source_group_id"] = group_id
+                kirov_obl_posts.extend(candidate_posts)
+
+        logger.info("Кировская область - Инфо: собрано %d постов из дайджестов", len(kirov_obl_posts))
+
     # Для режима статистики сохраняем список текущих групп
     current_groups = []
     if theme in session and isinstance(session[theme], dict):
@@ -204,8 +231,11 @@ def parser(stat_mode: bool = False):
     posts_old = 0
     posts_dup_lip = 0
     posts_dup_text = 0
-    
-    for sample in posts:
+
+    # Для Кировская область - Инфо используем посты собранные из дайджестов, не из исходников
+    posts_to_filter = kirov_obl_posts if is_kirov_obl else posts
+
+    for sample in posts_to_filter:
         if stat_mode:
             stats_data["total_posts_scanned"] += 1
         posts_checked += 1
