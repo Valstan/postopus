@@ -11,6 +11,7 @@ from bin.sort.sort_po_video import sort_po_video
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.clear_text import clear_text
 from bin.utils.driver_tables import load_table, save_table
+from bin.utils.is_advertisement import is_advertisement
 from bin.utils.lip_of_post import lip_of_post
 from bin.utils.post_popularity import get_post_popularity_score
 from bin.utils.search_text import search_text
@@ -282,6 +283,15 @@ def parser(stat_mode: bool = False):
                     stats_data["posts_filtered_duplicate_lip"] += 1
                     msg = f"❌ Свежий пост отброшен (duplicate lip): {source_group} | {post_url}"
                 logger.info(msg)
+            continue
+
+        # ФИЛЬТР РЕКЛАМЫ: отбрасываем откровенно рекламные посты
+        # (кроме темы reklama — там реклама ожидается)
+        if theme != "reklama" and is_advertisement(sample):
+            if stat_mode:
+                stats_data.setdefault("posts_filtered_advertisement", 0)
+                stats_data["posts_filtered_advertisement"] += 1
+                logger.info("❌ Свежий пост отброшен (реклама): %s | %s", source_group, post_url)
             continue
 
         # Если режим СОСЕД - Ищем в тексте поста хештег с новостью, если нет, то не берем пост
