@@ -28,6 +28,10 @@ def control(stat_mode: bool = False):
     """
     global session
 
+    # СБРАСЫВАЕМ накопленные URL-ы постов для текущего региона
+    # Без этого каждый регион получает все URL-ы предыдущих регионов
+    session["last_post_url"] = []
+
     # Структура для сбора статистики
     stats_data = (
         {
@@ -72,9 +76,9 @@ def control(stat_mode: bool = False):
             if stat_mode:
                 stats_data["success"] = True
                 # posts_count уже установлен из stats
-                # Получаем URL поста из session если есть
+                # Получаем URL поста из session (копия, не ссылка)
                 if session.get("last_post_url"):
-                    stats_data["post_urls"] = session["last_post_url"]
+                    stats_data["post_urls"] = list(session["last_post_url"])
         else:
             if stat_mode:
                 stats_data["failed_posts"].append("Нет свежих новостей после фильтрации")
@@ -97,10 +101,12 @@ def control(stat_mode: bool = False):
                 session["work"][session["name_session"]] = load_table(session["name_session"])
                 msg_list = parser()
                 if msg_list:
-                    posting_post(msg_list)
+                    posting_post(msg_list, stat_mode=stat_mode)
                     if stat_mode:
                         stats_data["success"] = True
                         stats_data["posts_count"] = len(msg_list)
+                        if session.get("last_post_url"):
+                            stats_data["post_urls"] = list(session["last_post_url"])
                     found = True
                     break
             old_ruletka = session["name_session"]
@@ -168,10 +174,12 @@ def control(stat_mode: bool = False):
     elif session["name_session"] == "repost_kultpodved":
         msg_list = repost_kultpodved()
         if msg_list:
-            posting_post(msg_list)
+            posting_post(msg_list, stat_mode=stat_mode)
             if stat_mode:
                 stats_data["success"] = True
                 stats_data["posts_count"] = len(msg_list)
+                if session.get("last_post_url"):
+                    stats_data["post_urls"] = list(session["last_post_url"])
         else:
             if stat_mode:
                 stats_data["failed_posts"].append("Нет постов для repost_kultpodved")
