@@ -200,6 +200,8 @@ def posting_post(msg_list, stat_mode: bool = False):
                 if "last_post_url" not in session:
                     session["last_post_url"] = []
                 session["last_post_url"].append(post_result["url"])
+                # Запоминаем реальное количество постов которые вошли в публикацию
+                session["last_posts_published"] = len(msg_list)
 
             save_table(theme)
         except Exception as exc:

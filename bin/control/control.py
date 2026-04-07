@@ -28,9 +28,10 @@ def control(stat_mode: bool = False):
     """
     global session
 
-    # СБРАСЫВАЕМ накопленные URL-ы постов для текущего региона
+    # СБРАСЫВАЕМ накопленные URL-ы постов и счётчик для текущего региона
     # Без этого каждый регион получает все URL-ы предыдущих регионов
     session["last_post_url"] = []
+    session["last_posts_published"] = 0
 
     # Структура для сбора статистики
     stats_data = (
@@ -75,7 +76,9 @@ def control(stat_mode: bool = False):
             posting_post(msg_list, stat_mode=stat_mode)
             if stat_mode:
                 stats_data["success"] = True
-                # posts_count уже установлен из stats
+                # Используем реальное количество постов из posting_post, не parser
+                real_count = session.get("last_posts_published", 0)
+                stats_data["posts_count"] = real_count if real_count > 0 else len(msg_list)
                 # Получаем URL поста из session (копия, не ссылка)
                 if session.get("last_post_url"):
                     stats_data["post_urls"] = list(session["last_post_url"])
@@ -104,7 +107,8 @@ def control(stat_mode: bool = False):
                     posting_post(msg_list, stat_mode=stat_mode)
                     if stat_mode:
                         stats_data["success"] = True
-                        stats_data["posts_count"] = len(msg_list)
+                        real_count = session.get("last_posts_published", 0)
+                        stats_data["posts_count"] = real_count if real_count > 0 else len(msg_list)
                         if session.get("last_post_url"):
                             stats_data["post_urls"] = list(session["last_post_url"])
                     found = True
@@ -177,7 +181,8 @@ def control(stat_mode: bool = False):
             posting_post(msg_list, stat_mode=stat_mode)
             if stat_mode:
                 stats_data["success"] = True
-                stats_data["posts_count"] = len(msg_list)
+                real_count = session.get("last_posts_published", 0)
+                stats_data["posts_count"] = real_count if real_count > 0 else len(msg_list)
                 if session.get("last_post_url"):
                     stats_data["post_urls"] = list(session["last_post_url"])
         else:
