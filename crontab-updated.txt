@@ -1,0 +1,43 @@
+# ============================================
+# CRONTAB для проекта Postopus
+# ============================================
+# Формат: минута час день месяц день_недели команда
+# ============================================
+
+# ===== РЕКЛАМА =====
+5 10,14,19 * * * cd /home/valstan/postopus && /usr/bin/python3 start_paket.py reklama
+
+# ===== СОСЕДИ И ОЛЕНИ =====
+15 9,11,13,16,18,20 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_repost_oleny
+15 10,20 * * * cd /home/valstan/postopus && /usr/bin/python3 start_paket.py sosed
+
+# ===== ТЕМАТИЧЕСКИЕ =====
+20 8,12,20 * * * cd /home/valstan/postopus && /usr/bin/python3 start_paket.py admin
+20 7,13,16,19,21 * * * cd /home/valstan/postopus && /usr/bin/python3 start_paket.py kultura
+20 6,11,18,22 * * * cd /home/valstan/postopus && /usr/bin/python3 start_paket.py addons
+30 11,17 * * * cd /home/valstan/postopus && /usr/bin/python3 start_paket.py union
+30 12,19 * * * cd /home/valstan/postopus && /usr/bin/python3 start_paket.py sport
+30 13 * * * cd /home/valstan/postopus && /usr/bin/python3 start_paket.py detsad
+
+# ===== ОБЛАСТНЫЕ НОВОСТИ =====
+# ИСПРАВЛЕНО: было "config_oblast_novost" — "config" не имя региона!
+30 14 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_oblast_novost
+
+# ===== НОВОСТИ =====
+40 6,11,12,16,18,20 * * * cd /home/valstan/postopus && /usr/bin/python3 start_paket.py novost
+
+# ===== TELEGRAM =====
+50 6,8,10,11,12,13,15,17,18,20,21 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_telegram
+
+# ===== РЕПОСТ ПО СЕТКЕ (КопированиеПоИНФОСЕТКЕ) =====
+# ИСПРАВЛЕНО: было "copy_to_all_setka.py" — устаревший скрипт из archive/
+7,37 * * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_copy_setka
+
+# ===== ЗАКОММЕНТИРОВАНО (не используется) =====
+# 15 8,14 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_repost_reklama
+# 55 6-22 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py config_repost_me
+# 10 7,15,20 * * * cd /home/valstan/postopus && /usr/bin/python3 start.py mi_karavan
+# 5 1 * * * cd /home/valstan/postopus && /usr/bin/python3 deserter.py
+
+# ===== БОТ TELEGRAM (отдельный venv) =====
+10 13 15 7 * cd /home/valstan/telebot_mi && /home/valstan/telebot_mi/venv/bin/python3 main.py
