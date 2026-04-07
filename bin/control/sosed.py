@@ -4,6 +4,7 @@ import traceback
 from bin.rw.get_msg import get_msg
 from bin.rw.posting_post import posting_post
 from bin.utils.lip_of_post import lip_of_post
+from bin.utils.post_popularity import get_post_popularity_score
 from bin.utils.search_text import search_text
 from bin.utils.send_error import send_error
 from env_loader import session
@@ -33,7 +34,7 @@ def sosed():
             result_posts.append(sample)
 
         if result_posts:
-            result_posts.sort(key=lambda x: x["views"]["count"], reverse=True)
+            result_posts.sort(key=get_post_popularity_score, reverse=True)
             posting_post(result_posts)
             return len(result_posts)  # ИСПРАВЛЕНИЕ: возвращаем количество
         else:

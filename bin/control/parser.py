@@ -12,6 +12,7 @@ from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.clear_text import clear_text
 from bin.utils.driver_tables import load_table, save_table
 from bin.utils.lip_of_post import lip_of_post
+from bin.utils.post_popularity import get_post_popularity_score
 from bin.utils.search_text import search_text
 from bin.utils.send_error import send_error
 from bin.utils.text_to_rafinad import text_to_rafinad
@@ -442,5 +443,6 @@ def parser(stat_mode: bool = False):
         }
 
     if result_posts:
-        result_posts.sort(key=lambda x: x["views"]["count"], reverse=True)
+        # Сортировка по复合ному score популярности (views + likes + comments + reposts)
+        result_posts.sort(key=get_post_popularity_score, reverse=True)
         return result_posts

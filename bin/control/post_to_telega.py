@@ -10,6 +10,7 @@ from bin.rw.get_msg import get_msg
 from bin.utils.clear_copy_history import clear_copy_history
 from bin.utils.driver_tables import save_table
 from bin.utils.lip_of_post import lip_of_post
+from bin.utils.post_popularity import get_post_popularity_score
 from bin.utils.search_text import search_text
 from bin.utils.send_error import send_error
 from env_loader import session
@@ -60,7 +61,7 @@ async def post_to_telegram():
                 continue
 
             if len(clear_posts) > 1:
-                clear_posts.sort(key=lambda x: x["views"]["count"], reverse=True)
+                clear_posts.sort(key=get_post_popularity_score, reverse=True)
 
             # Публикуем тупо самый первый верхний пост.
             # Вырезаю из поста ссылки на источник

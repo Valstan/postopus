@@ -6,6 +6,7 @@ from bin.rw.get_msg import get_msg
 from bin.rw.posting_post import posting_post
 from bin.sort.sort_old_date import sort_old_date
 from bin.utils.lip_of_post import lip_of_post
+from bin.utils.post_popularity import get_post_popularity_score
 from bin.utils.search_text import search_text
 from bin.utils.send_error import send_error
 from bin.utils.url_of_post import url_of_post
@@ -59,7 +60,7 @@ def oblast_novost():
                         posts.append(sample)
                     if posts:
                         if len(posts) > 1:
-                            posts.sort(key=lambda x: x["views"]["count"], reverse=True)
+                            posts.sort(key=get_post_popularity_score, reverse=True)
                         post = posts[0]
                         break
 
