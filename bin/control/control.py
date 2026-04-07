@@ -190,7 +190,7 @@ def control(stat_mode: bool = False):
             if stat_mode:
                 stats_data["failed_posts"].append("Нет постов для repost_kultpodved")
 
-    elif session["name_session"] == "copy_setka":
+    elif session["name_session"] == "setka" or session.get("region_name") == "copy":
         result = repost_oblast_setka()
         if stat_mode:
             stats_data["success"] = True
